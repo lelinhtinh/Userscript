@@ -3,7 +3,7 @@
 // @namespace   http://devs.forumvi.com
 // @description Download manga on nHentai.net
 // @include     http://nhentai.net/g/*
-// @version     1.0.0
+// @version     1.1.0
 // @author      Zzbaivong
 // @require     https://code.jquery.com/jquery-2.2.0.min.js
 // @require     https://openuserjs.org/src/libs/baivong/jszip.min.js
@@ -52,10 +52,14 @@ jQuery(function($) {
         if (disabled) return;
         disabled = true;
 
+        $(window).on("beforeunload", function() {
+            return "Progress is running...";
+        });
+
         $download.html('<i class="fa fa-cog fa-spin"></i> Waiting...').css("backgroundColor", "orange");
 
         $(".lazyload").each(function(i, v) {
-            images[i] = "http:" + $(this).attr("data-src").replace("t.n", "i.n").replace("t.j", ".j");
+            images[i] = "http:" + $(this).attr("data-src").replace("t.n", "i.n").replace(/\/(\d+)t\./, "/$1.");
         });
 
         total = images.length;
@@ -88,10 +92,9 @@ jQuery(function($) {
             $download.html('<i class="fa fa-exclamation"></i> Fail').css("backgroundColor", "red");
             console.error(err);
         }).always(function() {
-            disabled = false;
+            $(window).off("beforeunload");
         });
 
     });
-
 
 });
