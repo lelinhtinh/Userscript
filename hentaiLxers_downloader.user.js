@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        hentaiLxers
+// @name        hentaiLxers downloader
 // @namespace   http://devs.forumvi.com
 // @description Download manga on hentaiLxers.info
 // @include     http://hentailxers.info/*
