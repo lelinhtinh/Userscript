@@ -19,7 +19,6 @@
 // @require     https://openuserjs.org/src/libs/baivong/jszip.min.js
 // @require     https://openuserjs.org/src/libs/baivong/FileSaver.min.js
 // @grant       GM_xmlhttpRequest
-// @grant       GM_log
 // ==/UserScript==
 
 jQuery(function($) {
