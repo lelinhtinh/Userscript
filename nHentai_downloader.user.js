@@ -3,7 +3,7 @@
 // @namespace   http://devs.forumvi.com
 // @description Download manga on nHentai.net
 // @include     http://nhentai.net/g/*
-// @version     1.1.0
+// @version     1.1.1
 // @author      Zzbaivong
 // @require     https://code.jquery.com/jquery-2.2.0.min.js
 // @require     https://openuserjs.org/src/libs/baivong/jszip.min.js
@@ -42,15 +42,15 @@ jQuery(function($) {
         total = 0,
         images = [],
         $download = $("#download"),
-        disabled = false;
+        doc = document,
+        tit = doc.title;
 
     window.URL = window.URL || window.webkitURL;
 
-    $download.on("click", function(e) {
+    $download.one("click", function(e) {
         e.preventDefault();
 
-        if (disabled) return;
-        disabled = true;
+        $download.attr("href", "javascript:;");
 
         $(window).on("beforeunload", function() {
             return "Progress is running...";
@@ -74,7 +74,7 @@ jQuery(function($) {
             var blob = zip.generate({
                     type: "blob"
                 }),
-                zipName = $("title").text().split(" » ")[0].replace(/\s/g, "_") + ".zip";
+                zipName = tit.split(" » ")[0].replace(/\s/g, "_") + ".zip";
 
             saveAs(blob, zipName);
 
@@ -86,7 +86,9 @@ jQuery(function($) {
             $download.html('<i class="fa fa-check"></i> Complete').css("backgroundColor", "green").attr({
                 href: window.URL.createObjectURL(prevZip),
                 download: zipName
-            }).off("click");
+            });
+
+            doc.title = "[⇓] " + tit;
 
         }).fail(function(err) {
             $download.html('<i class="fa fa-exclamation"></i> Fail').css("backgroundColor", "red");

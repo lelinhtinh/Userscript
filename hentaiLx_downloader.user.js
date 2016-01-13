@@ -13,7 +13,7 @@
 // @exclude     http://hentailx.com/dang-ky-thanh-vien.html
 // @exclude     http://hentailx.com/nhom-dich/*
 // @exclude     http://hentailx.com/Tacgia/*
-// @version     1.0.0
+// @version     1.0.1
 // @author      Zzbaivong
 // @require     https://code.jquery.com/jquery-2.2.0.min.js
 // @require     https://openuserjs.org/src/libs/baivong/jszip.min.js
@@ -51,11 +51,7 @@ jQuery(function($) {
         var $this = $(obj.download),
             zip = new JSZip(),
             deferreds = [],
-            images = [],
-            disabledKey = obj.readingChapter;
-
-        if (disabled.indexOf(disabledKey) !== -1) return;
-        disabled.push(disabledKey);
+            images = [];
 
         $this.text('Waiting...');
 
@@ -82,6 +78,8 @@ jQuery(function($) {
                 download: zipName
             }).off("click");
 
+            doc.title = "[⇓ " + (++complete) + "/" + progress + "] " + tit;
+
         }).fail(function(err) {
             $this.text('Fail').css("color", "red");
             console.error(err);
@@ -95,12 +93,13 @@ jQuery(function($) {
             href: "#download",
             text: "Download"
         }),
-        disabled = [],
-        n = 0,
-        m = 0,
         counter = [],
         current = 0,
-        alertUnload = 0;
+        alertUnload = 0,
+        complete = 0,
+        progress = 0,
+        doc = document,
+        tit = doc.title;
 
     window.URL = window.URL || window.webkitURL;
 
@@ -108,13 +107,12 @@ jQuery(function($) {
 
         $(".chapter-info").find("ul").append('<span class="glyphicon glyphicon-save"></span> ').append($download);
 
-        disabled[n] = false;
-
-        $download.on("click", function(e) {
+        $download.one("click", function(e) {
             e.preventDefault();
 
-            if (disabled[current]) return;
-            disabled[m] = true;
+            ++progress;
+
+            $download.attr("href", "javascript:;");
 
             $(window).on("beforeunload", function() {
                 return "Progress is running...";
@@ -124,7 +122,6 @@ jQuery(function($) {
             counter[current] = 1;
             getChaper({
                 download: this,
-                readingChapter: $(".reading-chapter").find("a").attr("href"),
                 contentChap: $("#content_chap"),
                 nameChap: $(".link_truyen").eq(0).text() + " " + $(".link_truyen").eq(1).text(),
                 current: current
@@ -142,20 +139,17 @@ jQuery(function($) {
 
         $(".chapter-download").each(function() {
 
-            disabled[n] = false;
-            ++n;
-
-            $(this).on("click", function(e) {
+            $(this).one("click", function(e) {
                 e.preventDefault();
 
-                if (disabled[current]) return;
-                disabled[m] = true;
-                ++m;
+                ++progress;
 
                 var _this = this,
                     $chapLink = $(_this).closest(".item_chap").find(".chap-link");
 
-                $(window).on("beforeunload", function() {
+                $(_this).attr("href", "javascript:;");
+
+                if (alertUnload <= 0) $(window).on("beforeunload", function() {
                     return "Progress is running...";
                 });
                 ++alertUnload;
@@ -170,7 +164,6 @@ jQuery(function($) {
                         counter[current] = 1;
                         getChaper({
                             download: _this,
-                            readingChapter: $chapLink.attr("href"),
                             contentChap: $data.filter("#content_chap"),
                             nameChap: $(".breadcrumb").find(".active").text() + " " + $chapLink.text(),
                             current: current
