@@ -3,7 +3,7 @@
 // @namespace   devs.forumvi.com
 // @description Viewsource for Firefox, like Chrome
 // @include     *
-// @version     2.1.0
+// @version     2.1.1
 // @author      Zzbaivong
 // @resource    light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/github-gist.min.css
 // @resource    dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/monokai-sublime.min.css
@@ -24,8 +24,20 @@
 
     var theme = "light", // light|dark
 
-        urlpage = window.top.location.href,
-        doc = document;
+        win = window,
+        urlpage = win.top.location.href,
+        doc = document,
+        content = doc.body;
+
+    function removeEvents(ele, attr) {
+        var events = "onafterprint onbeforeprint onbeforeunload onerror onhashchange onload onmessage onoffline ononline onpagehide onpageshow onpopstate onresize  onstorage onunload onblur onchange oncontextmenu onfocus oninput oninvalid onreset onsearch onselect onsubmit onkeydown onkeypress onkeyup onclick ondblclick ondrag ondragend ondragenter ondragleave ondragover ondragstart ondrop onmousedown onmousemove onmouseout onmouseover onmouseup onmousewheel onscroll onwheel oncopy oncut onpaste onerror onshow ontoggle".split(" "),
+            x;
+        for (x in events) {
+            var _event = events[x];
+            ele[_event] = null;
+            if (attr) ele.removeAttribute(_event);
+        }
+    }
 
     function viewsource() {
         GM_xmlhttpRequest({
@@ -33,15 +45,17 @@
             url: urlpage,
             onload: function(response) {
 
-                var txt = html_beautify(response.response),
-                    content = doc.body;
+                removeEvents(win);
+                removeEvents(doc);
+                removeEvents(content, true);
+
+                var txt = html_beautify(response.response);
 
                 doc.head.innerHTML = "";
                 content.innerHTML = "";
                 content.removeAttribute("id");
                 content.removeAttribute("class");
                 content.removeAttribute("style");
-                content.removeAttribute("onload");
                 doc.title = "view-source:" + urlpage;
 
                 GM_addStyle(GM_getResourceText(theme) + "html,body,pre{margin:0;padding:0}.hljs{white-space:pre;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:#d2d2d2;text-align:right;width:3.5em;left:-.5em;border-right:1px solid rgba(221, 221, 221, 0.36);padding-right:.5em}#scroll-x{position:fixed;right:0;top:0;width:120px;cursor:w-resize;z-index:999;background:transparent;bottom:0}");
@@ -89,7 +103,7 @@
     GM_registerMenuCommand("View source", viewsource, "m");
 
     if (doc.contentType === "text/html" && doc.URL === urlpage) {
-        window.onkeydown = function(e) {
+        win.onkeydown = function(e) {
 
             // Ctrl + M
             if (e.which == 77 && e.ctrlKey) {
