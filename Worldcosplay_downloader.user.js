@@ -1,7 +1,7 @@
-// ==UserScript==
+﻿// ==UserScript==
 // @name         Worldcosplay download
 // @namespace    http://devs.forumvi.com/
-// @version      1.0.1
+// @version      1.1.0
 // @description  Download photo(s) on worldcosplay.net
 // @author       Zzbaivong
 // @icon         http://worldcosplay.net/assets/logo-94d9f272d8eaf6faf23afb3513259e3e.png
@@ -12,7 +12,7 @@
 // @match        http://worldcosplay.net/search/photos?*
 // @require      https://code.jquery.com/jquery-2.2.0.min.js
 // @require      https://openuserjs.org/src/libs/baivong/FileSaver.min.js
-// @require      https://openuserjs.org/src/libs/baivong/waitForKeyElements.min.js
+// @require      https://gist.githubusercontent.com/raw/2625891/waitForKeyElements.js
 // @run-at       document-end
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
@@ -59,7 +59,7 @@
     } else {
 
         var addBtn = function() {
-            $(".photo_img", "#content").not(".added-download-btn").each(function() {
+            $(".preview").not(".added-download-btn").each(function() {
                 var $this = $(this),
                     $btn = $("<a>", {
                         href: "#download",
@@ -69,15 +69,15 @@
                 $btn.on("click", function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    downloadPhoto(this, $this.attr("data-src").replace("sq300/", ""));
+                    downloadPhoto(this, $this.find('.photo_img').css('backgroundImage').slice(5, -2).replace("sq300/", ""));
                 });
-                $btn.insertAfter($this.parent());
+                $this.find('.options').append($btn);
                 $this.addClass("added-download-btn");
             });
         };
         addBtn();
 
-        waitForKeyElements(".photo_thumb", addBtn);
+        waitForKeyElements(".preview", addBtn);
 
     }
 

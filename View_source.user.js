@@ -3,7 +3,7 @@
 // @namespace   devs.forumvi.com
 // @description Viewsource for Firefox, like Chrome
 // @include     *
-// @version     2.1.1
+// @version     2.1.2
 // @author      Zzbaivong
 // @resource    light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/github-gist.min.css
 // @resource    dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/monokai-sublime.min.css
@@ -47,6 +47,7 @@
 
                 removeEvents(win);
                 removeEvents(doc);
+                removeEvents(doc.documentElement, true);
                 removeEvents(content, true);
 
                 var txt = html_beautify(response.response);

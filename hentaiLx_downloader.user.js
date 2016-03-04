@@ -13,7 +13,7 @@
 // @exclude     http://hentailx.com/dang-ky-thanh-vien.html
 // @exclude     http://hentailx.com/nhom-dich/*
 // @exclude     http://hentailx.com/Tacgia/*
-// @version     1.0.1
+// @version     1.0.2
 // @author      Zzbaivong
 // @require     https://code.jquery.com/jquery-2.2.0.min.js
 // @require     https://openuserjs.org/src/libs/baivong/jszip.min.js
@@ -131,7 +131,7 @@ jQuery(function($) {
 
         $(".chapter-name-label").attr("class", "chapter-name-label col-xs-6 col-sm-6 col-md-6");
         $(".chap-link").attr("class", "chap-link col-xs-6 col-sm-6 col-md-6");
-        $(".list-group-item").eq(3).append('<div class="col-xs-3 col-sm-3 col-md-3 text-right chapter-view-download">Download</div>');
+        $(".list-group-item").eq(2).append('<div class="col-xs-3 col-sm-3 col-md-3 text-right chapter-view-download">Download</div>');
         $(".item_chap:not(:last)").append($("<span>", {
             "class": "col-xs-3 col-sm-3 col-md-3 text-right chapter-view-download"
         }).append($download));
