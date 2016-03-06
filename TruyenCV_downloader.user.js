@@ -33,7 +33,7 @@
 
         if (count > max) {
 
-            txt = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><h1><font color="red">' + $('h1').text() + '</font></h1><h3><font color="blue">' + $('#poster p:eq(3)').text() + '</font></h3><h3><font color="green">' + $('#poster p:eq(4)').text() + '</font></h3><h3>Chương từ ' + begin + ' đến ' + end + '</h3><br><br><br><br><br>' + txt + '<p><br><br><br><br><br>-- Hết --</p><br><br><br><br><br><p>Truyện được tải từ: TruyenCV - http://truyencv.com</p><p>Scipt được viết bởi: Zzbaivong - http://devs.forumvi.com</p></body></html>';
+            txt = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><h1><font color="red">' + $('h1').text() + '</font></h1><h3><font color="blue">' + $('#poster p:eq(3)').text() + '</font></h3><h3><font color="green">' + $('#poster p:eq(4)').text() + '</font></h3><h3>Chương từ ' + begin + ' đến ' + end + '</h3><br><br><br><br><br>' + txt + '<p><br><br><br><br><br>-- Hết --</p><br><br><br><br><br><p>Truyện được tải từ: TruyenCV - http://truyencv.com</p><p>Userscript được viết bởi: Zzbaivong - http://devs.forumvi.com</p></body></html>';
 
             blob = new Blob([txt], {
                 type: 'text/html'
