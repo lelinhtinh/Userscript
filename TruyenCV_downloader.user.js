@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
-// @version      1.0.0
+// @version      1.1.0
 // @description  Tải truyện từ truyencv.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
 // @author       Zzbaivong
 // @icon         http://truyencv.com/templates/truyencv/images/logo.png
@@ -13,22 +13,27 @@
 // ==/UserScript==
 
 (function ($, window, document, undefined) {
+
     'use strict';
 
     window.URL = window.URL || window.webkitURL;
 
-    function getChapter() {
+    function downloadFail() {
+        console.log('%c' + url, 'color:red;');
+        $download.text('Resume...').css('background', 'red');
+        disableClick = false;
+    }
 
-        ++count;
+    function getChapter() {
 
         var path = location.pathname,
             url = path + 'chuong-' + count,
-            fileName = path.slice(1, -1) + '.html',
+            fileName = path.slice(1, -1) + '_' + begin + '-' + end + '.html ',
             blob;
 
         if (count > max) {
 
-            txt = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>' + txt + '<p><br><br><br><br><br>-- Hết --</p><br><br><br><br><br><p>Truyện được tải từ: TruyenCV - http://truyencv.com</p><p>Scipt được viết bởi: Zzbaivong - http://devs.forumvi.com</p></body></html>';
+            txt = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><h1><font color="red">' + $('h1').text() + '</font></h1><h3><font color="blue">' + $('#poster p:eq(3)').text() + '</font></h3><h3><font color="green">' + $('#poster p:eq(4)').text() + '</font></h3><h3>Chương từ ' + begin + ' đến ' + end + '</h3><br><br><br><br><br>' + txt + '<p><br><br><br><br><br>-- Hết --</p><br><br><br><br><br><p>Truyện được tải từ: TruyenCV - http://truyencv.com</p><p>Scipt được viết bởi: Zzbaivong - http://devs.forumvi.com</p></body></html>';
 
             blob = new Blob([txt], {
                 type: 'text/html'
@@ -39,7 +44,7 @@
             $download.attr({
                 href: window.URL.createObjectURL(blob),
                 download: fileName
-            }).text('Download Finished!').off('click');
+            }).text('Download Finished!').css('background', 'green').off('click');
 
             $(window).off("beforeunload");
 
@@ -53,23 +58,25 @@
                 onload: function (response) {
 
                     var $data = $(response.response),
+                        title = $data.find('h2.text-muted').html(),
                         $chapter = $data.find('.chapter');
 
                     if ($chapter.length) {
                         console.log('%c' + url, 'color:green;');
                         $download.text(count + '/' + max);
+                        ++count;
                     } else {
-                        console.log('%c' + url, 'color:red;');
+                        downloadFail();
                     }
 
                     $chapter.find('font, p:last').remove();
-                    txt += '<h2 class="title">' + $data.find('h2.text-muted').html() + '</h2>' + $chapter.html();
+                    txt += '<h2 class="title">' + title + '</h2>' + $chapter.html();
 
                     getChapter();
 
                 },
                 onerror: function (err) {
-                    console.log('%c' + url, 'color:red;');
+                    downloadFail();
                     console.error(err);
                 }
             });
@@ -80,18 +87,54 @@
 
 
     var $download = $('[href="#dsc"]'),
-        count = 0,
+        count = 1,
         max = parseInt($('.listchapter').eq($('.listchapter').length - 2).find('.latestchaper').eq(0).find('a').attr('href').match(/chuong-(\d+)/)[1], 10),
-        txt = '';
+        begin,
+        end,
+        txt = '',
+        enablePrompt = true,
+        disableClick = false;
 
-    $download.text('Download').on('click', function (e) {
+    $download.text('Download').css('background', 'orange').on('click', function (e) {
         e.preventDefault();
 
-        $(window).on("beforeunload", function () {
-            return "Truyện đang được tải xuống...";
-        });
+        if (disableClick) {
+            return;
+        }
+
+        if (enablePrompt) {
+
+            begin = prompt("Chọn Chương bắt đầu tải", count);
+            end = prompt("Chọn Chương kết thúc tải", max);
+
+            if (begin !== null && /^\d+$/.test(begin)) {
+                begin = parseInt(begin, 10);
+                if (begin < max) {
+                    count = begin;
+                }
+            } else {
+                begin = count;
+            }
+
+            if (end !== null && /^\d+$/.test(end)) {
+                end = parseInt(end, 10);
+                if (end > count) {
+                    max = end;
+                }
+            } else {
+                end = max;
+            }
+
+            $(window).on("beforeunload", function () {
+                return "Truyện đang được tải xuống...";
+            });
+
+            enablePrompt = false;
+        }
 
         getChapter();
+
+        disableClick = true;
     });
 
 })(jQuery, window, document);
