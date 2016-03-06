@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name         TruyenCV downloader
+// @name         TruyenYY downloader
 // @namespace    http://devs.forumvi.com/
-// @version      1.1.1
-// @description  Tải truyện từ truyencv.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
+// @version      1.1.0
+// @description  Tải truyện từ truyenyy.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
 // @author       Zzbaivong
-// @icon         http://truyencv.com/templates/truyencv/images/logo.png
-// @match        http://truyencv.com/*/
+// @icon         http://truyenyy.com/static/img/truyenyy-logo.png
+// @match        http://truyenyy.com/truyen/*
 // @require      http://code.jquery.com/jquery-2.2.1.min.js
 // @require      http://openuserjs.org/src/libs/baivong/FileSaver.min.js
 // @run-at       document-end
@@ -21,7 +21,7 @@
     function downloadFail(url) {
 
         console.log('%c' + url, 'color:red;');
-        $download.text('Resume...').css('background', 'red');
+        $download.html('<i class="icon-repeat icon-white"></i> Resume...').css('background', 'red');
         disableClick = false;
 
         setTimeout(function() {
@@ -33,13 +33,13 @@
     function getChapter() {
 
         var path = location.pathname,
-            url = path + 'chuong-' + count,
+            url = path.replace('/truyen/', '/doc-truyen/') + 'chuong-' + count,
             fileName = path.slice(1, -1) + '_' + begin + '-' + end + '.html',
             blob;
 
         if (count > max) {
 
-            txt = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><h1><font color="red">' + $('h1').text() + '</font></h1><h3><font color="blue">' + $('#poster p:eq(3)').text() + '</font></h3><h3><font color="green">' + $('#poster p:eq(4)').text() + '</font></h3><h3>Chương từ ' + begin + ' đến ' + end + '</h3><br><br><br><br><br>' + txt + '<p><br><br><br><br><br>-- Hết --</p><br><br><br><br><br><p>Truyện được tải từ: TruyenCV - http://truyencv.com</p><p>Userscript được viết bởi: Zzbaivong - http://devs.forumvi.com</p></body></html>';
+            txt = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><h1><font color="red">' + $('h1').text() + '</font></h1><h3><font color="blue">' + $('.lww p:eq(0)').text() + '</font></h3><h3><font color="green">' + $('.lww p:eq(1)').text() + '</font></h3><h3>Chương từ ' + begin + ' đến ' + end + '</h3><br><br><br><br><br>' + txt + '<p><br><br><br><br><br>-- Hết --</p><br><br><br><br><br><p>Truyện được tải từ: TruyenYY - http://truyenyy.com</p><p>Userscript được viết bởi: Zzbaivong - http://devs.forumvi.com</p></body></html>';
 
             blob = new Blob([txt], {
                 type: 'text/html'
@@ -50,7 +50,7 @@
             $download.attr({
                 href: window.URL.createObjectURL(blob),
                 download: fileName
-            }).text('Download Finished!').css('background', 'green').off('click');
+            }).html('<i class="icon-ok icon-white"></i> Download Finished!').css('background', 'green').off('click');
 
             $(window).off("beforeunload");
 
@@ -64,19 +64,19 @@
                 onload: function (response) {
 
                     var $data = $(response.response),
-                        title = $data.find('h2.text-muted').html(),
-                        $chapter = $data.find('.chapter');
+                        title = $data.find('h1').text(),
+                        $chapter = $data.find('#id_noidung_chuong');
 
-                    if ($chapter.length) {
+                    if ($chapter.length && title !== 'Chương thứ yyy: Ra đảo') {
 
                         console.log('%c' + url, 'color:green;');
-                        $download.text(count + '/' + max).css('background', 'orange');
+                        $download.html('<i class="icon-refresh icon-white"></i> ' + count + '/' + max).css('background', 'orange');
 
-                        $chapter.find('font, p:last').remove();
+                        $chapter.find('span').remove();
                         txt += '<h2 class="title">' + title + '</h2>' + $chapter.html();
 
                         ++count;
-                        getChapter(url);
+                        getChapter();
 
                     } else {
                         downloadFail(url);
@@ -84,7 +84,7 @@
 
                 },
                 onerror: function (err) {
-                    downloadFail();
+                    downloadFail(url);
                     console.error(err);
                 }
             });
@@ -94,16 +94,16 @@
     }
 
 
-    var $download = $('[href="#dsc"]'),
+    var $download = $('[href="#dschuong"]'),
         count = 1,
-        max = parseInt($('.listchapter').eq($('.listchapter').length - 2).find('.latestchaper').eq(0).find('a').attr('href').match(/chuong-(\d+)/)[1], 10),
+        max = parseInt($('.ip5').first().find('a').attr('href').match(/\/chuong-(\d+)\/$/)[1], 10),
         begin,
         end,
         txt = '',
         enablePrompt = true,
         disableClick = false;
 
-    $download.text('Download').css('background', 'orange').on('click', function (e) {
+    $download.html('<i class="icon-download icon-white"></i> Download').css('background', 'orange').on('click', function (e) {
         e.preventDefault();
 
         if (disableClick) {
