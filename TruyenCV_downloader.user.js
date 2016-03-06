@@ -28,7 +28,7 @@
 
         var path = location.pathname,
             url = path + 'chuong-' + count,
-            fileName = path.slice(1, -1) + '_' + begin + '-' + end + '.html ',
+            fileName = path.slice(1, -1) + '_' + begin + '-' + end + '.html',
             blob;
 
         if (count > max) {
