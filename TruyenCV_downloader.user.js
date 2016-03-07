@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
-// @version      1.1.1
+// @version      1.1.2
 // @description  Tải truyện từ truyencv.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
 // @author       Zzbaivong
 // @icon         http://truyencv.com/templates/truyencv/images/logo.png
@@ -16,76 +16,105 @@
 
     'use strict';
 
-    window.URL = window.URL || window.webkitURL;
-
     function downloadFail(url) {
 
-        console.log('%c' + url, 'color:red;');
+        console.log('%cError: ' + url, 'color:red;');
         $download.text('Resume...').css('background', 'red');
         disableClick = false;
 
-        setTimeout(function() {
-            $download.trigger('click');
-        }, 120000);
+    }
+
+    function downloadComplete() {
+
+        var skipSize = skip.length,
+            blob,
+            fileName = path.slice(1, -1) + '_' + begin + '-' + end;
+
+        txt = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><h1><font color="red">' + $('h1').text() + '</font></h1><h3><font color="blue">' + $('#poster p:eq(3)').text() + '</font></h3><h3><font color="green">' + $('#poster p:eq(4)').text() + '</font></h3><h3><font color="gray">Tổng số chương: ' + (end - begin - skipSize) + '</font></h3><br><br><br><br><br>' + txt + '<p><br><br><br><br><br>-- Hết --</p><br><br><br><br><br>' + credits + '</body></html>';
+
+        blob = new Blob([txt], {
+            type: 'text/html'
+        });
+
+        saveAs(blob, fileName);
+
+        $download.attr({
+            href: window.URL.createObjectURL(blob),
+            download: fileName
+        }).text('Download Finished!').css('background', 'green').off('click');
+
+        if (skipSize) {
+            console.log('%cLinks skipped: ' + skip.join(','), 'color:orange;');
+        }
+
+        console.log('%cDownload Finished!', 'color:blue;');
 
     }
 
     function getChapter() {
 
-        var path = location.pathname,
-            url = path + 'chuong-' + count,
-            fileName = path.slice(1, -1) + '_' + begin + '-' + end + '.html',
-            blob;
-
         if (count > max) {
 
-            txt = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><h1><font color="red">' + $('h1').text() + '</font></h1><h3><font color="blue">' + $('#poster p:eq(3)').text() + '</font></h3><h3><font color="green">' + $('#poster p:eq(4)').text() + '</font></h3><h3>Chương từ ' + begin + ' đến ' + end + '</h3><br><br><br><br><br>' + txt + '<p><br><br><br><br><br>-- Hết --</p><br><br><br><br><br><p>Truyện được tải từ: TruyenCV - http://truyencv.com</p><p>Userscript được viết bởi: Zzbaivong - http://devs.forumvi.com</p></body></html>';
+            if (complete) {
+                downloadComplete();
+            } else {
 
-            blob = new Blob([txt], {
-                type: 'text/html'
-            });
+                enablePrompt = true;
+                disableClick = false;
+                $download.text('Nothing!').css('background', 'red');
+                console.log('%cNothing!', 'color:red;');
 
-            saveAs(blob, fileName);
+            }
 
-            $download.attr({
-                href: window.URL.createObjectURL(blob),
-                download: fileName
-            }).text('Download Finished!').css('background', 'green').off('click');
-
-            $(window).off("beforeunload");
-
-            console.log('%cDownload Finished!', 'color:blue;');
+            $(window).off('beforeunload');
 
         } else {
+
+            url = path + 'chuong-' + count;
 
             GM_xmlhttpRequest({
                 method: 'GET',
                 url: url,
                 onload: function (response) {
 
-                    var $data = $(response.response),
+                    var $data = $(response.responseText),
                         title = $data.find('h2.text-muted').html(),
                         $chapter = $data.find('.chapter');
 
                     if ($chapter.length) {
 
-                        console.log('%c' + url, 'color:green;');
                         $download.text(count + '/' + max).css('background', 'orange');
 
-                        $chapter.find('font, p:last').remove();
-                        txt += '<h2 class="title">' + title + '</h2>' + $chapter.html();
+                        if (response.finalUrl.slice(-8) === '/chuong/') {
 
+                            $download.css('background', 'black');
+                            console.log('%cSkip: ' + url, 'color:orange;');
+                            skip.push(count);
+                            ++count;
+                            getChapter();
+                            return;
+
+                        }
+
+                        console.log('%cComplete: ' + url, 'color:green;');
                         ++count;
-                        getChapter(url);
+                        ++complete;
 
                     } else {
                         downloadFail(url);
                     }
 
+                    $chapter.find('font, p:last').remove();
+                    txt += '<h2 class="title">' + title + '</h2>' + $chapter.html();
+
+                    getChapter();
+
                 },
                 onerror: function (err) {
-                    downloadFail();
+
+                    downloadFail(url);
                     console.error(err);
+
                 }
             });
 
@@ -99,11 +128,19 @@
         max = parseInt($('.listchapter').eq($('.listchapter').length - 2).find('.latestchaper').eq(0).find('a').attr('href').match(/chuong-(\d+)/)[1], 10),
         begin,
         end,
+        skip = [],
         txt = '',
         enablePrompt = true,
-        disableClick = false;
+        disableClick = false,
+        complete = 0,
+        path = location.pathname,
+        url,
+        credits = '<p>Truyện được tải từ: TruyenCV - http://truyencv.com</p><p>Userscript được viết bởi: Zzbaivong - http://devs.forumvi.com</p>';
+
+    window.URL = window.URL || window.webkitURL;
 
     $download.text('Download').css('background', 'orange').on('click', function (e) {
+
         e.preventDefault();
 
         if (disableClick) {
@@ -112,14 +149,12 @@
 
         if (enablePrompt) {
 
-            begin = prompt("Chọn Chương bắt đầu tải", count);
-            end = prompt("Chọn Chương kết thúc tải", max);
+            begin = prompt('Chọn Chương bắt đầu tải', count);
+            end = prompt('Chọn Chương kết thúc tải', max);
 
             if (begin !== null && /^\d+$/.test(begin)) {
                 begin = parseInt(begin, 10);
-                if (begin < max) {
-                    count = begin;
-                }
+                count = begin;
             } else {
                 begin = count;
             }
@@ -128,21 +163,26 @@
                 end = parseInt(end, 10);
                 if (end > count) {
                     max = end;
+                } else {
+                    max = count;
+                    end = count;
                 }
             } else {
                 end = max;
             }
 
-            $(window).on("beforeunload", function () {
-                return "Truyện đang được tải xuống...";
+            $(window).on('beforeunload', function () {
+                return 'Truyện đang được tải xuống...';
             });
 
             enablePrompt = false;
+
         }
 
         getChapter();
 
         disableClick = true;
+
     });
 
 })(jQuery, window, document);
