@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
-// @version      1.1.2
+// @version      1.1.3
 // @description  Tải truyện từ truyencv.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
 // @author       Zzbaivong
 // @icon         http://truyencv.com/templates/truyencv/images/logo.png
@@ -30,7 +30,7 @@
             blob,
             fileName = path.slice(1, -1) + '_' + begin + '-' + end;
 
-        txt = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><h1><font color="red">' + $('h1').text() + '</font></h1><h3><font color="blue">' + $('#poster p:eq(3)').text() + '</font></h3><h3><font color="green">' + $('#poster p:eq(4)').text() + '</font></h3><h3><font color="gray">Tổng số chương: ' + (end - begin - skipSize) + '</font></h3><br><br><br><br><br>' + txt + '<p><br><br><br><br><br>-- Hết --</p><br><br><br><br><br>' + credits + '</body></html>';
+        txt = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><h1><font color="red">' + $('h1').text() + '</font></h1><h3><font color="blue">' + $('#poster p:eq(3)').text() + '</font></h3><h3><font color="green">' + $('#poster p:eq(4)').text() + '</font></h3><h3><font color="gray">Tổng số chương: ' + (end - begin - skipSize + 1) + '</font></h3><br><br>' + credits + '<br><br><br>' + txt + '</body></html>';
 
         blob = new Blob([txt], {
             type: 'text/html'
