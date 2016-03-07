@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         TruyenYY downloader
 // @namespace    http://devs.forumvi.com/
-// @version      1.1.0
+// @version      1.1.1
 // @description  Tải truyện từ truyenyy.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
 // @author       Zzbaivong
-// @icon         http://truyenyy.com/static/img/truyenyy-logo.png
+// @icon         https://truyenyy.com/static/img/truyenyy-logo.png
 // @match        http://truyenyy.com/truyen/*
-// @require      http://code.jquery.com/jquery-2.2.1.min.js
-// @require      http://openuserjs.org/src/libs/baivong/FileSaver.min.js
+// @match        https://truyenyy.com/truyen/*
+// @require      https://code.jquery.com/jquery-2.2.1.min.js
+// @require      https://openuserjs.org/src/libs/baivong/FileSaver.min.js
 // @run-at       document-end
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
@@ -16,11 +17,9 @@
 
     'use strict';
 
-    window.URL = window.URL || window.webkitURL;
-
     function downloadFail(url) {
 
-        console.log('%c' + url, 'color:red;');
+        console.log('%cError: ' + url, 'color:red;');
         $download.html('<i class="icon-repeat icon-white"></i> Resume...').css('background', 'red');
         disableClick = false;
 
@@ -32,14 +31,12 @@
 
     function getChapter() {
 
-        var path = location.pathname,
-            url = path.replace('/truyen/', '/doc-truyen/') + 'chuong-' + count,
-            fileName = path.slice(1, -1) + '_' + begin + '-' + end + '.html',
+        var fileName = path.slice(1, -1) + '_' + begin + '-' + end,
             blob;
 
         if (count > max) {
 
-            txt = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><h1><font color="red">' + $('h1').text() + '</font></h1><h3><font color="blue">' + $('.lww p:eq(0)').text() + '</font></h3><h3><font color="green">' + $('.lww p:eq(1)').text() + '</font></h3><h3>Chương từ ' + begin + ' đến ' + end + '</h3><br><br><br><br><br>' + txt + '<p><br><br><br><br><br>-- Hết --</p><br><br><br><br><br><p>Truyện được tải từ: TruyenYY - http://truyenyy.com</p><p>Userscript được viết bởi: Zzbaivong - http://devs.forumvi.com</p></body></html>';
+            txt = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><h1><font color="red">' + $('h1').text() + '</font></h1><h3><font color="blue">' + $('.lww p:eq(0)').text() + '</font></h3><h3><font color="green">' + $('.lww p:eq(1)').text() + '</font></h3><h3><font color="gray">Tổng số chương: ' + (end - begin) + '</font></h3><br><br><br><br><br>' + txt + '<p><br><br><br><br><br>-- Hết --</p><br><br><br><br><br>' + credits + '</body></html>';
 
             blob = new Blob([txt], {
                 type: 'text/html'
@@ -52,11 +49,13 @@
                 download: fileName
             }).html('<i class="icon-ok icon-white"></i> Download Finished!').css('background', 'green').off('click');
 
-            $(window).off("beforeunload");
+            $(window).off('beforeunload');
 
             console.log('%cDownload Finished!', 'color:blue;');
 
         } else {
+
+            url = path.replace('/truyen/', '/doc-truyen/') + 'chuong-' + count;
 
             GM_xmlhttpRequest({
                 method: 'GET',
@@ -69,7 +68,7 @@
 
                     if ($chapter.length && title !== 'Chương thứ yyy: Ra đảo') {
 
-                        console.log('%c' + url, 'color:green;');
+                        console.log('%cComplete: ' + url, 'color:green;');
                         $download.html('<i class="icon-refresh icon-white"></i> ' + count + '/' + max).css('background', 'orange');
 
                         $chapter.find('span').remove();
@@ -84,8 +83,10 @@
 
                 },
                 onerror: function (err) {
+
                     downloadFail(url);
                     console.error(err);
+
                 }
             });
 
@@ -101,9 +102,15 @@
         end,
         txt = '',
         enablePrompt = true,
-        disableClick = false;
+        disableClick = false,
+        path = location.pathname,
+        url,
+        credits = '<p>Truyện được tải từ: TruyenYY - http://truyenyy.com</p><p>Userscript được viết bởi: Zzbaivong - http://devs.forumvi.com</p>';
+
+    window.URL = window.URL || window.webkitURL;
 
     $download.html('<i class="icon-download icon-white"></i> Download').css('background', 'orange').on('click', function (e) {
+
         e.preventDefault();
 
         if (disableClick) {
@@ -112,14 +119,12 @@
 
         if (enablePrompt) {
 
-            begin = prompt("Chọn Chương bắt đầu tải", count);
-            end = prompt("Chọn Chương kết thúc tải", max);
+            begin = prompt('Chọn Chương bắt đầu tải', count);
+            end = prompt('Chọn Chương kết thúc tải', max);
 
             if (begin !== null && /^\d+$/.test(begin)) {
                 begin = parseInt(begin, 10);
-                if (begin < max) {
-                    count = begin;
-                }
+                count = begin;
             } else {
                 begin = count;
             }
@@ -128,21 +133,26 @@
                 end = parseInt(end, 10);
                 if (end > count) {
                     max = end;
+                } else {
+                    max = count;
+                    end = count;
                 }
             } else {
                 end = max;
             }
 
-            $(window).on("beforeunload", function () {
-                return "Truyện đang được tải xuống...";
+            $(window).on('beforeunload', function () {
+                return 'Truyện đang được tải xuống...';
             });
 
             enablePrompt = false;
+
         }
 
         getChapter();
 
         disableClick = true;
+
     });
 
 })(jQuery, window, document);
