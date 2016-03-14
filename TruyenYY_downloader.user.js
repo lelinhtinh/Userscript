@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TruyenYY downloader
 // @namespace    http://devs.forumvi.com/
-// @version      1.1.2
+// @version      1.1.3
 // @description  Tải truyện từ truyenyy.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
 // @author       Zzbaivong
 // @icon         https://truyenyy.com/static/img/truyenyy-logo.png
@@ -31,7 +31,7 @@
 
     function getChapter() {
 
-        var fileName = path.slice(1, -1) + '_' + begin + '-' + end,
+        var fileName = path.slice(1, -1) + '_' + begin + '-' + end + '.htm',
             blob;
 
         if (count > max) {
@@ -42,8 +42,6 @@
                 type: 'text/html'
             });
 
-            saveAs(blob, fileName);
-
             $download.attr({
                 href: window.URL.createObjectURL(blob),
                 download: fileName
@@ -52,6 +50,8 @@
             $(window).off('beforeunload');
 
             console.log('%cDownload Finished!', 'color:blue;');
+
+            saveAs(blob, fileName);
 
         } else {
 

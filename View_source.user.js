@@ -3,7 +3,7 @@
 // @namespace   devs.forumvi.com
 // @description Viewsource for Firefox, like Chrome
 // @include     *
-// @version     2.1.2
+// @version     2.1.3
 // @author      Zzbaivong
 // @resource    light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/github-gist.min.css
 // @resource    dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/monokai-sublime.min.css
@@ -20,9 +20,9 @@
 
 (function() {
 
-    "use strict";
+    'use strict';
 
-    var theme = "light", // light|dark
+    var theme = 'light', // light|dark
 
         win = window,
         urlpage = win.top.location.href,
@@ -30,18 +30,20 @@
         content = doc.body;
 
     function removeEvents(ele, attr) {
-        var events = "onafterprint onbeforeprint onbeforeunload onerror onhashchange onload onmessage onoffline ononline onpagehide onpageshow onpopstate onresize  onstorage onunload onblur onchange oncontextmenu onfocus oninput oninvalid onreset onsearch onselect onsubmit onkeydown onkeypress onkeyup onclick ondblclick ondrag ondragend ondragenter ondragleave ondragover ondragstart ondrop onmousedown onmousemove onmouseout onmouseover onmouseup onmousewheel onscroll onwheel oncopy oncut onpaste onerror onshow ontoggle".split(" "),
+        var events = 'onafterprint onbeforeprint onbeforeunload onerror onhashchange onload onmessage onoffline ononline onpagehide onpageshow onpopstate onresize  onstorage onunload onblur onchange oncontextmenu onfocus oninput oninvalid onreset onsearch onselect onsubmit onkeydown onkeypress onkeyup onclick ondblclick ondrag ondragend ondragenter ondragleave ondragover ondragstart ondrop onmousedown onmousemove onmouseout onmouseover onmouseup onmousewheel onscroll onwheel oncopy oncut onpaste onerror onshow ontoggle'.split(' '),
             x;
         for (x in events) {
             var _event = events[x];
             ele[_event] = null;
-            if (attr) ele.removeAttribute(_event);
+            if (attr) {
+                ele.removeAttribute(_event);
+            }
         }
     }
 
     function viewsource() {
         GM_xmlhttpRequest({
-            method: "GET",
+            method: 'GET',
             url: urlpage,
             onload: function(response) {
 
@@ -52,34 +54,34 @@
 
                 var txt = html_beautify(response.response);
 
-                doc.head.innerHTML = "";
-                content.innerHTML = "";
-                content.removeAttribute("id");
-                content.removeAttribute("class");
-                content.removeAttribute("style");
-                doc.title = "view-source:" + urlpage;
+                doc.head.innerHTML = '';
+                content.innerHTML = '';
+                content.removeAttribute('id');
+                content.removeAttribute('class');
+                content.removeAttribute('style');
+                doc.title = 'view-source:' + urlpage;
 
-                GM_addStyle(GM_getResourceText(theme) + "html,body,pre{margin:0;padding:0}.hljs{white-space:pre;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:#d2d2d2;text-align:right;width:3.5em;left:-.5em;border-right:1px solid rgba(221, 221, 221, 0.36);padding-right:.5em}#scroll-x{position:fixed;right:0;top:0;width:120px;cursor:w-resize;z-index:999;background:transparent;bottom:0}");
+                GM_addStyle(GM_getResourceText(theme) + 'html,body,pre{margin:0;padding:0}.hljs{word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:#d2d2d2;text-align:right;width:3.5em;left:-.5em;border-right:1px solid rgba(221, 221, 221, 0.36);padding-right:.5em}#scroll-x{position:fixed;right:0;top:0;width:120px;cursor:w-resize;z-index:999;background:transparent;bottom:0}');
 
-                var output = doc.createElement("PRE");
-                output.setAttribute("class", "xml");
+                var output = doc.createElement('PRE');
+                output.setAttribute('class', 'xml');
                 output.textContent = txt;
 
                 content.appendChild(output);
 
                 hljs.highlightBlock(output);
 
-                var lines = txt.split("\n"),
-                    l = "";
+                var lines = txt.split('\n'),
+                    l = '';
                 lines = lines ? lines.length : 0;
                 for (var i = 0; i < lines; i++) {
-                    l += (i + 1) + "\n";
+                    l += (i + 1) + '\n';
                 }
 
-                output.setAttribute("data-lines", l);
+                output.setAttribute('data-lines', l);
 
-                var node = doc.createElement("DIV");
-                node.id = "scroll-x";
+                var node = doc.createElement('DIV');
+                node.id = 'scroll-x';
                 content.appendChild(node);
 
                 node.onwheel = function(e) {
@@ -93,7 +95,7 @@
                     if (/\b(src|href\b)/.test(attrUrl[j].textContent)) {
                         var link = attrUrl[j].nextSibling.nextSibling;
                         var url = link.textContent.slice(1, -1);
-                        link.innerHTML = '"<a href="' + url + '" target="_blank">' + url + '</a>"';
+                        link.innerHTML = '<a href="' + url + '" target="_blank">' + url + '</a>';
                     }
                 }
 
@@ -101,13 +103,13 @@
         });
     }
 
-    GM_registerMenuCommand("View source", viewsource, "m");
+    GM_registerMenuCommand('View source', viewsource, 'm');
 
-    if (doc.contentType === "text/html" && doc.URL === urlpage) {
+    if (doc.contentType === 'text/html' && doc.URL === urlpage) {
         win.onkeydown = function(e) {
 
             // Ctrl + M
-            if (e.which == 77 && e.ctrlKey) {
+            if (e.which === 77 && e.ctrlKey) {
                 e.preventDefault();
 
                 viewsource();

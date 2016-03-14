@@ -1,7 +1,7 @@
-﻿// ==UserScript==
+// ==UserScript==
 // @name         Worldcosplay download
 // @namespace    http://devs.forumvi.com/
-// @version      1.1.0
+// @version      1.1.1
 // @description  Download photo(s) on worldcosplay.net
 // @author       Zzbaivong
 // @icon         http://worldcosplay.net/assets/logo-94d9f272d8eaf6faf23afb3513259e3e.png
@@ -18,23 +18,23 @@
 // ==/UserScript==
 
 (function($, window, document, undefined) {
-    "use strict";
+    'use strict';
 
     window.URL = window.URL || window.webkitURL;
 
     function downloadPhoto(el, url) {
-        var photoName = url.replace(/.*\//g, "");
+        var photoName = url.replace(/.*\//g, '');
         GM_xmlhttpRequest({
-            method: "GET",
+            method: 'GET',
             url: url,
-            responseType: "blob",
+            responseType: 'blob',
             onload: function(response) {
                 var blob = response.response;
-                saveAs(blob, photoName);
                 $(el).attr({
                     href: window.URL.createObjectURL(blob),
                     download: photoName
-                }).removeAttr("onclick");
+                }).removeAttr('onclick');
+                saveAs(blob, photoName);
             },
             onerror: function(err) {
                 console.error(err);
@@ -42,42 +42,42 @@
         });
     }
 
-    if (!location.pathname.indexOf("/photo/")) {
+    if (!location.pathname.indexOf('/photo/')) {
 
-        var $btn = $("<a>", {
-            href: "#download",
-            "class": "download-this-photo",
+        var $btn = $('<a>', {
+            href: '#download',
+            'class': 'download-this-photo',
             html: '<div class="side_buttons" style="right: 220px;"><div class="like-this-photo button fave fa fa-download"><div class="effect-ripple"></div></div></div>'
         });
-        $btn.on("click", function(e) {
+        $btn.on('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            downloadPhoto(this, $("#photoContainer").find(".img").attr("src"));
+            downloadPhoto(this, $('#photoContainer').find('.img').attr('src'));
         });
-        $btn.insertAfter(".side_buttons");
+        $btn.insertAfter('.side_buttons');
 
     } else {
 
         var addBtn = function() {
-            $(".preview").not(".added-download-btn").each(function() {
+            $('.preview').not('.added-download-btn').each(function() {
                 var $this = $(this),
-                    $btn = $("<a>", {
-                        href: "#download",
-                        "class": "download-this-photo",
+                    $btn = $('<a>', {
+                        href: '#download',
+                        'class': 'download-this-photo',
                         html: '<div class="item likes" style="top: 50px;"><span class="like-this-photo"><i class="fa fa-download"></i><span class="effect-ripple"></span></span></div>'
                     });
-                $btn.on("click", function(e) {
+                $btn.on('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    downloadPhoto(this, $this.find('.photo_img').css('backgroundImage').slice(5, -2).replace("sq300/", ""));
+                    downloadPhoto(this, $this.find('.photo_img').css('backgroundImage').slice(5, -2).replace('sq300/', ''));
                 });
                 $this.find('.options').append($btn);
-                $this.addClass("added-download-btn");
+                $this.addClass('added-download-btn');
             });
         };
         addBtn();
 
-        waitForKeyElements(".preview", addBtn);
+        waitForKeyElements('.preview', addBtn);
 
     }
 

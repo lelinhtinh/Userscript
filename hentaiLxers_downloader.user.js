@@ -10,7 +10,7 @@
 // @exclude     http://hentailxers.info/tag/*
 // @exclude     http://hentailxers.info/tac-gia/*
 // @exclude     http://hentailxers.info/nguoi-dich/*
-// @version     1.0.1
+// @version     1.0.2
 // @author      Zzbaivong
 // @require     https://code.jquery.com/jquery-2.2.0.min.js
 // @require     https://openuserjs.org/src/libs/baivong/jszip.min.js
@@ -19,15 +19,15 @@
 // ==/UserScript==
 
 jQuery(function($) {
-    "use strict";
+    'use strict';
 
     function deferredAddZip(url, filename, current, total, zip, $download) {
         var deferred = $.Deferred();
 
         GM_xmlhttpRequest({
-            method: "GET",
+            method: 'GET',
             url: url,
-            responseType: "arraybuffer",
+            responseType: 'arraybuffer',
             onload: function(response) {
                 zip.file(filename, response.response);
                 $download.text(counter[current] + '/' + total);
@@ -51,43 +51,45 @@ jQuery(function($) {
 
         $this.text('Waiting...');
 
-        obj.contentChap.find("img").each(function(i, v) {
-            images[i] = this.src.replace(/^https:\/\//, "http://");
+        obj.contentChap.find('img').each(function(i, v) {
+            images[i] = this.src.replace(/^https:\/\//, 'http://');
         });
 
         $.each(images, function(i, v) {
-            var filename = v.replace(/.*\//g, "");
+            var filename = v.replace(/.*\//g, '');
 
             deferreds.push(deferredAddZip(images[i], filename, obj.current, images.length, zip, $this));
         });
 
         $.when.apply($, deferreds).done(function() {
             var blob = zip.generate({
-                    type: "blob"
+                    type: 'blob'
                 }),
-                zipName = obj.nameChap.replace(/\s/g, "_") + ".zip";
+                zipName = obj.nameChap.replace(/\s/g, '_') + '.zip';
+
+            $this.text('Complete').css('color', 'green').attr({
+                href: window.URL.createObjectURL(blob),
+                download: zipName
+            }).off('click');
 
             saveAs(blob, zipName);
 
-            $this.text('Complete').css("color", "green").attr({
-                href: window.URL.createObjectURL(blob),
-                download: zipName
-            }).off("click");
-
-            doc.title = "[⇓ " + (++complete) + "/" + progress + "] " + tit;
+            doc.title = '[⇓ ' + (++complete) + '/' + progress + '] ' + tit;
 
         }).fail(function(err) {
-            $this.text('Fail').css("color", "red");
+            $this.text('Fail').css('color', 'red');
             console.error(err);
         }).always(function() {
-            if (--alertUnload <= 0) $(window).off("beforeunload");
+            if (--alertUnload <= 0) {
+                $(window).off('beforeunload');
+            }
         });
     }
 
-    var $download = $("<a>", {
-            "class": "chapter-download",
-            href: "#download",
-            text: "Download"
+    var $download = $('<a>', {
+            'class': 'chapter-download',
+            href: '#download',
+            text: 'Download'
         }),
         counter = [],
         current = 0,
@@ -99,72 +101,76 @@ jQuery(function($) {
 
     window.URL = window.URL || window.webkitURL;
 
-    if (!location.pathname.indexOf("/chap/")) {
+    if (!location.pathname.indexOf('/chap/')) {
 
-        $("h2.title").after($("<p>", {
-            "class": "chapter-view-download"
+        $('h2.title').after($('<p>', {
+            'class': 'chapter-view-download'
         }).append($download));
 
-        $download.one("click", function(e) {
+        $download.one('click', function(e) {
             e.preventDefault();
 
             ++progress;
 
-            $download.attr("href", "javascript:;");
+            $download.attr('href', '#download');
 
-            $(window).on("beforeunload", function() {
-                return "Progress is running...";
+            $(window).on('beforeunload', function() {
+                return 'Progress is running...';
             });
             ++alertUnload;
 
             counter[current] = 1;
             getChaper({
                 download: this,
-                contentChap: $("#content"),
-                nameChap: $("h1.title").text() + " " + $("h2.title").text(),
+                contentChap: $('#content'),
+                nameChap: $('h1.title').text() + ' ' + $('h2.title').text(),
                 current: current
             });
         });
 
     } else {
 
-    	var $table = $(".table-striped");
-        if (!$table.length) return;
+        var $table = $('.table-striped');
+        if (!$table.length) {
+            return;
+        }
 
-        $table.find("tr:first-child").append('<th>Download</th>');
-        $table.find("tr:not(:first-child)").append($("<td>", {
-            "class": "chapter-view-download"
+        $table.find('tr:first-child').append('<th>Download</th>');
+        $table.find('tr:not(:first-child)').append($('<td>', {
+            'class': 'chapter-view-download'
         }).append($download));
 
-        $(".chapter-download").each(function() {
+        $('.chapter-download').each(function() {
 
-            $(this).one("click", function(e) {
+            $(this).one('click', function(e) {
                 e.preventDefault();
 
                 ++progress;
 
                 var _this = this,
-                    $chapLink = $(_this).closest("tr").find("td:eq(1)").find("a");
+                    $chapLink = $(_this).closest('tr').find('td:eq(1)').find('a');
 
-                $(_this).attr("href", "javascript:;");
+                $(_this).attr('href', '#download');
 
-                if (alertUnload <= 0) $(window).on("beforeunload", function() {
-                    return "Progress is running...";
-                });
+                if (alertUnload <= 0) {
+                    $(window).on('beforeunload', function() {
+                        return 'Progress is running...';
+                    });
+                }
                 ++alertUnload;
 
                 GM_xmlhttpRequest({
-                    method: "GET",
-                    url: $chapLink.attr("href"),
-                    responseType: "text",
+                    method: 'GET',
+                    url: $chapLink.attr('href'),
+                    responseType: 'text',
                     onload: function(response) {
                         var $data = $(response.responseText);
 
                         counter[current] = 1;
                         getChaper({
                             download: _this,
-                            contentChap: $data.find("#content"),
-                            nameChap: $("h1.title").text() + " " + $chapLink.text(),
+                            contentChap: $data.find('#content'),
+                            nameChap: $('h1.title').text() + ' ' + $chapLink.text(),
                             current: current
                         });
                         ++current;
