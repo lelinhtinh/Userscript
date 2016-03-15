@@ -2,10 +2,10 @@
 // @name        viewsource
 // @namespace   devs.forumvi.com
 // @description Viewsource for Firefox, like Chrome
-// @version     2.3.1
+// @version     2.3.2
 // @author      Zzbaivong
-// @resource    light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/github-gist.min.css
-// @resource    dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/monokai-sublime.min.css
+// @resource    light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/github-gist.min.css
+// @resource    dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/monokai-sublime.min.css
 // @require     https://openuserjs.org/src/libs/baivong/beautify-html.js
 // @require     https://openuserjs.org/src/libs/baivong/beautify-js.min.js
 // @require     https://openuserjs.org/src/libs/baivong/beautify-css.min.js
