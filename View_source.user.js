@@ -2,7 +2,7 @@
 // @name        viewsource
 // @namespace   devs.forumvi.com
 // @description Viewsource for Firefox, like Chrome
-// @version     2.3.0
+// @version     2.3.1
 // @author      Zzbaivong
 // @resource    light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/github-gist.min.css
 // @resource    dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/monokai-sublime.min.css
@@ -26,15 +26,16 @@
         win = window,
         urlpage = win.top.location.href,
         doc = document,
+        wrapcontent = doc.documentElement,
         content = doc.body;
 
-    function scrollByDragging(container) {
+    function scrollByDragging(container, disableH, disableV) {
 
         function mouseUp(e) {
             if (e.which !== 3) return;
 
-            window.removeEventListener('mousemove', mouseMove, 0);
-            container.style.cursor = 'auto';
+            window.removeEventListener('mousemove', mouseMove, true);
+            container.style.cursor = 'default';
         }
 
         function mouseDown(e) {
@@ -45,13 +46,13 @@
                 y: e.clientY
             };
 
-            window.addEventListener('mousemove', mouseMove, 0);
+            window.addEventListener('mousemove', mouseMove, true);
             container.style.cursor = 'move';
         }
 
         function mouseMove(e) {
-            container.scrollLeft -= (-pos.x + (pos.x = e.clientX));
-            container.scrollTop -= (-pos.y + (pos.y = e.clientY));
+            if (!disableH) container.scrollLeft -= (-pos.x + (pos.x = e.clientX));
+            if (!disableV) container.scrollTop -= (-pos.y + (pos.y = e.clientY));
         }
 
         var pos = {
@@ -59,13 +60,12 @@
             y: 0
         };
 
-        if (container.clientWidth < container.scrollWidth || container.clientHeight < container.scrollHeight) {
-            container.addEventListener('mousedown', mouseDown, 0);
-            window.addEventListener('mouseup', mouseUp, false);
-            container.oncontextmenu = function (e) {
-                e.preventDefault();
-            };
-        }
+        container.oncontextmenu = function (e) {
+            e.preventDefault();
+        };
+
+        container.addEventListener('mousedown', mouseDown, false);
+        window.addEventListener('mouseup', mouseUp, false);
 
     }
 
@@ -89,7 +89,7 @@
 
                 removeEvents(win);
                 removeEvents(doc);
-                removeEvents(doc.documentElement, true);
+                removeEvents(wrapcontent, true);
                 removeEvents(content, true);
 
                 var txt = html_beautify(response.response);
@@ -101,7 +101,7 @@
                 content.removeAttribute('style');
                 doc.title = 'view-source:' + urlpage;
 
-                GM_addStyle(GM_getResourceText(theme) + 'html,body,pre{margin:0;padding:0}.hljs{overflow:hidden;word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:#d2d2d2;text-align:right;width:3.5em;left:-.5em;border-right:1px solid rgba(221, 221, 221, 0.36);padding-right:.5em}');
+                GM_addStyle(GM_getResourceText(theme) + 'html,body,pre{margin:0;padding:0}.hljs{overflow:hidden;word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);background:rgba(255, 255, 255, 0.8);position:absolute;color:#d2d2d2;text-align:right;width:3.5em;left:-.5em;border-right:1px solid rgba(221, 221, 221, 0.36);padding-right:.5em}');
 
                 var output = doc.createElement('PRE');
                 output.setAttribute('class', 'xml');
@@ -119,9 +119,11 @@
                 }
 
                 output.setAttribute('data-lines', l);
-                output.style.width = output.scrollWidth + 'px';
+                //output.style.width = output.scrollWidth + 'px';
 
-                scrollByDragging(content);
+                scrollByDragging(output, false, true);
+                scrollByDragging(content, true);
+                scrollByDragging(wrapcontent, true);
 
                 var attrUrl = doc.getElementsByClassName('hljs-attr');
                 for (var j = 0; j < attrUrl.length; j++) {
