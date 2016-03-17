@@ -13,7 +13,8 @@
     "noarg": true,
     "onevar": true,
     "newcap": false,
-    "unused": false,
+    "unused": true,
+    "undef": true,
     "quotmark": "single",
     "globals": {
         "my_setcookie": false,
@@ -33,6 +34,12 @@
         "GM_setClipboard": false,
         "GM_xmlhttpRequest": false,
         "unsafeWindow": false,
-        "saveAs": false
+        "JSZip": false,
+        "saveAs": false,
+        "hljs": false,
+        "html_beautify": false,
+        "css_beautify": false,
+        "js_beautify": false,
+        "waitForKeyElements": false
     }
 }
