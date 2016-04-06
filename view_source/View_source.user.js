@@ -6,12 +6,16 @@
 // @icon         http://i.imgur.com/6yZMOeH.png
 // @author       Zzbaivong
 // @match        *
-// @resource     light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/github-gist.min.css
-// @resource     dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/monokai-sublime.min.css
-// @require      https://openuserjs.org/src/libs/baivong/beautify-html.js
-// @require      https://openuserjs.org/src/libs/baivong/beautify-js.min.js
-// @require      https://openuserjs.org/src/libs/baivong/beautify-css.min.js
-// @require      https://openuserjs.org/src/libs/baivong/highlight-xml.js
+// @resource     light https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/styles/github-gist.css
+// @resource     dark https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/styles/monokai-sublime.css
+// @require      https://raw.githubusercontent.com/beautify-web/js-beautify/master/js/lib/beautify-html.js
+// @require      https://raw.githubusercontent.com/beautify-web/js-beautify/master/js/lib/beautify.js
+// @require      https://raw.githubusercontent.com/beautify-web/js-beautify/master/js/lib/beautify-css.js
+// @require      https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/highlight.js
+// @require      https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/languages/xml.js
+// @require      https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/languages/javascript.js
+// @require      https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/languages/json.js
+// @require      https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/languages/css.js
 // @noframes
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-end

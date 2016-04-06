@@ -7,8 +7,8 @@
 // @author       Zzbaivong
 // @match        http://nhentai.net/g/*
 // @require      https://code.jquery.com/jquery-2.2.3.min.js
-// @require      https://openuserjs.org/src/libs/baivong/jszip.min.js
-// @require      https://openuserjs.org/src/libs/baivong/FileSaver.min.js
+// @require      https://raw.githubusercontent.com/Stuk/jszip/master/dist/jszip.min.js
+// @require      https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.min.js
 // @connect      nhentai.net
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-end
@@ -63,11 +63,7 @@ jQuery(function($) {
         $download.html('<i class="fa fa-cog fa-spin"></i> Waiting...').css('backgroundColor', 'orange');
 
         $('.lazyload').each(function(i, v) {
-<<<<<<< HEAD:nHentai_downloader/nHentai_downloader.user.js
             images[i] = 'http:' + $(v).attr('data-src').replace('t.n', 'i.n').replace(/\/(\d+)t\./, '/$1.');
-=======
-            images[i] = 'http:' + $(this).attr('data-src').replace('t.n', 'i.n').replace(/\/(\d+)t\./, '/$1.');
->>>>>>> master:nHentai_downloader.user.js
         });
 
         total = images.length;

@@ -1,10 +1,6 @@
 // ==UserScript==
 // @name         Worldcosplay download
 // @namespace    http://devs.forumvi.com/
-<<<<<<< HEAD:worldcosplay_downloader/worldcosplay_downloader.user.js
-=======
-// @version      1.1.1
->>>>>>> master:Worldcosplay_downloader.user.js
 // @description  Download photo(s) on worldcosplay.net
 // @version      1.1.2
 // @icon         http://i.imgur.com/gJLjIzb.png
@@ -15,8 +11,8 @@
 // @match        http://worldcosplay.net/tag/*
 // @match        http://worldcosplay.net/search/photos?*
 // @require      https://code.jquery.com/jquery-2.2.3.min.js
-// @require      https://openuserjs.org/src/libs/baivong/FileSaver.min.js
-// @require      https://gist.githubusercontent.com/raw/2625891/waitForKeyElements.js
+// @require      https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.min.js
+// @require      https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=115012
 // @connect      worldcosplay.net
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-end

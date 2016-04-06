@@ -17,8 +17,8 @@
 // @exclude      http://hentailx.com/nhom-dich/*
 // @exclude      http://hentailx.com/Tacgia/*
 // @require      https://code.jquery.com/jquery-2.2.3.min.js
-// @require      https://openuserjs.org/src/libs/baivong/jszip.min.js
-// @require      https://openuserjs.org/src/libs/baivong/FileSaver.min.js
+// @require      https://raw.githubusercontent.com/Stuk/jszip/master/dist/jszip.min.js
+// @require      https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.min.js
 // @connect      hentailx.com
 // @connect      blogspot.com
 // @supportURL   https://github.com/baivong/Userscript/issues
