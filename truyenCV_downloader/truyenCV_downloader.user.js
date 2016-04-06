@@ -1,13 +1,16 @@
 // ==UserScript==
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
-// @version      1.2.0
 // @description  Tải truyện từ truyencv.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
+// @version      1.1.5
+// @icon         http://i.imgur.com/6YQasgD.jpg
 // @author       Zzbaivong
 // @icon         http://truyencv.com/templates/truyencv/images/logo.png
 // @match        http://truyencv.com/*/
-// @require      http://code.jquery.com/jquery-2.2.1.min.js
-// @require      http://openuserjs.org/src/libs/baivong/FileSaver.min.js
+// @require      https://code.jquery.com/jquery-2.2.3.min.js
+// @require      https://openuserjs.org/src/libs/baivong/FileSaver.min.js
+// @connect      truyencv.com
+// @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-end
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
@@ -28,15 +31,13 @@
 
         var skipSize = skip.length,
             blob,
-            fileName = path.slice(1, -1) + '_' + begin + '-' + end + '.md';
+            fileName = path.slice(1, -1) + '_' + begin + '-' + end + '.htm';
 
-        txt = '# ' + $('h1').text() + '\n\n ' + $('#poster p:eq(3)').text() + '\n ' + $('#poster p:eq(4)').text() + '\n Tổng số chương: ' + (end - begin - skipSize + 1) + '\n\n' + credits + '\n\n\n' + txt;
+        txt = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><h1><font color="red">' + $('h1').text() + '</font></h1><h3><font color="blue">' + $('#poster p:eq(3)').text() + '</font></h3><h3><font color="green">' + $('#poster p:eq(4)').text() + '</font></h3><h3><font color="gray">Tổng số chương: ' + (end - begin - skipSize + 1) + '</font></h3><br><br>' + credits + '<br><br><br>' + txt + '</body></html>';
 
         blob = new Blob([txt], {
-            type: 'text/markdown;charset=utf-8'
+            type: 'text/html'
         });
-
-        saveAs(blob, fileName);
 
         $download.attr({
             href: window.URL.createObjectURL(blob),
@@ -48,6 +49,8 @@
         }
 
         console.log('%cDownload Finished!', 'color:blue;');
+
+        saveAs(blob, fileName);
 
     }
 
@@ -78,7 +81,7 @@
                 onload: function (response) {
 
                     var $data = $(response.responseText),
-                        title = $.trim($data.find('h2.text-muted').text()),
+                        title = $data.find('h2.text-muted').html(),
                         $chapter = $data.find('.chapter');
 
                     if ($chapter.length) {
@@ -105,11 +108,7 @@
                     }
 
                     $chapter.find('font, p:last').remove();
-                    $chapter.find('br').replaceWith('\n');
-                    $chapter.find('p').replaceWith(function() {
-                        return this.textContent + '\n';
-                    });
-                    txt += '\n\n# ' + title + '\n\n' + $.trim($chapter.text()).replace(/^[\t\s]*(.+)$/gm, '$1');
+                    txt += '<h2 class="title">' + title + '</h2>' + $chapter.html();
 
                     getChapter();
 
@@ -139,7 +138,7 @@
         complete = 0,
         path = location.pathname,
         url,
-        credits = 'Truyện được tải từ: TruyenCV - http://truyencv.com\nUserscript được viết bởi: Zzbaivong - http://devs.forumvi.com';
+        credits = '<p>Truyện được tải từ: TruyenCV - http://truyencv.com</p><p>Userscript được viết bởi: Zzbaivong - http://devs.forumvi.com</p>';
 
     window.URL = window.URL || window.webkitURL;
 

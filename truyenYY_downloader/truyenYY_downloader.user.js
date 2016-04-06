@@ -1,14 +1,16 @@
 // ==UserScript==
 // @name         TruyenYY downloader
 // @namespace    http://devs.forumvi.com/
-// @version      1.1.1
 // @description  Tải truyện từ truyenyy.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
+// @version      1.1.4
+// @icon         http://i.imgur.com/obHcq8v.png
 // @author       Zzbaivong
-// @icon         https://truyenyy.com/static/img/truyenyy-logo.png
 // @match        http://truyenyy.com/truyen/*
 // @match        https://truyenyy.com/truyen/*
-// @require      https://code.jquery.com/jquery-2.2.1.min.js
+// @require      https://code.jquery.com/jquery-2.2.3.min.js
 // @require      https://openuserjs.org/src/libs/baivong/FileSaver.min.js
+// @connect      truyenyy.com
+// @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-end
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
@@ -31,18 +33,16 @@
 
     function getChapter() {
 
-        var fileName = path.slice(1, -1) + '_' + begin + '-' + end,
+        var fileName = path.slice(1, -1) + '_' + begin + '-' + end + '.htm',
             blob;
 
         if (count > max) {
 
-            txt = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><h1><font color="red">' + $('h1').text() + '</font></h1><h3><font color="blue">' + $('.lww p:eq(0)').text() + '</font></h3><h3><font color="green">' + $('.lww p:eq(1)').text() + '</font></h3><h3><font color="gray">Tổng số chương: ' + (end - begin) + '</font></h3><br><br><br><br><br>' + txt + '<p><br><br><br><br><br>-- Hết --</p><br><br><br><br><br>' + credits + '</body></html>';
+            txt = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><h1><font color="red">' + $('h1').text() + '</font></h1><h3><font color="blue">' + $('.lww p:eq(0)').text() + '</font></h3><h3><font color="green">' + $('.lww p:eq(1)').text() + '</font></h3><h3><font color="gray">Tổng số chương: ' + (end - begin + 1) + '</font></h3><br><br>' + credits + '<br><br><br>' + txt + '</body></html>';
 
             blob = new Blob([txt], {
                 type: 'text/html'
             });
-
-            saveAs(blob, fileName);
 
             $download.attr({
                 href: window.URL.createObjectURL(blob),
@@ -52,6 +52,8 @@
             $(window).off('beforeunload');
 
             console.log('%cDownload Finished!', 'color:blue;');
+
+            saveAs(blob, fileName);
 
         } else {
 
