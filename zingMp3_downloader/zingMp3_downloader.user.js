@@ -2,7 +2,7 @@
 // @name         Download nhạc mp3 zing 320kbps
 // @namespace    baivong.download.mp3zing
 // @description  Download nhạc nhất lượng cao 320kbps tại mp3.zing.vn
-// @version      3.0.2
+// @version      3.0.3
 // @icon         http://i.imgur.com/PnF4UN2.png
 // @author       Zzbaivong
 // @match        http://mp3.zing.vn/bai-hat/*.html*
@@ -13,6 +13,7 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js
 // @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=117790
 // @connect      zing.vn
+// @connect      zdn.vn
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-end
 // @grant        GM_xmlhttpRequest
@@ -55,7 +56,7 @@ function downloadSong(songId, progress, complete, error) {
                 },
                 onprogress: function (e) {
                     if (e.total) {
-                        progress(Math.floor(e.loaded * 100 / e.total));
+                        progress(Math.floor(e.loaded * 100 / e.total) + '%');
                     } else {
                         progress('');
                     }
@@ -101,7 +102,7 @@ if (location.pathname.indexOf('/bai-hat/') === 0) {
         $txt.text('Chờ một chút...');
 
         downloadSong($('#tabAdd').data('id'), function (percent) {
-            $txt.text('Đang tải... ' + percent + '%');
+            $txt.text('Đang tải... ' + percent);
         }, function (blob, fileName) {
 
             $btn.attr({
@@ -141,8 +142,6 @@ if (location.pathname.indexOf('/bai-hat/') === 0) {
         downloadSong(songId, function (percent) {
             if (percent !== '') {
                 $this.text(percent + '%');
-            } else {
-                $this.removeClass('bv-text');
             }
         }, function (blob, fileName) {
 
