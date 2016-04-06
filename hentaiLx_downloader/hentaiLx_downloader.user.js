@@ -2,7 +2,7 @@
 // @name         hentaiLx downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on hentaiLx.com
-// @version      1.0.4
+// @version      1.0.5
 // @icon         http://i.imgur.com/EXgXnfE.jpg
 // @author       Zzbaivong
 // @include      http://hentailx.com/*
@@ -16,7 +16,7 @@
 // @exclude      http://hentailx.com/dang-ky-thanh-vien.html
 // @exclude      http://hentailx.com/nhom-dich/*
 // @exclude      http://hentailx.com/Tacgia/*
-// @require      https://code.jquery.com/jquery-2.2.3.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/2.6.0/jszip.min.js
 // @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=117790
 // @connect      hentailx.com
