@@ -3,7 +3,7 @@
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyencv.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
 // @version      1.1.6
-// @icon         http://i.imgur.com/6YQasgD.jpg
+// @icon         http://i.imgur.com/o5cmtkU.png
 // @author       Zzbaivong
 // @icon         http://truyencv.com/templates/truyencv/images/logo.png
 // @match        http://truyencv.com/*/

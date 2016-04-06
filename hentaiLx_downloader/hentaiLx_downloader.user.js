@@ -3,7 +3,7 @@
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on hentaiLx.com
 // @version      1.0.5
-// @icon         http://i.imgur.com/EXgXnfE.jpg
+// @icon         http://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @include      http://hentailx.com/*
 // @include      http://hentailx.com/doc-truyen/*
