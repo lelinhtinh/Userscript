@@ -1,18 +1,24 @@
 // ==UserScript==
 // @name         Worldcosplay download
 // @namespace    http://devs.forumvi.com/
+<<<<<<< HEAD:worldcosplay_downloader/worldcosplay_downloader.user.js
+=======
 // @version      1.1.1
+>>>>>>> master:Worldcosplay_downloader.user.js
 // @description  Download photo(s) on worldcosplay.net
+// @version      1.1.2
+// @icon         http://i.imgur.com/gJLjIzb.png
 // @author       Zzbaivong
-// @icon         http://worldcosplay.net/assets/logo-94d9f272d8eaf6faf23afb3513259e3e.png
 // @match        http://worldcosplay.net/photo/*
 // @match        http://worldcosplay.net/member/*/photos*
 // @match        http://worldcosplay.net/member/*/favorites*
 // @match        http://worldcosplay.net/tag/*
 // @match        http://worldcosplay.net/search/photos?*
-// @require      https://code.jquery.com/jquery-2.2.0.min.js
+// @require      https://code.jquery.com/jquery-2.2.3.min.js
 // @require      https://openuserjs.org/src/libs/baivong/FileSaver.min.js
 // @require      https://gist.githubusercontent.com/raw/2625891/waitForKeyElements.js
+// @connect      worldcosplay.net
+// @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-end
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==

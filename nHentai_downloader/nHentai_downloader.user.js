@@ -1,14 +1,18 @@
 // ==UserScript==
-// @name        nHentai Downloader
-// @namespace   http://devs.forumvi.com
-// @description Download manga on nHentai.net
-// @include     http://nhentai.net/g/*
-// @version     1.1.2
-// @author      Zzbaivong
-// @require     https://code.jquery.com/jquery-2.2.0.min.js
-// @require     https://openuserjs.org/src/libs/baivong/jszip.min.js
-// @require     https://openuserjs.org/src/libs/baivong/FileSaver.min.js
-// @grant       GM_xmlhttpRequest
+// @name         nHentai Downloader
+// @namespace    http://devs.forumvi.com
+// @description  Download manga on nHentai.net
+// @version      1.1.3
+// @icon         http://i.imgur.com/FAsQ4vZ.png
+// @author       Zzbaivong
+// @match        http://nhentai.net/g/*
+// @require      https://code.jquery.com/jquery-2.2.3.min.js
+// @require      https://openuserjs.org/src/libs/baivong/jszip.min.js
+// @require      https://openuserjs.org/src/libs/baivong/FileSaver.min.js
+// @connect      nhentai.net
+// @supportURL   https://github.com/baivong/Userscript/issues
+// @run-at       document-end
+// @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
 jQuery(function($) {
@@ -59,7 +63,11 @@ jQuery(function($) {
         $download.html('<i class="fa fa-cog fa-spin"></i> Waiting...').css('backgroundColor', 'orange');
 
         $('.lazyload').each(function(i, v) {
+<<<<<<< HEAD:nHentai_downloader/nHentai_downloader.user.js
+            images[i] = 'http:' + $(v).attr('data-src').replace('t.n', 'i.n').replace(/\/(\d+)t\./, '/$1.');
+=======
             images[i] = 'http:' + $(this).attr('data-src').replace('t.n', 'i.n').replace(/\/(\d+)t\./, '/$1.');
+>>>>>>> master:nHentai_downloader.user.js
         });
 
         total = images.length;
