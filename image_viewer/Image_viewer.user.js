@@ -2,10 +2,9 @@
 // @name         Image viewer
 // @namespace    http://devs.forumvi.com/
 // @description  Image viewer for Firefox
-// @version      1.0.3
+// @version      1.0.4
 // @icon         http://i.imgur.com/ItcjCPc.png
 // @author       Zzbaivong
-// @match        *
 // @noframes
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-end

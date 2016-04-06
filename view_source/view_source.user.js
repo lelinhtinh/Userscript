@@ -2,10 +2,9 @@
 // @name         viewsource
 // @namespace    devs.forumvi.com
 // @description  Viewsource for Firefox, like Chrome
-// @version      2.3.3
+// @version      2.3.4
 // @icon         http://i.imgur.com/6yZMOeH.png
 // @author       Zzbaivong
-// @match        *
 // @resource     light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/github-gist.min.css
 // @resource     dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/monokai-sublime.min.css
 // @require      https://greasyfork.org/scripts/18530-beautify-html/code/beautify-html.js?version=117787

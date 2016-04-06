@@ -2,10 +2,9 @@
 // @name         Javascript-css beautify
 // @namespace    http://devs.forumvi.com
 // @description  Beautify and syntax highlight javascript/css source code
-// @version      2.3.3
+// @version      2.3.4
 // @icon         http://i.imgur.com/kz8nqz1.png
 // @author       Zzbaivong
-// @match        *
 // @resource     light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/github-gist.min.css
 // @resource     dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/monokai-sublime.min.css
 // @require      https://greasyfork.org/scripts/18531-beautify-js/code/beautify-js.js?version=117786
