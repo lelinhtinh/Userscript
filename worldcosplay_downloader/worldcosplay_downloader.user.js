@@ -1,6 +1,10 @@
 // ==UserScript==
 // @name         Worldcosplay download
 // @namespace    http://devs.forumvi.com/
+<<<<<<< HEAD:worldcosplay_downloader/worldcosplay_downloader.user.js
+=======
+// @version      1.1.1
+>>>>>>> master:Worldcosplay_downloader.user.js
 // @description  Download photo(s) on worldcosplay.net
 // @version      1.1.2
 // @icon         http://i.imgur.com/gJLjIzb.png

@@ -63,7 +63,11 @@ jQuery(function($) {
         $download.html('<i class="fa fa-cog fa-spin"></i> Waiting...').css('backgroundColor', 'orange');
 
         $('.lazyload').each(function(i, v) {
+<<<<<<< HEAD:nHentai_downloader/nHentai_downloader.user.js
             images[i] = 'http:' + $(v).attr('data-src').replace('t.n', 'i.n').replace(/\/(\d+)t\./, '/$1.');
+=======
+            images[i] = 'http:' + $(this).attr('data-src').replace('t.n', 'i.n').replace(/\/(\d+)t\./, '/$1.');
+>>>>>>> master:nHentai_downloader.user.js
         });
 
         total = images.length;
