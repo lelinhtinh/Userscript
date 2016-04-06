@@ -11,7 +11,7 @@
 // @match        http://mp3.zing.vn/nghe-si/*
 // @match        http://mp3.zing.vn/tim-kiem/bai-hat.html?q=*
 // @require      https://code.jquery.com/jquery-2.2.3.min.js
-// @require      https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.min.js
+// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=117790
 // @connect      zing.vn
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-end

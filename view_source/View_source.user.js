@@ -6,16 +6,12 @@
 // @icon         http://i.imgur.com/6yZMOeH.png
 // @author       Zzbaivong
 // @match        *
-// @resource     light https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/styles/github-gist.css
-// @resource     dark https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/styles/monokai-sublime.css
-// @require      https://raw.githubusercontent.com/beautify-web/js-beautify/master/js/lib/beautify-html.js
-// @require      https://raw.githubusercontent.com/beautify-web/js-beautify/master/js/lib/beautify.js
-// @require      https://raw.githubusercontent.com/beautify-web/js-beautify/master/js/lib/beautify-css.js
-// @require      https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/highlight.js
-// @require      https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/languages/xml.js
-// @require      https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/languages/javascript.js
-// @require      https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/languages/json.js
-// @require      https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/languages/css.js
+// @resource     light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/github-gist.min.css
+// @resource     dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/monokai-sublime.min.css
+// @require      https://greasyfork.org/scripts/18530-beautify-html/code/beautify-html.js?version=117787
+// @require      https://greasyfork.org/scripts/18531-beautify-js/code/beautify-js.js?version=117786
+// @require      https://greasyfork.org/scripts/18528-beautify-css/code/beautify-css.js?version=117789
+// @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js
 // @noframes
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-end

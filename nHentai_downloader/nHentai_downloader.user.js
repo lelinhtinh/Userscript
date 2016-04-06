@@ -7,8 +7,8 @@
 // @author       Zzbaivong
 // @match        http://nhentai.net/g/*
 // @require      https://code.jquery.com/jquery-2.2.3.min.js
-// @require      https://raw.githubusercontent.com/Stuk/jszip/master/dist/jszip.min.js
-// @require      https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/2.6.0/jszip.min.js
+// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=117790
 // @connect      nhentai.net
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-end

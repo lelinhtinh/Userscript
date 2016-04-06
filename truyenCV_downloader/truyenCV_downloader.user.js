@@ -8,7 +8,7 @@
 // @icon         http://truyencv.com/templates/truyencv/images/logo.png
 // @match        http://truyencv.com/*/
 // @require      https://code.jquery.com/jquery-2.2.3.min.js
-// @require      https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.min.js
+// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=117790
 // @connect      truyencv.com
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-end
