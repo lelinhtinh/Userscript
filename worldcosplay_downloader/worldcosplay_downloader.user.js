@@ -1,10 +1,12 @@
 // ==UserScript==
+// @id           worldcosplay-download@devs.forumvi.com
 // @name         Worldcosplay download
 // @namespace    http://devs.forumvi.com/
 // @description  Download photo(s) on worldcosplay.net
-// @version      1.1.3
+// @version      1.1.4
 // @icon         http://i.imgur.com/gJLjIzb.png
 // @author       Zzbaivong
+// @license      MIT
 // @match        http://worldcosplay.net/photo/*
 // @match        http://worldcosplay.net/member/*/photos*
 // @match        http://worldcosplay.net/member/*/favorites*
@@ -13,9 +15,10 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js
 // @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=117790
 // @require      https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=115012
+// @noframes
 // @connect      worldcosplay.net
 // @supportURL   https://github.com/baivong/Userscript/issues
-// @run-at       document-end
+// @run-at       document-idle
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 

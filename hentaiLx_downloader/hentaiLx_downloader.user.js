@@ -1,10 +1,12 @@
 // ==UserScript==
+// @id           hentailx-downloader@devs.forumvi.com
 // @name         hentaiLx downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on hentaiLx.com
-// @version      1.0.5
+// @version      1.0.6
 // @icon         http://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
+// @license      MIT
 // @include      http://hentailx.com/*
 // @include      http://hentailx.com/doc-truyen/*
 // @exclude      http://hentailx.com/
@@ -19,10 +21,11 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/2.6.0/jszip.min.js
 // @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=117790
+// @noframes
 // @connect      hentailx.com
 // @connect      blogspot.com
 // @supportURL   https://github.com/baivong/Userscript/issues
-// @run-at       document-end
+// @run-at       document-idle
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 

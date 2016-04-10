@@ -1,10 +1,14 @@
 // ==UserScript==
+// @id           javascript-css-beautify@devs.forumvi.com
 // @name         Javascript-css beautify
 // @namespace    http://devs.forumvi.com
-// @description  Beautify and syntax highlight javascript/css source code
-// @version      2.3.4
+// @description  Beautify and syntax highlighting for source code javascript, json, css. Support to see the source code by holding the right mouse and drag.
+// @version      2.3.5
 // @icon         http://i.imgur.com/kz8nqz1.png
 // @author       Zzbaivong
+// @license      MIT
+// @match        http://*/*
+// @match        https://*/*
 // @resource     light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/github-gist.min.css
 // @resource     dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/monokai-sublime.min.css
 // @require      https://greasyfork.org/scripts/18531-beautify-js/code/beautify-js.js?version=117786
@@ -12,7 +16,7 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js
 // @noframes
 // @supportURL   https://github.com/baivong/Userscript/issues
-// @run-at       document-end
+// @run-at       document-idle
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
 // ==/UserScript==
@@ -23,7 +27,7 @@
 
     var theme = 'light', // light|dark
 
-        url = window.top.location.pathname,
+        url = location.pathname,
         doc = document,
         contenttype = doc.contentType;
 
@@ -67,7 +71,7 @@
 
     }
 
-    if (/^(application\/x-javascript|application\/javascript|application\/json|text\/css)$/.test(contenttype) || /.+\.(js|json|css)$/.test(url)) {
+    if (/^application\/(x-javascript|javascript|json)|text\/css$/.test(contenttype) || (/.+\.(js|json|css)$/.test(url) && !/^application\/(xhtml+xml|xml|rss+xml)|text\/(html|xml)$/.test(contenttype))) {
 
         var output = doc.getElementsByTagName('pre')[0],
             txt = output.textContent,

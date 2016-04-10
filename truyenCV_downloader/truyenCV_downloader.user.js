@@ -1,17 +1,20 @@
 // ==UserScript==
+// @id           truyencv-downloader@devs.forumvi.com
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyencv.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
-// @version      1.1.6
+// @version      1.1.7
 // @icon         http://i.imgur.com/o5cmtkU.png
 // @author       Zzbaivong
+// @license      MIT
 // @icon         http://truyencv.com/templates/truyencv/images/logo.png
 // @match        http://truyencv.com/*/
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js
 // @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=117790
+// @noframes
 // @connect      truyencv.com
 // @supportURL   https://github.com/baivong/Userscript/issues
-// @run-at       document-end
+// @run-at       document-idle
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 

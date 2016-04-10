@@ -1,10 +1,14 @@
 // ==UserScript==
+// @id           view-source@devs.forumvi.com
 // @name         viewsource
 // @namespace    devs.forumvi.com
-// @description  Viewsource for Firefox, like Chrome
-// @version      2.3.4
+// @description  View and beauty website source code. Support to see the source code by holding the right mouse and drag. Shortcut: Ctrl+Y.
+// @version      2.3.5
 // @icon         http://i.imgur.com/6yZMOeH.png
 // @author       Zzbaivong
+// @license      MIT
+// @match        http://*/*
+// @match        https://*/*
 // @resource     light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/github-gist.min.css
 // @resource     dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/monokai-sublime.min.css
 // @require      https://greasyfork.org/scripts/18530-beautify-html/code/beautify-html.js?version=117787
@@ -12,8 +16,9 @@
 // @require      https://greasyfork.org/scripts/18528-beautify-css/code/beautify-css.js?version=117789
 // @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js
 // @noframes
+// @connect      self
 // @supportURL   https://github.com/baivong/Userscript/issues
-// @run-at       document-end
+// @run-at       document-idle
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
 // @grant        GM_xmlhttpRequest
@@ -27,7 +32,7 @@
     var theme = 'light', // light|dark
 
         win = window,
-        urlpage = win.top.location.href,
+        urlpage = location.href,
         doc = document,
         wrapcontent = doc.documentElement,
         content = doc.body;
@@ -141,17 +146,18 @@
         });
     }
 
-    GM_registerMenuCommand('View source', viewsource, 'm');
+    GM_registerMenuCommand('View source', viewsource, 'y');
 
-    if (doc.contentType === 'text/html' && doc.URL === urlpage) {
-        win.onkeydown = function (e) {
+    if (/^application\/(xhtml+xml|xml|rss+xml)|text\/(html|xml)$/.test(doc.contentType)) {
+        doc.onkeydown = function (e) {
 
-            // Ctrl + M
-            if (e.which === 77 && e.ctrlKey) {
+            // Ctrl + Y
+            if (e.which === 89 && e.ctrlKey) {
                 e.preventDefault();
 
                 viewsource();
             }
         };
     }
+
 }());

@@ -1,10 +1,12 @@
 // ==UserScript==
+// @id           download-nhac-mp3-zing-320kbps@baivong.download.mp3zing
 // @name         Download nhạc mp3 zing 320kbps
 // @namespace    baivong.download.mp3zing
 // @description  Download nhạc nhất lượng cao 320kbps tại mp3.zing.vn
-// @version      3.0.3
+// @version      3.0.4
 // @icon         http://i.imgur.com/PnF4UN2.png
 // @author       Zzbaivong
+// @license      MIT
 // @match        http://mp3.zing.vn/bai-hat/*.html*
 // @match        http://mp3.zing.vn/album/*.html*
 // @match        http://mp3.zing.vn/playlist/*.html*
@@ -12,10 +14,11 @@
 // @match        http://mp3.zing.vn/tim-kiem/bai-hat.html?q=*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js
 // @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=117790
+// @noframes
 // @connect      zing.vn
 // @connect      zdn.vn
 // @supportURL   https://github.com/baivong/Userscript/issues
-// @run-at       document-end
+// @run-at       document-idle
 // @grant        GM_xmlhttpRequest
 // @grant        GM_addStyle
 // ==/UserScript==
