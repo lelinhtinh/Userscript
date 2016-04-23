@@ -3,7 +3,7 @@
 // @name         Javascript-css beautify
 // @namespace    http://devs.forumvi.com
 // @description  Beautify and syntax highlighting for source code javascript, json, css. Support to see the source code by holding the right mouse and drag.
-// @version      2.3.5
+// @version      2.3.6
 // @icon         http://i.imgur.com/kz8nqz1.png
 // @author       Zzbaivong
 // @license      MIT
@@ -79,7 +79,7 @@
             lines = 0,
             l = '';
 
-        GM_addStyle(GM_getResourceText(theme) + 'html,body,pre{margin:0;padding:0}.hljs{overflow:hidden;word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:#d2d2d2;text-align:right;width:3.5em;left:-.5em;border-right:1px solid rgba(221, 221, 221, 0.36);padding-right:.5em}');
+        GM_addStyle(GM_getResourceText(theme) + 'html,body,pre{margin:0;padding:0}.hljs{word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:#d2d2d2;text-align:right;width:3.5em;left:-.5em;border-right:1px solid rgba(221, 221, 221, 0.36);padding-right:.5em}');
 
         if (contenttype === 'text/css' || /.+\.css$/.test(url)) {
             lang = 'css';
@@ -100,11 +100,10 @@
         }
 
         output.setAttribute('data-lines', l);
-        //output.style.width = output.scrollWidth + 'px';
+        output.style.width = output.scrollWidth + 'px';
 
-        scrollByDragging(output, false, true);
-        scrollByDragging(doc.body, true);
-        scrollByDragging(doc.documentElement, true);
+        scrollByDragging(doc.body);
+        scrollByDragging(doc.documentElement);
 
     }
 

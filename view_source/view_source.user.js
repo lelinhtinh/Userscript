@@ -2,8 +2,8 @@
 // @id           view-source@devs.forumvi.com
 // @name         viewsource
 // @namespace    devs.forumvi.com
-// @description  View and beauty website source code. Support to see the source code by holding the right mouse and drag. Shortcut: Ctrl+Y.
-// @version      2.3.5
+// @description  View and beauty website source code. Support to see the source code by holding the right mouse and drag. Shortcut: Alt+U.
+// @version      2.3.6
 // @icon         http://i.imgur.com/6yZMOeH.png
 // @author       Zzbaivong
 // @license      MIT
@@ -109,7 +109,7 @@
                 content.removeAttribute('style');
                 doc.title = 'view-source:' + urlpage;
 
-                GM_addStyle(GM_getResourceText(theme) + 'html,body,pre{margin:0;padding:0}.hljs{overflow:hidden;word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:#d2d2d2;text-align:right;width:3.5em;left:-.5em;border-right:1px solid rgba(221, 221, 221, 0.36);padding-right:.5em}');
+                GM_addStyle(GM_getResourceText(theme) + 'html,body,pre{margin:0;padding:0}.hljs{word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:#d2d2d2;text-align:right;width:3.5em;left:-.5em;border-right:1px solid rgba(221, 221, 221, 0.36);padding-right:.5em}');
 
                 var output = doc.createElement('PRE');
                 output.setAttribute('class', 'xml');
@@ -127,11 +127,10 @@
                 }
 
                 output.setAttribute('data-lines', l);
-                //output.style.width = output.scrollWidth + 'px';
+                output.style.width = output.scrollWidth + 'px';
 
-                scrollByDragging(output, false, true);
-                scrollByDragging(content, true);
-                scrollByDragging(wrapcontent, true);
+                scrollByDragging(content);
+                scrollByDragging(wrapcontent);
 
                 var attrUrl = doc.getElementsByClassName('hljs-attr');
                 for (var j = 0; j < attrUrl.length; j++) {
@@ -146,13 +145,13 @@
         });
     }
 
-    GM_registerMenuCommand('View source', viewsource, 'y');
+    GM_registerMenuCommand('View source', viewsource, 'u');
 
     if (/^application\/(xhtml+xml|xml|rss+xml)|text\/(html|xml)$/.test(doc.contentType)) {
         doc.onkeydown = function (e) {
 
-            // Ctrl + Y
-            if (e.which === 89 && e.ctrlKey) {
+            // Alt+U
+            if (e.which === 85 && e.altKey) {
                 e.preventDefault();
 
                 viewsource();
