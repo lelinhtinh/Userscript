@@ -3,15 +3,28 @@
 // @name         Worldcosplay download
 // @namespace    http://devs.forumvi.com/
 // @description  Download photo(s) on worldcosplay.net
-// @version      1.1.4
+// @version      1.1.5
 // @icon         http://i.imgur.com/gJLjIzb.png
 // @author       Zzbaivong
 // @license      MIT
+// @match        http://worldcosplay.net/*/photos*
+// @match        http://worldcosplay.net/*/favorites*
 // @match        http://worldcosplay.net/photo/*
-// @match        http://worldcosplay.net/member/*/photos*
-// @match        http://worldcosplay.net/member/*/favorites*
 // @match        http://worldcosplay.net/tag/*
 // @match        http://worldcosplay.net/search/photos?*
+// @match        http://worldcosplay.net/character/*
+// @match        http://worldcosplay.net/title/*
+// @match        http://worldcosplay.net/photos
+// @match        http://worldcosplay.net/popular
+// @match        http://worldcosplay.net/ranking/good*
+// @match        http://worldcosplay.net/*/photo/*
+// @match        http://worldcosplay.net/*/tag/*
+// @match        http://worldcosplay.net/*/search/photos?*
+// @match        http://worldcosplay.net/*/character/*
+// @match        http://worldcosplay.net/*/title/*
+// @match        http://worldcosplay.net/*/photos
+// @match        http://worldcosplay.net/*/popular
+// @match        http://worldcosplay.net/*/ranking/good*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js
 // @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=117790
 // @require      https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=115012
@@ -47,7 +60,7 @@
         });
     }
 
-    if (!location.pathname.indexOf('/photo/')) {
+    if (/^(\/[a-z\-]+)?\/photo\/\d+$/.test(location.pathname)) {
 
         var $btn = $('<a>', {
             href: '#download',
