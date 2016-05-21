@@ -3,7 +3,7 @@
 // @name         Download nhạc mp3 zing 320kbps
 // @namespace    baivong.download.mp3zing
 // @description  Download nhạc nhất lượng cao 320kbps tại mp3.zing.vn
-// @version      3.0.4
+// @version      3.0.5
 // @icon         http://i.imgur.com/PnF4UN2.png
 // @author       Zzbaivong
 // @license      MIT
@@ -12,8 +12,8 @@
 // @match        http://mp3.zing.vn/playlist/*.html*
 // @match        http://mp3.zing.vn/nghe-si/*
 // @match        http://mp3.zing.vn/tim-kiem/bai-hat.html?q=*
-// @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js
-// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=117790
+// @require      https://code.jquery.com/jquery-2.2.4.min.js
+// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=126857
 // @noframes
 // @connect      zing.vn
 // @connect      zdn.vn
