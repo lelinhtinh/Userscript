@@ -76,7 +76,7 @@
                         console.log('%cComplete: ' + url, 'color:green;');
                         $download.html('<i class="icon-refresh icon-white"></i> ' + count + '/' + max).css('background', 'orange');
 
-                        $chapter.find('span').remove();
+                        $chapter.find('span, a').remove();
                         txt += '<h2 class="title">' + title + '</h2>' + $chapter.html();
 
                         ++count;
