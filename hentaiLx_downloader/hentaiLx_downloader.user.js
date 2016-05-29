@@ -3,7 +3,7 @@
 // @name         hentaiLx downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on hentaiLx.com
-// @version      1.0.8
+// @version      1.1.0
 // @icon         http://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT
@@ -20,7 +20,7 @@
 // @exclude      http://hentailx.com/Tacgia/*
 // @require      https://code.jquery.com/jquery-2.2.4.min.js
 // @require      https://greasyfork.org/scripts/19855-jszip/code/jszip.js?version=126859
-// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=127839
+// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=128198
 // @noframes
 // @connect      hentailx.com
 // @connect      blogspot.com
@@ -29,7 +29,7 @@
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
-jQuery(function($) {
+jQuery(function ($) {
     'use strict';
 
     function deferredAddZip(url, filename, current, total, zip, $download) {
@@ -39,13 +39,13 @@ jQuery(function($) {
             method: 'GET',
             url: url,
             responseType: 'arraybuffer',
-            onload: function(response) {
+            onload: function (response) {
                 zip.file(filename, response.response);
                 $download.text(counter[current] + '/' + total);
                 ++counter[current];
                 deferred.resolve(response);
             },
-            onerror: function(err) {
+            onerror: function (err) {
                 console.error(err);
                 deferred.reject(err);
             }
@@ -62,35 +62,37 @@ jQuery(function($) {
 
         $this.text('Waiting...');
 
-        obj.contentChap.children('img').each(function(i, v) {
+        obj.contentChap.children('img').each(function (i, v) {
             images[i] = v.src;
         });
 
-        $.each(images, function(i, v) {
+        $.each(images, function (i, v) {
             var filename = v.replace(/.*\//g, '');
 
             deferreds.push(deferredAddZip(images[i], filename, obj.current, images.length, zip, $this));
         });
 
-        $.when.apply($, deferreds).done(function() {
-            var blob = zip.generate({
-                    type: 'blob'
-                }),
-                zipName = obj.nameChap.replace(/\s/g, '_') + '.zip';
+        $.when.apply($, deferreds).done(function () {
+            zip.generateAsync({
+                type: 'blob'
+            }).then(function (blob) {
+                var zipName = obj.nameChap.replace(/\s/g, '_') + '.zip';
 
-            $this.text('Complete').css('color', 'green').attr({
-                href: window.URL.createObjectURL(blob),
-                download: zipName
-            }).off('click');
+                $this.text('Complete').css('color', 'green').attr({
+                    href: window.URL.createObjectURL(blob),
+                    download: zipName
+                }).off('click');
 
-            saveAs(blob, zipName);
+                saveAs(blob, zipName);
 
-            doc.title = '[⇓ ' + (++complete) + '/' + progress + '] ' + tit;
-
-        }).fail(function(err) {
+                doc.title = '[⇓ ' + (++complete) + '/' + progress + '] ' + tit;
+            }, function (reason) {
+                console.error(reason);
+            });
+        }).fail(function (err) {
             $this.text('Fail').css('color', 'red');
             console.error(err);
-        }).always(function() {
+        }).always(function () {
             if (--alertUnload <= 0) {
                 $(window).off('beforeunload');
             }
@@ -116,14 +118,14 @@ jQuery(function($) {
 
         $('.chapter-info').find('ul').append('<span class="glyphicon glyphicon-save"></span> ').append($download);
 
-        $download.one('click', function(e) {
+        $download.one('click', function (e) {
             e.preventDefault();
 
             ++progress;
 
             $download.attr('href', '#download');
 
-            $(window).on('beforeunload', function() {
+            $(window).on('beforeunload', function () {
                 return 'Progress is running...';
             });
             ++alertUnload;
@@ -146,9 +148,9 @@ jQuery(function($) {
             'class': 'col-xs-3 col-sm-3 col-md-3 text-right chapter-view-download'
         }).append($download));
 
-        $('.chapter-download').each(function() {
+        $('.chapter-download').each(function () {
 
-            $(this).one('click', function(e) {
+            $(this).one('click', function (e) {
                 e.preventDefault();
 
                 ++progress;
@@ -159,7 +161,7 @@ jQuery(function($) {
                 $(_this).attr('href', '#download');
 
                 if (alertUnload <= 0) {
-                    $(window).on('beforeunload', function() {
+                    $(window).on('beforeunload', function () {
                         return 'Progress is running...';
                     });
                 }
@@ -169,7 +171,7 @@ jQuery(function($) {
                     method: 'GET',
                     url: $chapLink.attr('href'),
                     responseType: 'text',
-                    onload: function(response) {
+                    onload: function (response) {
                         var $data = $(response.responseText);
 
                         counter[current] = 1;
@@ -181,7 +183,7 @@ jQuery(function($) {
                         });
                         ++current;
                     },
-                    onerror: function(err) {
+                    onerror: function (err) {
                         console.error(err);
                     }
                 });
