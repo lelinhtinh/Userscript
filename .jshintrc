@@ -30,6 +30,7 @@
         "GM_registerMenuCommand": false,
         "GM_setClipboard": false,
         "GM_xmlhttpRequest": false,
+        "GM_download": false,
         "unsafeWindow": false,
         "saveAs": false,
         "JSZip": false,
