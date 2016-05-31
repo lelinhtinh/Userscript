@@ -3,7 +3,7 @@
 // @name         Download nhạc mp3 zing 320kbps
 // @namespace    baivong.download.mp3zing
 // @description  Download nhạc nhất lượng cao 320kbps tại mp3.zing.vn
-// @version      3.0.7
+// @version      4.0.0
 // @icon         http://i.imgur.com/PnF4UN2.png
 // @author       Zzbaivong
 // @license      MIT
@@ -13,7 +13,7 @@
 // @match        http://mp3.zing.vn/nghe-si/*
 // @match        http://mp3.zing.vn/tim-kiem/bai-hat.html?q=*
 // @require      https://code.jquery.com/jquery-2.2.4.min.js
-// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=128198
+// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=128649
 // @noframes
 // @connect      zing.vn
 // @connect      zdn.vn
@@ -21,6 +21,7 @@
 // @run-at       document-idle
 // @grant        GM_xmlhttpRequest
 // @grant        GM_addStyle
+// @grant        GM_download
 // ==/UserScript==
 
 function bodauTiengViet(str) {
@@ -44,31 +45,49 @@ function downloadSong(songId, progress, complete, error) {
         onload: function (data) {
             data = $.parseJSON(data.response);
 
-            if(!data.song_id || !data.source[320]) {
+            if (!data.song_id || !data.source[320]) {
                 console.error(data);
                 error();
                 return;
             }
 
-            GM_xmlhttpRequest({
-                method: 'GET',
-                url: data.source[320],
-                responseType: 'blob',
-                onload: function (source) {
-                    complete(source.response, bodauTiengViet(data.title + '_' + data.artist) + '.mp3');
-                },
-                onprogress: function (e) {
-                    if (e.total) {
-                        progress(Math.floor(e.loaded * 100 / e.total) + '%');
-                    } else {
-                        progress('');
+            var songSource = data.source[320],
+                songName = bodauTiengViet(data.title + '_' + data.artist) + '.mp3';
+            if (typeof GM_download !== 'undefined') {
+                progress('');
+                GM_download({
+                    url: songSource,
+                    name: songName,
+                    saveAs: false,
+                    onload: function () {
+                        complete('GM_download', songName);
+                    },
+                    onerror: function (e) {
+                        console.log(e);
+                        error();
                     }
-                },
-                onerror: function (e) {
-                    console.error(e);
-                    error();
-                }
-            });
+                });
+            } else {
+                GM_xmlhttpRequest({
+                    method: 'GET',
+                    url: songSource,
+                    responseType: 'blob',
+                    onload: function (source) {
+                        complete(source.response, songName);
+                    },
+                    onprogress: function (e) {
+                        if (e.total) {
+                            progress(Math.floor(e.loaded * 100 / e.total) + '%');
+                        } else {
+                            progress('');
+                        }
+                    },
+                    onerror: function (e) {
+                        console.error(e);
+                        error();
+                    }
+                });
+            }
         },
         onerror: function (e) {
             console.error(e);
@@ -108,13 +127,19 @@ if (location.pathname.indexOf('/bai-hat/') === 0) {
             $txt.text('Đang tải... ' + percent);
         }, function (blob, fileName) {
 
-            $btn.attr({
-                href: window.URL.createObjectURL(blob),
-                download: fileName
-            }).removeClass('bv-waiting').addClass('bv-complete').off('click');
+            if (blob !== 'GM_download') {
+                $btn.attr({
+                    href: window.URL.createObjectURL(blob),
+                    download: fileName
+                }).off('click');
+                saveAs(blob, fileName);
+            } else {
+                disableClick = false;
+            }
+
+            $btn.removeClass('bv-waiting').addClass('bv-complete');
             $txt.text('Nhấn để tải nhạc');
 
-            saveAs(blob, fileName);
         }, function () {
             $btn.removeClass('bv-waiting').addClass('bv-error');
             $txt.text('Lỗi! Không tải được');
@@ -144,16 +169,21 @@ if (location.pathname.indexOf('/bai-hat/') === 0) {
 
         downloadSong(songId, function (percent) {
             if (percent !== '') {
-                $this.text(percent + '%');
+                $this.text(percent);
             }
         }, function (blob, fileName) {
 
-            $this.attr({
-                href: window.URL.createObjectURL(blob),
-                download: fileName
-            }).removeClass('bv-waiting bv-text').addClass('bv-complete').text('').off('click');
+            if (blob !== 'GM_download') {
+                $this.attr({
+                    href: window.URL.createObjectURL(blob),
+                    download: fileName
+                }).off('click');
+                saveAs(blob, fileName);
+            } else {
+                disableClick = false;
+            }
 
-            saveAs(blob, fileName);
+            $this.removeClass('bv-waiting bv-text').addClass('bv-complete').text('');
         }, function () {
             $this.removeClass('bv-waiting bv-text').addClass('bv-error').text('');
         });
