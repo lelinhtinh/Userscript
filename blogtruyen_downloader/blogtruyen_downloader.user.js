@@ -3,7 +3,7 @@
 // @name         blogtruyen downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on blogtruyen.com
-// @version      1.0.0
+// @version      1.0.1
 // @icon         http://i.imgur.com/qx0kpfr.png
 // @author       Zzbaivong
 // @license      MIT
@@ -15,6 +15,7 @@
 // @connect      blogtruyen.com
 // @connect      blogspot.com
 // @connect      imgur.com
+// @connect      zdn.vn
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-idle
 // @grant        GM_xmlhttpRequest
