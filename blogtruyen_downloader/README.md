@@ -12,7 +12,7 @@ Nhấn vào nút **Download all** để tải toàn bộ. Nếu muốn bỏ qua,
 
 ![Blogtruyen downloader](screenshot/downloading.png)
 
-Sau khi tải xuống, bạn nên dùng ứng dụng [Honeyview](https://www.bandisoft.com/honeyview/vn/) hoặc [Mcomix](https://sourceforge.net/projects/mcomix/) để đọc truyện mà không cần giải nén.
+Sau khi tải xuống, bạn nên dùng ứng dụng [MMCE](http://www.softpedia.com/get/Others/Home-Education/MMCE.shtml)*(MangaMeeya)*, [Honeyview](https://www.bandisoft.com/honeyview/vn/) hoặc [Mcomix](https://sourceforge.net/projects/mcomix/) để đọc truyện mà không cần giải nén.
 
 ### Chú ý
 

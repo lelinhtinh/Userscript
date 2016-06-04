@@ -3,7 +3,7 @@
 // @name         blogtruyen downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on blogtruyen.com
-// @version      1.2.0
+// @version      1.2.1
 // @icon         http://i.imgur.com/qx0kpfr.png
 // @author       Zzbaivong
 // @license      MIT
@@ -84,12 +84,14 @@ jQuery(function ($) {
         $this.text('Waiting...');
 
         obj.contentChap.children('img').each(function (i, v) {
-            images[i] = v.src.replace(/\?imgmax=0/, '').replace(/.+&url=/, '');
-            // images[i] = images[i].replace(/\d+\.bp\.blogspot\.com/, 'lh3.googleusercontent.com')
+            images[i] = v.src.replace(/^.+&url=/, '');
+            images[i] = images[i].replace(/(https?:\/\/)lh(\d)(\.bp\.blogspot\.com)/, '$1$2$3'); // $2 = (Math.floor((Math.random() * 4) + 1))
+            // images[i] = images[i].replace(/\d+\.bp\.blogspot\.com/, 'lh' + (Math.floor((Math.random() * 4) + 3)) + '.googleusercontent.com');
+            if (images[i].indexOf('blogspot.com') !== -1 && images[i].indexOf('?imgmax=0') === -1) images[i] += '?imgmax=0';
         });
 
         $.each(images, function (i, v) {
-            var filename = v.replace(/.*\//g, ''),
+            var filename = v.replace(/\?.+$/, '').replace(/.*\//g, ''),
                 filetype = filename.replace(/.*\./g, '');
 
             if (filetype === filename) filetype = 'jpg';
@@ -129,7 +131,10 @@ jQuery(function ($) {
     var $download = $('<a>', {
             'class': 'chapter-download',
             href: '#download',
-            text: 'Download'
+            text: 'Download',
+            css: {
+                color: 'green'
+            }
         }),
         counter = [],
         current = 0,
@@ -189,48 +194,59 @@ jQuery(function ($) {
         $downloadList = $('.chapter-download');
         totalChapter = $downloadList.length;
 
-        $downloadList.each(function () {
+        $downloadList.one('click', function (e) {
+            e.preventDefault();
 
-            $(this).one('click', function (e) {
-                e.preventDefault();
+            ++progress;
 
-                ++progress;
+            var _this = this,
+                $this = $(_this),
+                $chapLink = $this.closest('p').find('.title a');
 
-                var _this = this,
-                    $chapLink = $(_this).closest('p').find('.title a');
+            $this.css('pointer-events', 'none');
 
-                if (alertUnload <= 0) {
-                    $(window).on('beforeunload', function () {
-                        return 'Progress is running...';
-                    });
-                }
-                ++alertUnload;
-
-                GM_xmlhttpRequest({
-                    method: 'GET',
-                    url: $chapLink.attr('href'),
-                    responseType: 'text',
-                    onload: function (response) {
-                        var $data = $(response.responseText);
-
-                        counter[current] = 1;
-                        getChaper({
-                            download: _this,
-                            contentChap: $data.find('#content'),
-                            nameChap: $chapLink.text(),
-                            current: current
-                        });
-                        ++current;
-                    },
-                    onerror: function (err) {
-                        console.error(err);
-                    }
+            if (alertUnload <= 0) {
+                $(window).on('beforeunload', function () {
+                    return 'Progress is running...';
                 });
-            }).one('contextmenu', function (e) {
-                e.preventDefault();
+            }
+            ++alertUnload;
 
-                $(this).off('click').text('Skip').css('color', 'blueviolet').attr('href', '#skip');
+            GM_xmlhttpRequest({
+                method: 'GET',
+                url: $chapLink.attr('href'),
+                responseType: 'text',
+                onload: function (response) {
+                    var $data = $(response.responseText);
+
+                    counter[current] = 1;
+                    getChaper({
+                        download: _this,
+                        contentChap: $data.find('#content'),
+                        nameChap: $chapLink.text(),
+                        current: current
+                    });
+                    ++current;
+                },
+                onerror: function (err) {
+                    console.error(err);
+                }
             });
+        }).parent().on('contextmenu', function (e) {
+            e.preventDefault();
+            var $this = $(this).children();
+
+            if ($this.text() === 'Skip') {
+                $this.text('Download').css({
+                    color: 'green',
+                    'pointer-events': 'auto'
+                }).attr('href', '#download');
+            } else if ($this.text() === 'Download') {
+                $this.text('Skip').css({
+                    color: 'blueviolet',
+                    'pointer-events': 'none'
+                }).attr('href', '#skip');
+            }
         });
 
         $('.fl-r.like-buttons').append($downloadAll.append($downloadAllText));
