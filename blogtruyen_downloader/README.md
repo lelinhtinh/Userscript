@@ -16,7 +16,7 @@ Sau khi tải xuống, bạn nên dùng ứng dụng [MMCE](http://www.softpedia
 
 ### Chú ý
 
-Chap bị lỗi, khi tải xuống sẽ không có nội dung và được thêm tiền tố **0__Error__** trong tên tệp.
+Chap bị lỗi, khi tải xuống sẽ không có nội dung và được thêm tiền tố `0__Error__` trong tên tệp.
 
 Nếu bạn sử dụng tiện ích **Tampermonkey** để quản lý Userscript, ở một số Chap sẽ xuất hiện cửa sổ thông báo **A userscript wants to access a cross-origin resource**, yêu cầu xác minh quyền truy cập Domain. Bạn nhấn vào **Always allow all domains**.
 
