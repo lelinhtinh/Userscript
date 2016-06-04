@@ -3,7 +3,7 @@
 // @name         blogtruyen downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on blogtruyen.com
-// @version      1.2.1
+// @version      1.2.2
 // @icon         http://i.imgur.com/qx0kpfr.png
 // @author       Zzbaivong
 // @license      MIT
@@ -17,6 +17,8 @@
 // @connect      imgur.com
 // @connect      zdn.vn
 // @connect      postimg.org
+// @connect      photobucket.com
+// @connect      zing.vn
 // @connect      *
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-idle
@@ -101,12 +103,18 @@ jQuery(function ($) {
         });
 
         $.when.apply($, deferreds).done(function () {
+            $this.text('Complete').css('color', 'orange');
+        }).fail(function (err) {
+            obj.nameChap = '0__Error__' + obj.nameChap;
+            $this.css('color', 'red');
+            console.error(err);
+        }).always(function () {
             zip.generateAsync({
                 type: 'blob'
             }).then(function (blob) {
                 var zipName = $.trim(obj.nameChap) + '.zip';
 
-                $this.text('Complete').css('color', 'orange').attr({
+                $this.attr({
                     href: window.URL.createObjectURL(blob),
                     download: zipName
                 }).off('click');
@@ -117,15 +125,25 @@ jQuery(function ($) {
             }, function (reason) {
                 console.error(reason);
             });
-        }).fail(function (err) {
-            $this.text('Fail').css('color', 'red');
-            console.error(err);
-        }).always(function () {
             nextDownload();
             if (--alertUnload <= 0) {
                 $(window).off('beforeunload');
             }
         });
+    }
+
+    function toggleSkip($btn) {
+        if ($btn.text() === 'Skip') {
+            $btn.text('Download').css({
+                color: 'green',
+                'pointer-events': 'auto'
+            }).attr('href', '#download');
+        } else if ($btn.text() === 'Download') {
+            $btn.text('Skip').css({
+                color: 'blueviolet',
+                'pointer-events': 'none'
+            }).attr('href', '#skip');
+        }
     }
 
     var $download = $('<a>', {
@@ -152,7 +170,7 @@ jQuery(function ($) {
 
     window.URL = window.URL || window.webkitURL;
 
-    if (/\/chap-.+$/.test(location.pathname)) {
+    if (/^\/truyen\/[^\/\n]+\/[^\/\n]+$/.test(location.pathname)) {
 
         $('.linkchapter select').first().replaceWith($download);
 
@@ -234,18 +252,22 @@ jQuery(function ($) {
             });
         }).parent().on('contextmenu', function (e) {
             e.preventDefault();
-            var $this = $(this).children();
 
-            if ($this.text() === 'Skip') {
-                $this.text('Download').css({
-                    color: 'green',
-                    'pointer-events': 'auto'
-                }).attr('href', '#download');
-            } else if ($this.text() === 'Download') {
-                $this.text('Skip').css({
-                    color: 'blueviolet',
-                    'pointer-events': 'none'
-                }).attr('href', '#skip');
+            var $this = $(this),
+                $btn = $this.children(),
+                indexChapter = $this.closest('p').index();
+
+            if (e.ctrlKey || e.altKey) {
+                $downloadList.each(function (i, el) {
+                    var $el = $(el);
+                    if ((e.ctrlKey && indexChapter >= i) || (e.altKey && indexChapter <= i)) {
+                        toggleSkip($el);
+                    } else {
+                        return true;
+                    }
+                });
+            } else {
+                toggleSkip($btn);
             }
         });
 
