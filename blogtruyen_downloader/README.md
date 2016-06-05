@@ -20,4 +20,4 @@ Chap bị lỗi, khi tải xuống sẽ không có nội dung và được thêm
 
 Nếu bạn sử dụng tiện ích **Tampermonkey** để quản lý Userscript, ở một số Chap sẽ xuất hiện cửa sổ thông báo **A userscript wants to access a cross-origin resource**, yêu cầu xác minh quyền truy cập Domain. Bạn nhấn vào **Always allow all domains**.
 
-Nguyên nhân là do Tampermonkey yêu cầu khai báo chi tiết Domain của Host sẽ truy cập. Mình đã liệt kê các Host chứa ảnh chính của Blogtruyen, bao gồm: *Blogspot, Imgur, Zdn, Postimg, Photobucket, Zing*. Chỉ truyện nào sử dụng Host khác mới hiện thông báo đó.
+Nguyên nhân là do Tampermonkey yêu cầu khai báo chi tiết Domain của Host sẽ truy cập. Mình đã liệt kê các Host chứa ảnh mình thường gặp của Blogtruyen, như: *Blogspot, Imgur, Zdn, ...*. Chỉ truyện nào sử dụng Host khác mới hiện thông báo đó.

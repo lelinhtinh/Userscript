@@ -1,5 +1,12 @@
 ## Thông tin phiên bản
 
+### v1.3.0
+- Sửa lỗi không tìm thấy ảnh ở một số trang.
+- Điều chỉnh thông số Download trên tiêu đề của Tab trình duyệt.
+- Thêm tùy chọn `changeHost`, đặt giá trị `true` để Download truyện khi **blogspot** bị chặn.
+- Thêm tùy chọn `configs` để cấu hình ngôn ngữ, màu sắc.
+- Thêm tính năng thông báo trên màn hình khi tải hoàn tất.
+
 ### v1.2.3
 - Sửa lỗi không tải được ảnh **blogspot** do tham số `imgmax`.
 - Sửa lỗi không nhấp chuột được vào nút **Complete** để tải lại.

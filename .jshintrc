@@ -15,6 +15,7 @@
     "newcap": false,
     "unused": true,
     "undef": true,
+    "immed": false,
     "quotmark": "single",
     "globals": {
         "GM_info": false,
