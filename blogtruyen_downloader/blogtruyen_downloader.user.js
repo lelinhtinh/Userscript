@@ -3,7 +3,7 @@
 // @name         blogtruyen downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on blogtruyen.com
-// @version      1.2.2
+// @version      1.2.3
 // @icon         http://i.imgur.com/qx0kpfr.png
 // @author       Zzbaivong
 // @license      MIT
@@ -19,6 +19,7 @@
 // @connect      postimg.org
 // @connect      photobucket.com
 // @connect      zing.vn
+// @connect      tinypic.com
 // @connect      *
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-idle
@@ -89,6 +90,7 @@ jQuery(function ($) {
             images[i] = v.src.replace(/^.+&url=/, '');
             images[i] = images[i].replace(/(https?:\/\/)lh(\d)(\.bp\.blogspot\.com)/, '$1$2$3'); // $2 = (Math.floor((Math.random() * 4) + 1))
             // images[i] = images[i].replace(/\d+\.bp\.blogspot\.com/, 'lh' + (Math.floor((Math.random() * 4) + 3)) + '.googleusercontent.com');
+            images[i] = images[i].replace(/\?.+$/, '');
             if (images[i].indexOf('blogspot.com') !== -1 && images[i].indexOf('?imgmax=0') === -1) images[i] += '?imgmax=0';
         });
 
@@ -103,7 +105,10 @@ jQuery(function ($) {
         });
 
         $.when.apply($, deferreds).done(function () {
-            $this.text('Complete').css('color', 'orange');
+            $this.text('Complete').css({
+                color: 'orange',
+                'pointer-events': 'auto'
+            });
         }).fail(function (err) {
             obj.nameChap = '0__Error__' + obj.nameChap;
             $this.css('color', 'red');
