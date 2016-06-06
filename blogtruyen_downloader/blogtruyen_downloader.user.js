@@ -3,7 +3,7 @@
 // @name         blogtruyen downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on blogtruyen.com
-// @version      1.3.0
+// @version      1.3.1
 // @icon         http://i.imgur.com/qx0kpfr.png
 // @author       Zzbaivong
 // @license      MIT
@@ -12,8 +12,9 @@
 // @require      https://greasyfork.org/scripts/19855-jszip/code/jszip.js?version=126859
 // @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=128198
 // @noframes
-// @connect      blogtruyen.com
+// @connect      self
 // @connect      blogspot.com
+// @connect      googleusercontent.com
 // @connect      imgur.com
 // @connect      zdn.vn
 // @connect      postimg.org
@@ -48,8 +49,8 @@ jQuery(function ($) {
                 ERROR: 'red'
             },
             notify: {
-                content: 'Tải xuống hoàn tất',
-                icon: 'http://i.imgur.com/qx0kpfr.png'
+                CONTENT: 'Tải xuống hoàn tất',
+                ICON: 'http://i.imgur.com/qx0kpfr.png'
             }
         };
 
@@ -112,8 +113,8 @@ jQuery(function ($) {
         if (!allowNotification) return;
 
         new Notification(comicName, {
-            body: configs.notify.content,
-            icon: configs.notify.icon
+            body: configs.notify.CONTENT,
+            icon: configs.notify.ICON
         }).onclick = function () {
             this.close();
         };
