@@ -2,7 +2,7 @@
 // @name         popup blocker
 // @namespace    http://baivong.github.io/
 // @description  Block all javascript popup
-// @version      1.1.0
+// @version      1.1.1
 // @icon         http://i.imgur.com/yUHcAyG.png
 // @author       Zzbaivong
 // @license      MIT
@@ -79,24 +79,28 @@ var popupBlockerAllowSitesConfig = 'google.com|google.com.vn|facebook.com|twitte
             if (!allLinksSize) return;
 
             if (typeof global.jQuery !== 'undefined') {
-                var $ = global.jQuery,
-                    $doc = $(document),
-                    $event = $doc.data('events') || $._data(document, 'events');
+                $(function () {
+                    var $ = global.jQuery,
+                        $doc = $(document),
+                        $event = $doc.data('events') || $._data(document, 'events');
 
-                if (!$doc.data('popupblocker') && $event && $event.click) $.each($event.click, function () {
-                    var _this = this.selector,
-                        $this;
+                    if (!$doc.data('popupblocker') && $event && $event.click) $.each($event.click, function () {
+                        var _this = this.selector;
 
-                    if (!_this) return;
+                        if (_this) $(_this).each(function (i, ele) {
+                            var $this = $(ele),
+                                dataSelector;
+                            if ($this[0].tagName !== 'A') return;
 
-                    $this = $(_this);
-                    if ($this[0] && $this[0].tagName !== 'A') return;
-
-                    if ($.fn.on) {
-                        $doc.on('click', _this, hanler).on('dblclick', _this, dbhanler).data('popupblocker', true);
-                    } else {
-                        $this.live('click', hanler).live('dblclick', dbhanler).attr('data-popupblocker', true);
-                    }
+                            $this.attr('data-selector', 'popupblocker' + i);
+                            dataSelector = 'a[data-selector="popupblocker' + i + '"]';
+                            if ($.fn.on) {
+                                $doc.on('click', dataSelector, hanler).on('dblclick', dataSelector, dbhanler).data('popupblocker', true);
+                            } else {
+                                $this.live('click', hanler).live('dblclick', dbhanler).attr('data-popupblocker', true);
+                            }
+                        });
+                    });
                 });
             }
 
