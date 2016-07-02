@@ -2,7 +2,7 @@
 // @name         popup blocker
 // @namespace    http://baivong.github.io/
 // @description  Block all javascript popup
-// @version      0.9.0
+// @version      0.9.1
 // @icon         http://i.imgur.com/yUHcAyG.png
 // @author       Zzbaivong
 // @license      MIT
@@ -24,26 +24,27 @@ var allowPopupConfigs = 'google.com|google.com.vn|facebook.com|twitter.com|githu
     allowPopupConfigs = allowPopupConfigs.split('|');
     var allowPopupConfigsSize = allowPopupConfigs.length,
         allowPopup = false,
+        host = global.location.host,
         matchHost;
 
     if (allowPopupConfigsSize)
         for (var i = 0; i < allowPopupConfigsSize; i++) {
             matchHost = new RegExp('^([\\w\\.\\-]+\\.)?' + allowPopupConfigs[i].replace(/\./g, '\\.') + '$');
-            if (matchHost.test(location.host)) {
+            if (matchHost.test(host)) {
                 allowPopup = true;
                 break;
             }
         }
 
-    function logs(str, plus) {
-        if (global.console) global.console.log(str, plus);
+    function logs(str) {
+        if (global.console) global.console.log(str, host);
     }
 
     if (allowPopup) {
-        logs('Popup blocker is disabled!', 'https://github.com/baivong/Userscript');
+        logs('Popup blocker is disabled!');
         return;
     } else {
-        logs('Popup blocker is running!', 'https://github.com/baivong/Userscript');
+        logs('Popup blocker is running!');
     }
 
 
@@ -91,7 +92,7 @@ var allowPopupConfigs = 'google.com|google.com.vn|facebook.com|twitter.com|githu
 
     document.addEventListener('DOMContentLoaded', function () {
         if (('Discourse' in global)) {
-            logs('Popup blocker is disabled!', 'Discourse');
+            logs('Popup blocker is disabled on Discourse.');
             return;
         }
 
