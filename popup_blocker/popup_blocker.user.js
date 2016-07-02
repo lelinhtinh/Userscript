@@ -2,7 +2,7 @@
 // @name         popup blocker
 // @namespace    http://baivong.github.io/
 // @description  Block all javascript popup
-// @version      1.0.1
+// @version      1.1.0
 // @icon         http://i.imgur.com/yUHcAyG.png
 // @author       Zzbaivong
 // @license      MIT
@@ -35,36 +35,39 @@ var popupBlockerAllowSitesConfig = 'google.com|google.com.vn|facebook.com|twitte
         host: global.location.host,
         allowSite: false,
         checkSite: function () {
-            if (!popupBlocker.userscript.allowSize) return;
-            var matchHost,
-                allowSites = popupBlocker.userscript.allow,
-                allowSitesSize = allowSites.length,
-                allowSite = popupBlocker.userscript.allowSite;
-            for (var i = 0; i < allowSitesSize; i++) {
-                matchHost = new RegExp('^([\\w\\.\\-]+\\.)?' + allowSites[i].replace(/\./g, '\\.') + '$');
-                if (matchHost.test(popupBlocker.userscript.host)) {
-                    allowSite = true;
+            var list = this.allow,
+                listSize = list.length,
+                matchHost;
+
+            if (!listSize) return;
+
+            for (var i = 0; i < listSize; i++) {
+                matchHost = new RegExp('^([\\w\\.\\-]+\\.)?' + list[i].replace(/\./g, '\\.') + '$');
+                if (matchHost.test(this.host)) {
+                    this.allowSite = true;
                     break;
                 }
             }
-            return allowSite;
+
+            return this.allowSite;
         },
         logs: function (str) {
-            if (global.console) global.console.log(str, popupBlocker.userscript.host);
+            if (global.console) global.console.log(str, this.host);
         },
         counter: 0,
         warns: function (str) {
-            if (global.console) global.console.warn(popupBlocker.userscript.counter, 'popups blocked\n' + str);
+            if (global.console) global.console.warn(this.counter, 'popups blocked\n' + str);
         },
         init: function () {
-            var allLinks = document.getElementsByTagName('a'),
+            var blocker = this,
+                allLinks = document.getElementsByTagName('a'),
                 allLinksSize = allLinks.length,
                 hanler = function (event) {
                     event.preventDefault();
                     var _this = (this === document) ? event.target : this;
 
-                    popupBlocker.userscript.counter++;
-                    popupBlocker.userscript.warns(_this.href + '\n' + _this.target + '\nClick');
+                    blocker.counter++;
+                    blocker.warns(_this.href + '\n' + _this.target + '\nClick');
                 },
                 dbhanler = function (event) {
                     event.preventDefault();
@@ -110,7 +113,7 @@ var popupBlockerAllowSitesConfig = 'google.com|google.com.vn|facebook.com|twitte
         }
     };
 
-    if (popupBlocker.userscript.checkSite) {
+    if (popupBlocker.userscript.checkSite()) {
         popupBlocker.userscript.logs('Popup blocker is disabled.');
         return;
     } else {
