@@ -2,7 +2,7 @@
 // @name         popup blocker
 // @namespace    http://baivong.github.io/
 // @description  Block all javascript popup
-// @version      1.0.0
+// @version      1.0.1
 // @icon         http://i.imgur.com/yUHcAyG.png
 // @author       Zzbaivong
 // @license      MIT
@@ -14,7 +14,7 @@
 // ==/UserScript==
 
 
-var popupBlockerAllowSitesConfig = 'google.com|google.com.vn|facebook.com|twitter.com|github.com|youtube.com|imgur.com|messenger.com';
+var popupBlockerAllowSitesConfig = 'google.com|google.com.vn|facebook.com|twitter.com|github.com|youtube.com|imgur.com|messenger.com|openuserjs.org|greasyfork.org';
 
 
 
@@ -110,7 +110,7 @@ var popupBlockerAllowSitesConfig = 'google.com|google.com.vn|facebook.com|twitte
         }
     };
 
-    if (!popupBlocker.userscript.checkSite) {
+    if (popupBlocker.userscript.checkSite) {
         popupBlocker.userscript.logs('Popup blocker is disabled.');
         return;
     } else {
