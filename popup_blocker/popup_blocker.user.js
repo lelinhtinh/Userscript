@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         popup blocker
 // @namespace    http://baivong.github.io/
-// @description  Block all javascript popup
-// @version      1.1.1
+// @description  Block all javascript popup and link has click event. Double click to open link blocked.
+// @version      1.2.0
 // @icon         http://i.imgur.com/yUHcAyG.png
 // @author       Zzbaivong
 // @license      MIT
@@ -14,7 +14,11 @@
 // ==/UserScript==
 
 
-var popupBlockerAllowSitesConfig = 'google.com|google.com.vn|facebook.com|twitter.com|github.com|youtube.com|imgur.com|messenger.com|openuserjs.org|greasyfork.org';
+var popupBlockerConfigs = {
+    allow: 'google.com|google.com.vn|facebook.com|twitter.com|github.com|youtube.com|imgur.com|messenger.com|openuserjs.org|greasyfork.org', // Domain
+    popup: false, // true|false
+    click: false // true|false
+};
 
 
 
@@ -31,7 +35,7 @@ var popupBlockerAllowSitesConfig = 'google.com|google.com.vn|facebook.com|twitte
 
     var popupBlocker = {};
     popupBlocker.userscript = {
-        allow: popupBlockerAllowSitesConfig.split('|'),
+        allow: popupBlockerConfigs.allow.split('|'),
         host: global.location.host,
         allowSite: false,
         checkSite: function () {
@@ -97,7 +101,7 @@ var popupBlockerAllowSitesConfig = 'google.com|google.com.vn|facebook.com|twitte
                             if ($.fn.on) {
                                 $doc.on('click', dataSelector, hanler).on('dblclick', dataSelector, dbhanler).data('popupblocker', true);
                             } else {
-                                $this.live('click', hanler).live('dblclick', dbhanler).attr('data-popupblocker', true);
+                                $(dataSelector).live('click', hanler).live('dblclick', dbhanler).attr('data-popupblocker', true);
                             }
                         });
                     });
@@ -107,7 +111,7 @@ var popupBlockerAllowSitesConfig = 'google.com|google.com.vn|facebook.com|twitte
             for (var i = 0; i < allLinksSize; i++) {
                 var link = allLinks[i];
 
-                if (!link.dataset.popupblocker && (link.onclick || (typeof global.jQuery !== 'undefined' && global.jQuery(link).data('events') && global.jQuery(link).data('events').click) || (typeof global.jQuery !== 'undefined' && global.jQuery._data(link, 'events') && global.jQuery._data(link, 'events').click) || (link.eventListenerList && link.eventListenerList.click))) {
+                if (!link.dataset.popupblocker && (link.onclick || (link.eventListenerList && link.eventListenerList.click))) {
                     link.addEventListener('click', hanler, false);
                     link.addEventListener('dblclick', dbhanler, false);
                 }
@@ -130,6 +134,15 @@ var popupBlockerAllowSitesConfig = 'google.com|google.com.vn|facebook.com|twitte
             return;
         }
 
+        global._open = global.open;
+
+        if (!popupBlockerConfigs.popup) global.open = function (url, target, params) {
+            popupBlocker.userscript.counter++;
+            popupBlocker.userscript.warns(url + '\n' + target + '\n' + params);
+            return false;
+        };
+
+        if (popupBlockerConfigs.click) return;
         var oldXHR = global.XMLHttpRequest;
 
         function newXHR() {
@@ -141,14 +154,8 @@ var popupBlockerAllowSitesConfig = 'google.com|google.com.vn|facebook.com|twitte
         }
         global.XMLHttpRequest = newXHR;
 
-        global._open = global.open;
-        global.open = function (url, target, params) {
-            popupBlocker.userscript.counter++;
-            popupBlocker.userscript.warns(url + '\n' + target + '\n' + params);
-            return false;
-        };
-
         popupBlocker.userscript.init();
+
     });
 
 })(window);
