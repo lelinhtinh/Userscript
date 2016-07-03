@@ -2,7 +2,7 @@
 // @name         popup blocker
 // @namespace    http://baivong.github.io/
 // @description  Block all javascript popup and link has click event. Double click to open link blocked.
-// @version      1.2.0
+// @version      1.3.0
 // @icon         http://i.imgur.com/yUHcAyG.png
 // @author       Zzbaivong
 // @license      MIT
@@ -15,7 +15,7 @@
 
 
 var popupBlockerConfigs = {
-    allow: 'google.com|google.com.vn|facebook.com|twitter.com|github.com|youtube.com|imgur.com|messenger.com|openuserjs.org|greasyfork.org', // Domain
+    allow: 'google.com|google.com.vn|facebook.com|twitter.com|github.com|youtube.com|imgur.com|messenger.com|openuserjs.org|greasyfork.org|worldcosplay.net', // Domain
     popup: false, // true|false
     click: false // true|false
 };
@@ -38,16 +38,18 @@ var popupBlockerConfigs = {
         allow: popupBlockerConfigs.allow.split('|'),
         host: global.location.host,
         allowSite: false,
+        testHost: function (hostMatch, hostTest) {
+            var matchHost = new RegExp('^([\\w\\.\\-]+\\.)?' + hostMatch.replace(/\./g, '\\.') + '$');
+            return matchHost.test(hostTest);
+        },
         checkSite: function () {
             var list = this.allow,
-                listSize = list.length,
-                matchHost;
+                listSize = list.length;
 
             if (!listSize) return;
 
             for (var i = 0; i < listSize; i++) {
-                matchHost = new RegExp('^([\\w\\.\\-]+\\.)?' + list[i].replace(/\./g, '\\.') + '$');
-                if (matchHost.test(this.host)) {
+                if (this.testHost(list[i], this.host)) {
                     this.allowSite = true;
                     break;
                 }
@@ -95,6 +97,7 @@ var popupBlockerConfigs = {
                             var $this = $(ele),
                                 dataSelector;
                             if ($this[0].tagName !== 'A') return;
+                            if (blocker.testHost(blocker.host, ele.host)) return;
 
                             $this.attr('data-selector', 'popupblocker' + i);
                             dataSelector = 'a[data-selector="popupblocker' + i + '"]';
@@ -111,7 +114,7 @@ var popupBlockerConfigs = {
             for (var i = 0; i < allLinksSize; i++) {
                 var link = allLinks[i];
 
-                if (!link.dataset.popupblocker && (link.onclick || (link.eventListenerList && link.eventListenerList.click))) {
+                if (!this.testHost(this.host, link.host) && !link.dataset.popupblocker && (link.onclick || (link.eventListenerList && link.eventListenerList.click))) {
                     link.addEventListener('click', hanler, false);
                     link.addEventListener('dblclick', dbhanler, false);
                 }
