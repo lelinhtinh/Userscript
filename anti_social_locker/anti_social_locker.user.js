@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         anti social locker
 // @namespace    http://baivong.github.io/
-// @description  Anti jQuery plugin Social Locker. If script doesn't work, please refresh the page to rebuild the cache and try again.
-// @version      0.9.0
+// @description  Anti social locker plugin required user like or share before viewing content. If script doesn't work, please refresh the page to rebuild the cache and try again.
+// @version      0.9.1
 // @icon         http://i.imgur.com/nOuUrIW.png
 // @author       Zzbaivong
 // @license      MIT
@@ -35,6 +35,19 @@
                 }
                 if (!path) path = '/';
                 document.cookie = cname + '=' + cvalue + '; path=' + path + exdays + domain + ';';
+            },
+            getCookie = function (name) {
+                var cname = name + '=',
+                    cpos = document.cookie.indexOf(cname),
+                    cstart,
+                    cend;
+                if (cpos !== -1) {
+                    cstart = cpos + cname.length;
+                    cend = document.cookie.indexOf(';', cstart);
+                    if (cend === -1) cend = document.cookie.length;
+                    return decodeURIComponent(document.cookie.substring(cstart, cend));
+                }
+                return null;
             };
 
         // Social Locker for jQuery (https://codecanyon.net/item/social-locker-for-jquery/3408941)
@@ -195,62 +208,66 @@
         // Viral Coupon - Like, Tweet or G+ to get a Discount (http://codecanyon.net/item/viral-coupon-like-tweet-or-g-to-get-a-discount/2233568)
         (function ($) {
             if (!('virallocker_use' in global)) return;
-            var $locked = $('.virallock-box'),
-                $lockedPhp = $('.virallocker-box'),
-                $lockedShop = $('.virallocker-box-checkout'),
+            var $locked = $('.virallock-box, .virallocker-box, .virallocker-box-checkout'),
                 host = global.location.host,
-                str,
+                str = '',
                 pid,
-                getSource = function () {
-                    var getStr;
-                    $('script:not([src])').each(function () {
-                        var txt = this.textContent;
-
-                        if (txt.indexOf('virallocker_use') !== -1 && txt.indexOf('jQuery.post') !== -1) {
-                            getStr = txt;
-                            return false;
-                        }
-                    });
-                    return getStr;
-                },
+                viralLock = /var\sdata\s?=\s?\{post\:\s?"(\d+)"\,\s?action\:/m,
+                viralPHP = /"virallocker"\,\s?myID:\s?"(myid\d+)"\}/m,
+                viralCoupon = /var\sdata\s?=\s?{\s?action\:\s?"submit"\,\s?myID\:\s?"(\d+)"\}\;/m,
                 afterUnlock = function () {
+                    counter += $locked.length;
                     showCounter();
                     global.location.reload();
-                };
+                },
+                viralCookie;
 
-            if ($locked.length) {
+            $('script:not([src])').each(function () {
+                var txt = this.textContent;
 
-                str = getSource();
-                if (str) pid = str.match(/var\sdata\s?=\s?\{post\:\s?"(\d+)"\,\s?action\:/m);
-                if (pid) pid = pid[1];
+                if (txt.indexOf('virallocker_use') !== -1 && txt.indexOf('jQuery.post') !== -1) {
+                    str = txt;
+                    return false;
+                }
+            });
+            if (str === '') return;
 
-                setCookie('virallocker_' + pid, '0001', host);
+            if (viralLock.test(str)) {
+
+                pid = str.match(viralLock);
+                if (!pid) return;
+
+                viralCookie = 'virallocker_' + pid[1];
+                if (getCookie(viralCookie) !== null) return;
+                setCookie(viralCookie, '0001', host);
+
+                afterUnlock();
+
+            } else if (viralPHP.test(str)) {
+
+                pid = str.match(viralPHP);
+                if (!pid) return;
+
+                viralCookie = 'virallock_' + pid[1];
+                if (getCookie(viralCookie) !== null) return;
+                setCookie(viralCookie, '0001', host);
+
+                afterUnlock();
+
+            } else if (viralCoupon.test(str)) {
+
+                pid = str.match(viralCoupon);
+                if (!pid) return;
+
+                if (getCookie('virallock_' + pid[1]) !== null && getCookie('virallock_time_' + pid[1]) !== null) return;
+
+                /* globals virallocker_plusone */
+                if ('virallocker_plusone' in global) virallocker_plusone({
+                    state: 'on'
+                });
 
                 counter += $locked.length;
-                afterUnlock();
-
-            } else if ($lockedPhp.length) {
-
-                str = getSource();
-                if (str) pid = str.match(/"virallocker"\,\s?myID:\s?"(myid\d+)"\}/m);
-                if (pid) pid = pid[1];
-
-                setCookie('virallock_' + pid, '0001', host);
-
-                counter += $lockedPhp.length;
-                afterUnlock();
-
-            } else if ($lockedShop.length) {
-
-                str = getSource();
-                if (str) pid = str.match(/var\sdata\s?=\s?{\s?action\:\s?"submit"\,\s?myID\:\s?"(\d+)"\}\;/m);
-                if (pid) pid = pid[1];
-
-                setCookie('virallock_' + pid, '0001', host);
-                setCookie('virallock_time_' + pid, 'long', host);
-
-                counter += $lockedPhp.length;
-                afterUnlock();
+                showCounter();
 
             }
         })(jQuery);
