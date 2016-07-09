@@ -1,5 +1,4 @@
 // ==UserScript==
-// @id           image-viewer@devs.forumvi.com
 // @name         Image viewer
 // @namespace    http://devs.forumvi.com/
 // @description  Use grid wallpaper to highlight transparent image. Support to see the large image by holding the right mouse and drag.

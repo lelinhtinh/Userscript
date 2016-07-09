@@ -1,18 +1,16 @@
 // ==UserScript==
-// @id           truyencv-downloader@devs.forumvi.com
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyencv.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
-// @version      1.1.10
+// @version      1.1.11
 // @icon         http://i.imgur.com/o5cmtkU.png
 // @author       Zzbaivong
 // @license      MIT
-// @icon         http://truyencv.com/templates/truyencv/images/logo.png
 // @match        http://truyencv.com/*/
 // @require      https://code.jquery.com/jquery-2.2.4.min.js
-// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=128198
+// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=135609
 // @noframes
-// @connect      truyencv.com
+// @connect      self
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-idle
 // @grant        GM_xmlhttpRequest
@@ -85,7 +83,8 @@
 
                     var $data = $(response.responseText),
                         title = $data.find('h2.text-muted').html(),
-                        $chapter = $data.find('.chapter');
+                        $chapter = $data.find('.chapter'),
+                        $referrer = $chapter.find('font, a, p:last');
 
                     if ($chapter.length) {
 
@@ -110,7 +109,7 @@
                         downloadFail(url);
                     }
 
-                    $chapter.find('font, p:last').remove();
+                    if ($referrer.length) $referrer.remove();
                     txt += '<h2 class="title">' + title + '</h2>' + $chapter.html();
 
                     getChapter();
@@ -149,9 +148,7 @@
 
         e.preventDefault();
 
-        if (disableClick) {
-            return;
-        }
+        if (disableClick) return;
 
         if (enablePrompt) {
 

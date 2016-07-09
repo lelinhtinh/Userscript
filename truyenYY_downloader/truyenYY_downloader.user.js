@@ -1,42 +1,76 @@
 // ==UserScript==
-// @id           truyenyy-downloader@devs.forumvi.com
 // @name         TruyenYY downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyenyy.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
-// @version      1.1.9
+// @version      1.2.0
 // @icon         http://i.imgur.com/obHcq8v.png
 // @author       Zzbaivong
 // @license      MIT
 // @match        http://truyenyy.com/truyen/*
 // @match        https://truyenyy.com/truyen/*
 // @require      https://code.jquery.com/jquery-2.2.4.min.js
-// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=128198
+// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=135609
 // @noframes
-// @connect      truyenyy.com
+// @connect      self
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-idle
-// @grant        GM_xmlhttpRequest
+// @grant        none
 // ==/UserScript==
 
 (function ($, window, document, undefined) {
 
     'use strict';
 
-    function downloadFail(url) {
+    function downloadFail(url, wait) {
 
         console.log('%cError: ' + url, 'color:red;');
         $download.html('<i class="icon-repeat icon-white"></i> Resume...').css('background', 'red');
         disableClick = false;
 
-        setTimeout(function() {
+        setTimeout(function () {
             $download.trigger('click');
-        }, 120000);
+        }, (wait ? 100000 : 3000));
 
+    }
+
+    function getContent(url) {
+        $.get(url).done(function (response) {
+
+            var $data = $(response),
+                title = $data.find('h1').text().trim(),
+                $chapter = $data.find('#id_noidung_chuong'),
+                $notContent = $chapter.find('script, style'),
+                $referrer = $chapter.find('[style]').filter(function () {
+                    return (this.style.fontSize === '1px' || this.style.color === 'white');
+                });
+
+            if ($chapter.length && title !== 'Chương thứ yyy: Ra đảo') {
+
+                console.log('%cComplete: ' + url, 'color:green;');
+                $download.html('<i class="icon-refresh icon-white"></i> ' + count + '/' + max).css('background', 'orange');
+
+                if ($notContent.length) $notContent.remove();
+                if ($referrer.length) $referrer.remove();
+                txt += '<h2 class="title">' + title + '</h2>' + $chapter.html();
+
+                ++count;
+                getChapter();
+
+            } else {
+                downloadFail(url, true);
+            }
+
+        }).fail(function (err) {
+
+            downloadFail(url);
+            console.error(err);
+
+        });
     }
 
     function getChapter() {
 
-        var fileName = path.slice(1, -1) + '_' + begin + '-' + end + '.htm',
+        var fileName = path.slice(8, -1) + '_' + begin + '-' + end + '.htm',
             blob;
 
         if (count > max) {
@@ -62,38 +96,7 @@
 
             url = path.replace('/truyen/', '/doc-truyen/') + 'chuong-' + count;
 
-            GM_xmlhttpRequest({
-                method: 'GET',
-                url: url,
-                onload: function (response) {
-
-                    var $data = $(response.response),
-                        title = $data.find('h1').text(),
-                        $chapter = $data.find('#id_noidung_chuong');
-
-                    if ($chapter.length && title !== 'Chương thứ yyy: Ra đảo') {
-
-                        console.log('%cComplete: ' + url, 'color:green;');
-                        $download.html('<i class="icon-refresh icon-white"></i> ' + count + '/' + max).css('background', 'orange');
-
-                        $chapter.find('span, a').remove();
-                        txt += '<h2 class="title">' + title + '</h2>' + $chapter.html();
-
-                        ++count;
-                        getChapter();
-
-                    } else {
-                        downloadFail(url);
-                    }
-
-                },
-                onerror: function (err) {
-
-                    downloadFail(url);
-                    console.error(err);
-
-                }
-            });
+            getContent(url);
 
         }
 
@@ -118,9 +121,7 @@
 
         e.preventDefault();
 
-        if (disableClick) {
-            return;
-        }
+        if (disableClick) return;
 
         if (enablePrompt) {
 

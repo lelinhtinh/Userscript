@@ -1,5 +1,4 @@
 // ==UserScript==
-// @id           10wallpaper-downloader@baivong.github.io
 // @name         10wallpaper downloader
 // @namespace    http://baivong.github.io/
 // @version      1.0.0

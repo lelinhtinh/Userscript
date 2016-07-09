@@ -1,5 +1,4 @@
 // ==UserScript==
-// @id 			 wallpaperscraft-downloader@baivong.github.io
 // @name         Wallpaperscraft downloader
 // @namespace    http://baivong.github.io/
 // @version      1.0.0
