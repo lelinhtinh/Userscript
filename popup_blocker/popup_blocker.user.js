@@ -2,7 +2,7 @@
 // @name         popup blocker
 // @namespace    http://baivong.github.io/
 // @description  Block all javascript popup and link has click event. Double click to open link blocked.
-// @version      1.3.0
+// @version      2.0.0
 // @icon         http://i.imgur.com/yUHcAyG.png
 // @author       Zzbaivong
 // @license      MIT
@@ -15,12 +15,11 @@
 
 
 var popupBlockerConfigs = {
-    allow: 'google.com|google.com.vn|facebook.com|twitter.com|github.com|youtube.com|imgur.com|messenger.com|openuserjs.org|greasyfork.org|worldcosplay.net', // Domain
+    sites: 'google.com|google.com.vn|facebook.com|twitter.com|github.com|youtube.com|imgur.com|messenger.com|openuserjs.org|greasyfork.org|worldcosplay.net', // Domain
+    mode: 'allow', // allow|block
     popup: false, // true|false
-    click: false // true|false
+    link: false // true|false
 };
-
-
 
 (function (global) {
     'use strict';
@@ -35,27 +34,48 @@ var popupBlockerConfigs = {
 
     var popupBlocker = {};
     popupBlocker.userscript = {
-        allow: popupBlockerConfigs.allow.split('|'),
-        host: global.location.host,
-        allowSite: false,
+        sites: popupBlockerConfigs.sites.split('|'),
+        host: global.self.location.host,
         testHost: function (hostMatch, hostTest) {
             var matchHost = new RegExp('^([\\w\\.\\-]+\\.)?' + hostMatch.replace(/\./g, '\\.') + '$');
             return matchHost.test(hostTest);
         },
         checkSite: function () {
-            var list = this.allow,
-                listSize = list.length;
+            var list = this.sites,
+                listSize = list.length,
+                siteInList = false,
+                blocking = false;
 
-            if (!listSize) return;
+            if (!listSize) {
+                if (popupBlockerConfigs.mode === 'allow') {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
 
             for (var i = 0; i < listSize; i++) {
                 if (this.testHost(list[i], this.host)) {
-                    this.allowSite = true;
+                    siteInList = true;
                     break;
                 }
             }
 
-            return this.allowSite;
+            if (siteInList) {
+                if (popupBlockerConfigs.mode === 'allow') {
+                    blocking = false;
+                } else {
+                    blocking = true;
+                }
+            } else {
+                if (popupBlockerConfigs.mode === 'allow') {
+                    blocking = true;
+                } else {
+                    blocking = false;
+                }
+            }
+
+            return blocking;
         },
         logs: function (str) {
             if (global.console) global.console.log(str, this.host);
@@ -113,8 +133,8 @@ var popupBlockerConfigs = {
 
             for (var i = 0; i < allLinksSize; i++) {
                 var link = allLinks[i];
-
-                if (!this.testHost(this.host, link.host) && !link.dataset.popupblocker && (link.onclick || (link.eventListenerList && link.eventListenerList.click))) {
+                /*jshint scripturl:true*/
+                if (!link.dataset.popupblocker && (link.protocol === 'javascript:' || !this.testHost(this.host, link.host) && (link.onclick || (link.eventListenerList && link.eventListenerList.click)))) {
                     link.addEventListener('click', hanler, false);
                     link.addEventListener('dblclick', dbhanler, false);
                 }
@@ -125,10 +145,10 @@ var popupBlockerConfigs = {
     };
 
     if (popupBlocker.userscript.checkSite()) {
+        popupBlocker.userscript.logs('Popup blocker is running.');
+    } else {
         popupBlocker.userscript.logs('Popup blocker is disabled.');
         return;
-    } else {
-        popupBlocker.userscript.logs('Popup blocker is running.');
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -145,7 +165,7 @@ var popupBlockerConfigs = {
             return false;
         };
 
-        if (popupBlockerConfigs.click) return;
+        if (popupBlockerConfigs.link) return;
         var oldXHR = global.XMLHttpRequest;
 
         function newXHR() {
