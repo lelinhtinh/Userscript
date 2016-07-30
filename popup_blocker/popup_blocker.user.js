@@ -2,7 +2,7 @@
 // @name         popup blocker
 // @namespace    http://baivong.github.io/
 // @description  Block all javascript popup and link has click event. Double click to open link blocked.
-// @version      2.0.0
+// @version      2.0.1
 // @icon         http://i.imgur.com/yUHcAyG.png
 // @author       Zzbaivong
 // @license      MIT
@@ -110,21 +110,25 @@ var popupBlockerConfigs = {
                         $doc = $(document),
                         $event = $doc.data('events') || $._data(document, 'events');
 
-                    if (!$doc.data('popupblocker') && $event && $event.click) $.each($event.click, function () {
+                    if ($event && $event.click) $.each($event.click, function () {
                         var _this = this.selector;
 
                         if (_this) $(_this).each(function (i, ele) {
                             var $this = $(ele),
                                 dataSelector;
                             if ($this[0].tagName !== 'A') return;
-                            if (blocker.testHost(blocker.host, ele.host)) return;
-
-                            $this.attr('data-selector', 'popupblocker' + i);
-                            dataSelector = 'a[data-selector="popupblocker' + i + '"]';
-                            if ($.fn.on) {
-                                $doc.on('click', dataSelector, hanler).on('dblclick', dataSelector, dbhanler).data('popupblocker', true);
+                            if (typeof $doc.attr('data-jqpopupblocker') !== 'undefined') return;
+                            if (!blocker.testHost(blocker.host, ele.host) && /^https?:$/i.test(ele.protocol)) {
+                                $this.attr('data-selector', 'popupblocker' + i);
+                                dataSelector = 'a[data-selector="popupblocker' + i + '"]';
+                                if ($.fn.on) {
+                                    $doc.on('click', dataSelector, hanler).on('dblclick', dataSelector, dbhanler);
+                                } else {
+                                    $(dataSelector).live('click', hanler).live('dblclick', dbhanler);
+                                }
+                                $this.attr('data-jqpopupblocker', true);
                             } else {
-                                $(dataSelector).live('click', hanler).live('dblclick', dbhanler).attr('data-popupblocker', true);
+                                $this.attr('data-jqpopupblocker', false);
                             }
                         });
                     });
@@ -134,12 +138,13 @@ var popupBlockerConfigs = {
             for (var i = 0; i < allLinksSize; i++) {
                 var link = allLinks[i];
                 /*jshint scripturl:true*/
-                if (!link.dataset.popupblocker && (link.protocol === 'javascript:' || !this.testHost(this.host, link.host) && (link.onclick || (link.eventListenerList && link.eventListenerList.click)))) {
+                if (typeof link.dataset.popupblocker === 'undefined' && /^https?:$/i.test(link.protocol) && !this.testHost(this.host, link.host) && (link.onclick || (link.eventListenerList && link.eventListenerList.click))) {
+                    link.dataset.jspopupblocker = 'true';
                     link.addEventListener('click', hanler, false);
                     link.addEventListener('dblclick', dbhanler, false);
+                } else {
+                    link.dataset.jspopupblocker = 'false';
                 }
-
-                link.dataset.popupblocker = true;
             }
         }
     };
