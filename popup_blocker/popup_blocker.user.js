@@ -2,7 +2,7 @@
 // @name         popup blocker
 // @namespace    http://baivong.github.io/
 // @description  Block all javascript popup and link has click event. Double click to open link blocked.
-// @version      2.0.1
+// @version      2.0.2
 // @icon         http://i.imgur.com/yUHcAyG.png
 // @author       Zzbaivong
 // @license      MIT
@@ -18,7 +18,7 @@ var popupBlockerConfigs = {
     sites: 'google.com|google.com.vn|facebook.com|twitter.com|github.com|youtube.com|imgur.com|messenger.com|openuserjs.org|greasyfork.org|worldcosplay.net', // Domain
     mode: 'allow', // allow|block
     popup: false, // true|false
-    link: false // true|false
+    link: true // true|false
 };
 
 (function (global) {
@@ -157,17 +157,25 @@ var popupBlockerConfigs = {
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        var blocker = popupBlocker.userscript;
+
         if (('Discourse' in global)) {
-            popupBlocker.userscript.logs('Popup blocker is disabled on Discourse.');
+            blocker.logs('Popup blocker is disabled on Discourse.');
             return;
         }
 
         global._open = global.open;
 
         if (!popupBlockerConfigs.popup) global.open = function (url, target, params) {
-            popupBlocker.userscript.counter++;
-            popupBlocker.userscript.warns(url + '\n' + target + '\n' + params);
-            return false;
+            if (!url) {
+                return global._open(null, target, params);
+            } else if (blocker.testHost(blocker.host, url.match(/^https?:\/\/([^\/]+)\//)[1])) {
+                return global._open(url, target, params);
+            } else {
+                blocker.counter++;
+                blocker.warns(url + '\n' + target + '\n' + params);
+                return false;
+            }
         };
 
         if (popupBlockerConfigs.link) return;
@@ -176,13 +184,13 @@ var popupBlockerConfigs = {
         function newXHR() {
             var realXHR = new oldXHR();
             realXHR.addEventListener('readystatechange', function () {
-                popupBlocker.userscript.init();
+                blocker.init();
             }, false);
             return realXHR;
         }
         global.XMLHttpRequest = newXHR;
 
-        popupBlocker.userscript.init();
+        blocker.init();
 
     });
 
