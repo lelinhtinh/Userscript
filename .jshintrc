@@ -3,7 +3,6 @@
     "browser": true,
     "devel": true,
     "jquery": true,
-    "node": true,
     "boss": true,
     "curly": false,
     "eqeqeq": true,
