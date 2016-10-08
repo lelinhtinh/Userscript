@@ -2,7 +2,7 @@
 // @name         TruyenYY downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyenyy.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
-// @version      1.2.1
+// @version      1.3.0
 // @icon         http://i.imgur.com/obHcq8v.png
 // @author       Zzbaivong
 // @license      MIT
@@ -14,7 +14,7 @@
 // @connect      self
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-idle
-// @grant        none
+// @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
 (function ($, window, document, undefined) {
@@ -34,37 +34,42 @@
     }
 
     function getContent(url) {
-        $.get(url).done(function (response) {
+        GM_xmlhttpRequest({
+            method: 'GET',
+            url: url,
+            onload: function (response) {
 
-            var $data = $(response),
-                title = $data.find('h1').text().trim(),
-                $chapter = $data.find('#id_noidung_chuong'),
-                $notContent = $chapter.find('script, style'),
-                $referrer = $chapter.find('[style]').filter(function () {
-                    return (this.style.fontSize === '1px' || this.style.fontSize === '0px' || this.style.color === 'white');
-                });
+                var $data = $(response.responseText),
+                    title = $data.find('h1').text().trim(),
+                    $chapter = $data.find('#id_noidung_chuong'),
+                    $notContent = $chapter.find('script, style'),
+                    $referrer = $chapter.find('[style]').filter(function () {
+                        return (this.style.fontSize === '1px' || this.style.fontSize === '0px' || this.style.color === 'white');
+                    });
 
-            if ($chapter.length && title !== 'Chương thứ yyy: Ra đảo') {
+                if ($chapter.length && title !== 'Chương thứ yyy: Ra đảo') {
 
-                console.log('%cComplete: ' + url, 'color:green;');
-                $download.html('<i class="icon-refresh icon-white"></i> ' + count + '/' + max).css('background', 'orange');
+                    console.log('%cComplete: ' + url, 'color:green;');
+                    $download.html('<i class="icon-refresh icon-white"></i> ' + count + '/' + max).css('background', 'orange');
 
-                if ($notContent.length) $notContent.remove();
-                if ($referrer.length) $referrer.remove();
-                txt += '<h2 class="title">' + title + '</h2>' + $chapter.html();
+                    if ($notContent.length) $notContent.remove();
+                    if ($referrer.length) $referrer.remove();
+                    txt += '<h2 class="title">' + title + '</h2>' + $chapter.html();
 
-                ++count;
-                getChapter();
+                    ++count;
+                    getChapter();
 
-            } else {
-                downloadFail(url, true);
+                } else {
+                    downloadFail(url, true);
+                }
+
+            },
+            onerror: function (err) {
+
+                downloadFail(url);
+                console.error(err);
+
             }
-
-        }).fail(function (err) {
-
-            downloadFail(url);
-            console.error(err);
-
         });
     }
 
