@@ -2,7 +2,7 @@
 // @name         TruyenYY downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyenyy.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
-// @version      1.2.0
+// @version      1.2.1
 // @icon         http://i.imgur.com/obHcq8v.png
 // @author       Zzbaivong
 // @license      MIT
@@ -41,7 +41,7 @@
                 $chapter = $data.find('#id_noidung_chuong'),
                 $notContent = $chapter.find('script, style'),
                 $referrer = $chapter.find('[style]').filter(function () {
-                    return (this.style.fontSize === '1px' || this.style.color === 'white');
+                    return (this.style.fontSize === '1px' || this.style.fontSize === '0px' || this.style.color === 'white');
                 });
 
             if ($chapter.length && title !== 'Chương thứ yyy: Ra đảo') {
