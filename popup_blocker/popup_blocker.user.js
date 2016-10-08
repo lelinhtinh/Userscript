@@ -2,7 +2,7 @@
 // @name         popup blocker
 // @namespace    http://baivong.github.io/
 // @description  Block all javascript popup and link has click event. Double click to open link blocked.
-// @version      2.1.0
+// @version      2.2.0
 // @icon         http://i.imgur.com/yUHcAyG.png
 // @author       Zzbaivong
 // @license      MIT
@@ -19,15 +19,15 @@ var zZpopupBlockerRulers = {
     scriptLink: { // script links are meant links have javascript event listeners/handlers
 
         active: true, // true : Block script links
-        // false: Disable block script links
+        //               false: Disable block script links
+
+        strict: false, // true : Block all script links
+        //                false: Block all script links, but ignore detect
+        //                      javascript event on dynamic element
 
         mode: 'block', // 'block': Only block script links on sites in the list below
-        // 'allow': Block script links on all sites, but ignore
-        //          sites in this list below
-
-        strict: true, // true : Block all script links
-        // false: Block all script links, but ignore detect
-        //        javascript event on dynamic element
+        //                'allow': Block script links on all sites, but ignore
+        //                         sites in this list below
 
         list: 'fiddle.jshell.net|jsfiddle.net'
             // list of domain names of sites
@@ -36,21 +36,21 @@ var zZpopupBlockerRulers = {
     popUp: { // Popup windows
 
         active: true, // true : Block popup
-        // false: Disable block popup
-
-        mode: 'allow', // 'block': Only block popup on sites in the list below
-        // 'allow': Block popup on all sites, but ignore
-        //          sites in this list below
+        //               false: Disable block popup
 
         strict: false, // true : Block all popups
-        // false: Block all popups, but ignore blank url
-        //        and internal url.
+        //                false: Block all popups, but ignore blank url
+        //                       and internal url.
+
+        mode: 'allow', // 'block': Only block popup on sites in the list below
+        //                'allow': Block popup on all sites, but ignore
+        //                         sites in this list below
 
         list: 'google.com|google.com.vn|facebook.com|twitter.com|github.com|youtube.com|imgur.com|messenger.com|openuserjs.org|greasyfork.org|worldcosplay.net|devs.forumvi.com'
             // list of domain names of sites
     },
 
-    showLog: true // for debug
+    showLog: false // for debug
 
 };
 
@@ -121,88 +121,16 @@ var zZpopupBlockerRulers = {
         warns: function (str) {
             if (zZpopupBlockerRulers.showLog && global.console) global.console.warn(this.counter, 'popups blocked\n' + str);
         },
-        testLink: function () {
-            var blocker = this,
-                allLinks = document.getElementsByTagName('a'),
-                allLinksSize = allLinks.length,
-                hanler = function (event) {
-                    event.preventDefault();
-                    var _this = (this === document) ? event.target : this;
-
-                    blocker.counter++;
-                    blocker.warns(_this.href + '\n' + _this.target + '\nClick');
-                },
-                dbhanler = function (event) {
-                    event.preventDefault();
-                    var _this = (this === document) ? event.target : this;
-
-                    global._open(_this.href, '_blank');
-                };
-
-            if (!allLinksSize) return;
-
-            if (zZpopupBlockerRulers.scriptLink.strict) {
-                if (document.onclick) {
-                    //
-                }
-
-                if (document.eventListenerList && document.eventListenerList.click) {
-                    //
-                }
-
-                if (typeof global.jQuery !== 'undefined') {
-                    $(function () {
-                        var $ = global.jQuery,
-                            $doc = $(document),
-                            $event = $doc.data('events') || $._data(document, 'events');
-
-                        if ($event && $event.click) $.each($event.click, function () {
-                            var _this = this.selector;
-
-                            if (_this) $(_this).each(function (i, ele) {
-                                var $this = $(ele),
-                                    dataSelector;
-
-                                if ($this[0].tagName !== 'A') return;
-                                if (typeof $doc.attr('data-jQpopupBlocker') !== 'undefined') return;
-
-                                if (!blocker.testHost(blocker.host, ele.host) && /^https?:$/i.test(ele.protocol)) {
-                                    $this.attr('data-selector', 'jQpopupBlocker' + i);
-                                    dataSelector = 'a[data-selector="jQpopupBlocker' + i + '"]';
-                                    if ($.fn.on) {
-                                        $doc.on('click', dataSelector, hanler).on('dblclick', dataSelector, dbhanler);
-                                    } else {
-                                        $(dataSelector).live('click', hanler).live('dblclick', dbhanler);
-                                    }
-                                    $this.attr('data-jQpopupBlocker', true);
-                                } else {
-                                    $this.attr('data-jQpopupBlocker', false);
-                                }
-                            });
-                        });
-                    });
-                }
-            }
-
-            for (var i = 0; i < allLinksSize; i++) {
-                var link = allLinks[i];
-                /*jshint scripturl:true*/
-                if (typeof link.dataset.popupBlocker === 'undefined' && /^https?:$/i.test(link.protocol) && !this.testHost(this.host, link.host) && (link.onclick || (link.eventListenerList && link.eventListenerList.click))) {
-                    link.dataset.popupBlocker = 'true';
-                    link.addEventListener('click', hanler, false);
-                    link.addEventListener('dblclick', dbhanler, false);
-                } else {
-                    link.dataset.popupBlocker = 'false';
-                }
-            }
-        },
         blockPopup: function () {
             var blocker = zZpopupBlocker.userscript;
 
             global._open = global.open;
 
             global.open = function (url, target, params) {
-                if (!zZpopupBlockerRulers.popUp.strict && (!url || blocker.testHost(blocker.host, url.match(/^https?:\/\/([^\/]+)\//)[1]))) {
+                if (!zZpopupBlockerRulers.popUp.strict) {
+                    var getHost = url.match(/^https?:\/\/([^\/]+)\//);
+                    if (getHost && blocker.testHost(blocker.host, getHost[1])) return;
+
                     if (!url) url = '';
 
                     return global._open(url, target, params);
@@ -216,25 +144,58 @@ var zZpopupBlockerRulers = {
         },
         blockScript: function () {
             document.addEventListener('DOMContentLoaded', function () {
-                var blocker = zZpopupBlocker.userscript;
+                var blocker = zZpopupBlocker.userscript,
 
-                if (('Discourse' in global)) {
-                    blocker.logs('Script links blocker ignore Discourse.');
-                    return;
-                }
+                    hanler = function (event) {
+                        event.preventDefault();
 
-                var oldXHR = global.XMLHttpRequest;
+                        blocker.counter++;
+                        blocker.warns(this.href + '\n' + this.target + '\nClick');
+                    },
+                    dbhanler = function (event) {
+                        event.preventDefault();
 
-                function newXHR() {
-                    var realXHR = new oldXHR();
-                    realXHR.addEventListener('readystatechange', function () {
-                        blocker.testLink();
-                    }, false);
-                    return realXHR;
-                }
-                global.XMLHttpRequest = newXHR;
+                        global._open(this.href, '_blank');
+                    };
 
-                blocker.testLink();
+                document.addEventListener('mouseover', function () {
+                    var _this = (this === document) ? event.target : this;
+
+                    if (_this.tagName !== 'A') return;
+                    if (typeof _this.dataset.popupBlocker !== 'undefined') return;
+
+                    if (/^https?:$/i.test(_this.protocol) && !blocker.testHost(blocker.host, _this.host) && (_this.onclick || (_this.eventListenerList && _this.eventListenerList.click))) {
+                        _this.dataset.popupBlocker = 'true';
+                        _this.addEventListener('click', hanler, false);
+                        _this.addEventListener('dblclick', dbhanler, false);
+                    } else {
+                        _this.dataset.popupBlocker = 'false';
+                    }
+                });
+
+
+                if (!zZpopupBlockerRulers.scriptLink.strict) return;
+
+                if (document.onclick) document.onclick = null;
+                if (document.documentElement.onclick) document.documentElement.onclick = null;
+                if (document.body.onclick) document.body.onclick = null;
+
+                if (typeof global.jQuery === 'undefined') return;
+                global.jQuery(function ($) {
+                    var $doc = $(document),
+                        $event = $doc.data('events') || $._data(document, 'events');
+
+                    if ($event && $event.click) $.each($event.click, function () {
+                        var _this = this.selector;
+                        if (!_this) return;
+
+                        if ($.fn.on) {
+                            $doc.on('click', _this, hanler).on('dblclick', _this, dbhanler);
+                        } else {
+                            $(_this).live('click', hanler).live('dblclick', dbhanler);
+                        }
+                    });
+                });
             });
         }
     };
@@ -254,4 +215,3 @@ var zZpopupBlockerRulers = {
     }
 
 })(window, document);
-
