@@ -2,7 +2,7 @@
 // @name         YYApp downloader
 // @namespace    https://baivong.github.io/
 // @description  Tải truyện từ app.truyenyy.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
-// @version      0.1.0
+// @version      0.2.0
 // @icon         http://i.imgur.com/3lomxTC.png
 // @author       Zzbaivong
 // @license      MIT
@@ -16,23 +16,23 @@
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
-(function($, window, document, undefined) {
+(function ($, window, document, undefined) {
     'use strict';
 
     function downloadFail() {
         $download.css('background', '#f26a65');
         titleError.push(title);
 
-        console.log('%cError: ' + url, 'color:red;');
+        if (debug) console.log('%cError: ' + url, 'color:red;');
     }
 
     function getContent() {
         GM_xmlhttpRequest({
             method: 'GET',
             url: url,
-            onload: function(response) {
+            onload: function (response) {
                 var $data = $(response.responseText),
-                    $chapter = $data.find('#inner_chap_content > div'),
+                    $chapter = $data.find('#inner_chap_content'),
                     $next = $data.find('.weui_btn:contains("Tiếp"):last');
 
                 title = $data.find('.chap-title').text().trim();
@@ -49,7 +49,7 @@
                     txt += '<h2 class="title">' + title + '</h2>' + $chapter.html();
                     count++;
 
-                    console.log('%cComplete: ' + url, 'color:green;');
+                    if (debug) console.log('%cComplete: ' + url, 'color:green;');
                 }
 
                 document.title = '[' + count + '] ' + pageName;
@@ -60,7 +60,7 @@
 
                     if (titleError.length) {
                         titleError = '<h4>Các chương lỗi: <font color="gray">' + titleError.join(', ') + '</font></h4>';
-                        console.log('Các chương lỗi:', titleError);
+                        if (debug) console.log('Các chương lỗi:', titleError);
                     } else {
                         titleError = '';
                     }
@@ -79,7 +79,7 @@
                     saveAs(blob, fileName);
 
                     $(window).off('beforeunload');
-                    console.log('%cDownload Finished!', 'color:blue;');
+                    if (debug) console.log('%cDownload Finished!', 'color:blue;');
                     document.title = '[⇓] ' + pageName;
 
                     return;
@@ -88,10 +88,10 @@
                 url = $next.attr('href');
                 getContent();
             },
-            onerror: function(err) {
+            onerror: function (err) {
                 downloadFail();
 
-                setTimeout(function() {
+                setTimeout(function () {
                     getContent();
                 }, 3000);
             }
@@ -124,19 +124,21 @@
         title = '',
         titleError = [],
 
-        credits = '<p>Truyện được tải từ <a href="' + location.href + '">TruyenYY</a></p><p>Userscript được viết bởi: <a href="https://baivong.github.io/">Zzbaivong</a></p>';
+        credits = '<p>Truyện được tải từ <a href="' + location.href + '">TruyenYY</a></p><p>Userscript được viết bởi: <a href="https://baivong.github.io/">Zzbaivong</a></p>',
+
+        debug = false;
 
 
     $('.btns .flexbox:last').append($wrap.append($download));
 
-    $download.on('click', function(e) {
+    $download.on('click', function (e) {
         e.preventDefault();
         if (disableClick) return;
         disableClick = true;
 
         getContent();
 
-        $(window).on('beforeunload', function() {
+        $(window).on('beforeunload', function () {
             return 'Truyện đang được tải xuống...';
         });
     });
