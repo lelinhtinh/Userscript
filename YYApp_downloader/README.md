@@ -1,6 +1,6 @@
 # YYApp downloader
 
-Tải truyện từ **app.truyenyy.com** định dạng htm. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc.
+Tải truyện từ **app.truyenyy.com** định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc.
 
 ## Demo
 
@@ -29,9 +29,15 @@ Tại trang **Import from HTML document**:
 
 Nhấn nút **Import**.
 
+Sau khi import thành công, bạn sẽ được chuyển đến trang cấu hình cho Ebook.
+
+Mục **Conver Image** là nơi bạn chèn ảnh bìa cho Ebook. Nhấn nút **Add a Conver image** và chọn ảnh bạn muốn làm bìa rồi nhấn nút **Update**.
+
 Để tạo mục lục cho các chương truyện, chọn mục **Table of contents**, nhấn nút **Add a Table of contents**.
 
-Bạn điền vào 3 ô trên dòng **First level** lần lượt là:
+Ở phần **Table of Contents Title**, bạn điền: **Mục lục** vào ô nhập liệu.
+
+Phần **Table of Contents Generation rules**, bạn điền vào 3 ô trên dòng **First level** lần lượt là:
 
 1. Tagname: **h2**
 2. Attribute: **class**
@@ -39,7 +45,7 @@ Bạn điền vào 3 ô trên dòng **First level** lần lượt là:
 
 Nhấn nút **Update**.
 
-Đến đây bạn đã hoàn thành những việc cần thiết để tạo Ebook, Nhấn menu **Build**(F7) ở phía trên, sau đó chọn nút **Build** ở trang hiện ra để tạo Ebook định dạng prc. File này sẽ được lưu ở thư mục bạn chọn ở **Create publication in folder**. Trong thư mục này còn chứa một số file cấu hình khác, bạn có thể xóa chúng đi.
+Đến đây bạn đã hoàn thành những việc cần thiết để tạo Ebook, Nhấn menu **Build** ở phía trên, sau đó chọn nút **Build** ở trang hiện ra để tạo Ebook định dạng **prc**. File này sẽ được lưu ở thư mục bạn chọn ở **Create publication in folder**. Trong thư mục này còn chứa một số file cấu hình khác, bạn có thể xóa chúng đi.
 
 Nếu muốn chỉnh Ebook chi tiết hơn, trước khi build, bạn có thể điều chỉnh 2 mục **Conver Image** và **Metadata**. Nhớ nhấn nút **Update** sau khi điều chỉnh.
 
