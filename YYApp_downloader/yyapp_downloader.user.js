@@ -2,7 +2,7 @@
 // @name         YYApp downloader
 // @namespace    https://baivong.github.io/
 // @description  Tải truyện từ app.truyenyy.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
-// @version      0.2.0
+// @version      0.3.0
 // @icon         http://i.imgur.com/3lomxTC.png
 // @author       Zzbaivong
 // @license      MIT
@@ -45,6 +45,11 @@
                     downloadFail();
                 } else {
                     $download.css('background', 'orange');
+
+                    var $img = $chapter.find('img');
+                    if ($img.length) $img.replaceWith(function () {
+                        return '<a href="' + this.src + '">Click để xem ảnh</a>';
+                    });
 
                     txt += '<h2 class="title">' + title + '</h2>' + $chapter.html();
                     count++;
