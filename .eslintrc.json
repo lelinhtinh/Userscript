@@ -21,6 +21,11 @@
         "semi": [
             "error",
             "always"
-        ]
+        ],
+        "no-console": 0,
+        "globals": {
+	        "saveAs": false,
+	        "JSZip": false
+	    }
     }
 }
