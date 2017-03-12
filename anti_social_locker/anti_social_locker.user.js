@@ -2,12 +2,13 @@
 // @name         anti social locker
 // @namespace    http://baivong.github.io/
 // @description  Anti social locker plugin required user like or share before viewing content. If script doesn't work, please refresh the page to rebuild the cache and try again.
-// @version      0.9.1
+// @version      1.0.0
 // @icon         http://i.imgur.com/nOuUrIW.png
 // @author       Zzbaivong
 // @license      MIT
 // @match        http://*/*
 // @match        https://*/*
+// @noframes
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-start
 // @grant        none
@@ -18,12 +19,28 @@
 
     document.addEventListener('DOMContentLoaded', function () {
 
+        // Panda Lockers (https://codecanyon.net/item/optin-panda-for-wordpress/10224279)
+        // Social Locker for Wordpress (https://codecanyon.net/item/social-locker-for-wordpress/3667715)
+        (function () {
+            if (!document.querySelectorAll('.onp-sl-content').length && !document.querySelectorAll('[data-lock-id]').length) return;
+
+            var css = '.onp-sl-content,[data-lock-id]{display:block!important}.onp-sl,.onp-sl-transparence-mode,.onp-sl-overlap-box{display:none!important}.onp-sl-blur-area{filter:none!important}',
+                head = document.head || document.getElementsByTagName('head')[0],
+                style = document.createElement('style');
+
+            style.appendChild(document.createTextNode(css));
+
+            head.appendChild(style);
+        })();
+
+
         if (!('jQuery' in global)) return;
 
         var unlocked = 'Unlocked by Anti Social Locker',
             counter = 0,
+            debug = false,
             showCounter = function () {
-                if (global.console) global.console.log(counter, 'Social Locker have been disabled!');
+                if (debug) global.console.log(counter, 'Social Locker have been disabled!');
             },
             setCookie = function (cname, cvalue, exdays, path) {
                 var domain = '',
@@ -60,53 +77,6 @@
                 showCounter();
 
                 return this;
-            };
-        })(jQuery);
-
-        // Panda Lockers (https://codecanyon.net/item/optin-panda-for-wordpress/10224279)
-        (function ($) {
-            if ($.fn.pandalocker) jQuery.fn.pandalocker = function () {
-                var $lock = $('[data-lock-id]');
-
-                $('[data-lock-id]').removeAttr('style').attr('data-lock-id', unlocked);
-
-                counter += $lock.length;
-                showCounter();
-
-                return this;
-            };
-        })(jQuery);
-
-        // Social Locker for Wordpress (https://codecanyon.net/item/social-locker-for-wordpress/3667715)
-        (function ($) {
-            if ('bizpanda' in global) global.bizpanda.initLockers = function () {
-                $.each(global.bizpanda.lockerOptions, function (k, v) {
-                    var mode = v.options.overlap.mode,
-                        $lock = $('[data-lock-id="' + k + '"]');
-
-                    $lock.removeAttr('style class').attr('data-lock-id', unlocked);
-                    counter += $lock.length;
-
-                    if (mode === 'full') {
-                        $lock.next().remove();
-                    } else if (mode === 'transparence') {
-                        $lock.find('.onp-sl-transparence-mode').remove();
-                    } else if (mode === 'blurring') {
-                        $lock.closest('.onp-sl-content-wrap').replaceWith($lock);
-                    } else {
-                        counter -= $lock.length;
-                        if (global.console) global.console.warn(mode, '=> Anti Social Locker unknown this mode. Please report at: https://github.com/baivong/Userscript/issues');
-                    }
-
-                    showCounter();
-                });
-
-                global.bizpanda = {};
-                global.bizpanda.initLockers = function () {
-                    return;
-                };
-
-                return false;
             };
         })(jQuery);
 
