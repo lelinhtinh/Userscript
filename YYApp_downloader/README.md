@@ -1,6 +1,6 @@
 # YYApp downloader
 
-Tải truyện từ **app.truyenyy.com** định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc.
+Tải truyện từ **app.truyenyy.com** định dạng txt hoặc html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc.
 
 ## Demo
 
@@ -10,15 +10,27 @@ Tải truyện từ **app.truyenyy.com** định dạng html. Sau đó, bạn c�
 
 ### Tải truyện
 
-Script hoạt động sẽ tạo ra nút **Tải xuống** tại trang giới thiệu truyện, click vào sẽ tải bộ truyện đó. Bạn cũng có thể theo dõi quá trình trong **Console** (F12 > console), nếu chương truyện lỗi sẽ hiện link màu đỏ.
+Script hoạt động sẽ tạo ra nút **Tải xuống** tại trang giới thiệu truyện, click vào sẽ tải bộ truyện đó.
+Bạn có thể theo dõi quá trình trong **Console** *(F12 > console)*, nếu chương truyện lỗi sẽ hiện link màu đỏ.
 
-Khi quá trình tải hoàn tất, định dạng file tải xuống là **ten-truyen.html**.
+Khi quá trình tải hoàn tất, định dạng file tải xuống là **txt**. Nếu bạn muốn sử dụng định dạng **html**, hãy chỉnh tham số `textOnly` trong mã nguồn thành `false`.
 
-### Tạo Ebook
+### Đọc truyện
 
-Tải phần mềm [Mobipocket Creator](http://www.mobipocket.com/en/downloadsoft/DownloadCreator.asp).
+Với định dạng **txt**, bạn có thể đọc trực tiếp bằng các **Ebook Reader** phổ biến trên thiết bị của bạn. Ví dụ:
 
-Sau khi cài đặt, chạy Mobipocket Creator, trong mục **Import From Exiting File**, nhấp vào **HTML document**.
+* Windows: [MobiPocket Reader](http://w7.getpedia.net/data/soft/2015/09/17/mobireadersetup.msi).
+* Linux: [FBReader](https://fbreader.org/content/fbreader-beta-linux-desktop).
+* Windows Phone: [MoHoo Reader](https://www.microsoft.com/vi-vn/store/p/mohoo-reader/9wzdncrfj14v). *Có thể cần sửa định dạng thành `.txtbook` và nên thiết lập **Setting >> Reading > Scroll free : On** để tránh lỗi ngắt chữ*.
+* Android: [AlReader](https://play.google.com/store/apps/details?id=com.neverland.alreader).
+
+Định dạng **html** thường không được hỗ trợ đọc trực tiếp hoặc có nhiều hạn chế, bạn nên chuyển sang dạng **prc** theo hướng dẫn dưới đây.
+
+### Tạo ebook prc
+
+Tải phần mềm [Mobipocket Creator](http://download.cnet.com/Mobipocket-Creator/3000-13455_4-75451639.html). Khi cài đặt, nên chọn phiên bản **Creator Home Edition**.
+
+Sau khi cài đặt hoàn tất, chạy Mobipocket Creator, trong mục **Import From Exiting File**, nhấp vào **HTML document**.
 
 Tại trang **Import from HTML document**:
 
@@ -46,14 +58,3 @@ Phần **Table of Contents Generation rules**, bạn điền vào 3 ô trên dò
 Nhấn nút **Update**.
 
 Đến đây bạn đã hoàn thành những việc cần thiết để tạo Ebook, Nhấn menu **Build** ở phía trên, sau đó chọn nút **Build** ở trang hiện ra để tạo Ebook định dạng **prc**. File này sẽ được lưu ở thư mục bạn chọn ở **Create publication in folder**. Trong thư mục này còn chứa một số file cấu hình khác, bạn có thể xóa chúng đi.
-
-Nếu muốn chỉnh Ebook chi tiết hơn, trước khi build, bạn có thể điều chỉnh 2 mục **Conver Image** và **Metadata**. Nhớ nhấn nút **Update** sau khi điều chỉnh.
-
-## Chú ý
-
-Nếu cần chuyển đổi sang định dạng khác như .epub, .mobi, ... để đọc trên điện thoại, máy đọc sách, ... bạn có thể dùng công cụ trực tuyến như [ToePub](http://toepub.com/vi/), [Zamzar](http://www.zamzar.com/). Hoặc, dùng phần mềm [Calibre](http://calibre-ebook.com/download), [Hamster ebook converter](http://vi.hamstersoft.com/free-ebook-converter/).
-
-### Các script tương tự
-
-* [TruyenCV downloader](https://github.com/baivong/Userscript/tree/master/truyenCV_downloader).
-* [TruyenYY downloader](https://github.com/baivong/Userscript/tree/master/truyenYY_downloader).
