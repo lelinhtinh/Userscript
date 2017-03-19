@@ -15,6 +15,19 @@ Bạn có thể theo dõi quá trình trong **Console** *(F12 > console)*, nếu
 
 Khi quá trình tải hoàn tất, định dạng file tải xuống là **txt**. Nếu bạn muốn sử dụng định dạng **html**, hãy chỉnh tham số `textOnly` trong mã nguồn thành `false`.
 
+#### Chọn chương bắt đầu tải
+
+Click chuột phải trên nút **Tải xuống** và nhập URL của chương cần bắt đầu vào khung nhập liệu, tiến trình sẽ bắt đầu từ chương đó đến cuối danh sách.
+
+#### Tải từng chương riêng biệt
+
+Nhấn vào nút **Danh Sách Chương** và Click chuột phải trên liên kết chương cần tải trong danh mục.
+
+#### Dừng và tải xuống
+
+Khi gặp lỗi trong quá trình tải mà không thể tiếp tục, tiến trình sẽ tự dừng và tải truyện.
+Bạn có thể dừng và tải truyện ngay lập tức bằng cách click vào nút **Tải xuống** khi tiến trình đang chạy.
+
 ### Đọc truyện
 
 Với định dạng **txt**, bạn có thể đọc trực tiếp bằng các **Ebook Reader** phổ biến trên thiết bị của bạn. Ví dụ:
@@ -35,9 +48,9 @@ Sau khi cài đặt hoàn tất, chạy Mobipocket Creator, trong mục **Import
 Tại trang **Import from HTML document**:
 
 1. Choose a file: Nhấn **Browse...**, chọn file truyện bạn vừa tải trước đó.
-2. Create publication in folder: Đây là vị trí chứa ebook sau khi tạo, nên **để mặc định**.
-3. Language: Chọn **Vietnamese**.
-4. Encoding: Chọn **UTF-8**.
+1. Create publication in folder: Đây là vị trí chứa ebook sau khi tạo, nên **để mặc định**.
+1. Language: Chọn **Vietnamese**.
+1. Encoding: Chọn **UTF-8**.
 
 Nhấn nút **Import**.
 
@@ -52,8 +65,8 @@ Mục **Conver Image** là nơi bạn chèn ảnh bìa cho Ebook. Nhấn nút **
 Phần **Table of Contents Generation rules**, bạn điền vào 3 ô trên dòng **First level** lần lượt là:
 
 1. Tagname: **h2**
-2. Attribute: **class**
-3. Value: **title**
+1. Attribute: **class**
+1. Value: **title**
 
 Nhấn nút **Update**.
 
