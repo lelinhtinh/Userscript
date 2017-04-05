@@ -4,7 +4,7 @@ Tải truyện từ **truyenfull.vn** định dạng txt hoặc html. Sau đó, 
 
 ## Demo
 
-![TruyenFull downloader](https://raw.githubusercontent.com/baivong/Userscript/master/TruyenFull_downloader/screenshot/TruyenFull.png)
+![TruyenFull downloader](https://raw.githubusercontent.com/baivong/Userscript/master/truyenFull_downloader/screenshot/TruyenFull.png)
 
 ## Hướng dẫn
 
