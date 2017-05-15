@@ -2,190 +2,111 @@
 // @name         Download nhạc mp3 zing 320kbps
 // @namespace    baivong.download.mp3zing
 // @description  Download nhạc nhất lượng cao 320kbps tại mp3.zing.vn
-// @version      4.0.1
+// @version      5.0.0
 // @icon         http://i.imgur.com/PnF4UN2.png
 // @author       Zzbaivong
 // @license      MIT
-// @match        http://mp3.zing.vn/bai-hat/*.html*
-// @match        http://mp3.zing.vn/album/*.html*
-// @match        http://mp3.zing.vn/playlist/*.html*
+// @match        http://mp3.zing.vn/bai-hat/*
+// @match        http://mp3.zing.vn/album/*
+// @match        http://mp3.zing.vn/playlist/*
 // @match        http://mp3.zing.vn/nghe-si/*
 // @match        http://mp3.zing.vn/tim-kiem/bai-hat.html?q=*
-// @require      https://code.jquery.com/jquery-2.2.4.min.js
-// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=135609
+// @match        http://mp3.zing.vn/bang-xep-hang/*
+// @match        https://linksvip.net/*
+// @require      https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
 // @noframes
-// @connect      self
-// @connect      zdn.vn
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-idle
-// @grant        GM_xmlhttpRequest
-// @grant        GM_addStyle
-// @grant        GM_download
+// @grant        none
 // ==/UserScript==
 
-function bodauTiengViet(str) {
-    str = str.toLowerCase();
-    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
-    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
-    str = str.replace(/ì|í|ị|ỉ|ĩ/g, 'i');
-    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o');
-    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u');
-    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y');
-    str = str.replace(/đ/g, 'd');
-    str = str.replace(/\W+/g, ' ');
-    str = str.replace(/\s/g, '-');
-    return str;
-}
+/* global waitForKeyElements */
+(function ($, window, document) {
+    'use strict';
 
-function downloadSong(songId, progress, complete, error) {
-    GM_xmlhttpRequest({
-        method: 'GET',
-        url: 'http://api.mp3.zing.vn/api/mobile/song/getsonginfo?requestdata={"id":"' + songId + '"}',
-        onload: function (data) {
-            data = $.parseJSON(data.response);
+    function addStyle(css) {
+        var head = document.head || document.getElementsByTagName('head')[0],
+            style = document.createElement('style');
 
-            if (!data.song_id || !data.source[320]) {
-                console.error(data);
-                error();
-                return;
-            }
+        style.type = 'text/css';
+        style.appendChild(document.createTextNode(css));
+        head.appendChild(style);
+    }
 
-            var songSource = data.source[320],
-                songName = bodauTiengViet(data.title + '_' + data.artist) + '.mp3';
-            if (typeof GM_download !== 'undefined') {
-                progress('');
-                GM_download({
-                    url: songSource,
-                    name: songName,
-                    saveAs: false,
-                    onload: function () {
-                        complete('GM_download', songName);
-                    },
-                    onerror: function (e) {
-                        console.log(e);
-                        error();
-                    }
+    function linksVip(songId) {
+        window.open('https://linksvip.net/?link=http://mp3.zing.vn/bai-hat/-/' + songId + '.html', 'mp3Zing320Helper_' + songId, 'height=10,width=10,left=0,top=99999,titlebar=no,toolbar=no,status=no,toolbar=no,scrollbars=no,menubar=no,location=no');
+    }
+
+    function postMessage(type) {
+        var message = {
+            id: window.name.split('_')[1],
+            class: type
+        };
+        opener.postMessage(message, 'http://mp3.zing.vn');
+
+        window.close();
+    }
+
+    function onMessage(e) {
+        if (e.origin !== 'https://linksvip.net') return;
+
+        $('.bv-download[data-id="' + e.data.id + '"]').removeClass('bv-waiting').addClass('bv-' + e.data.class);
+    }
+
+    if (location.host === 'mp3.zing.vn') {
+
+        window.addEventListener('message', onMessage, true);
+
+        addStyle('.bv-icon{background-image:url(http://static.mp3.zdn.vn/skins/zmp3-v4.1/images/icon.png)!important;background-repeat:no-repeat!important;background-position:-25px -2459px!important;}.bv-download{background-color:#721799!important;border-color:#721799!important;}.bv-download span{color:#fff!important;margin-left:8px!important;}.bv-disable,.bv-download:hover{background-color:#2c3e50!important;border-color:#2c3e50!important;}.bv-text{background-image:none!important;color:#fff!important;text-align:center!important;font-size:smaller!important;line-height:25px!important;}.bv-waiting{cursor:wait!important;background-color:#2980b9!important;border-color:#2980b9!important;}.bv-complete,.bv-complete:hover{background-color:#27ae60!important;border-color:#27ae60!important;}.bv-error,.bv-error:hover{background-color:#c0392b!important;border-color:#c0392b!important;}.bv-disable{cursor:not-allowed!important;opacity:0.4!important;}');
+
+        if (location.pathname.indexOf('/bai-hat/') === 0) {
+            var $btn = $('<a>', {
+                    'class': 'button-style-1 pull-left bv-download',
+                    href: '#download',
+                    'data-id': location.pathname.match(/\/(\w+)\.html/)[1],
+                    html: '<i class="zicon icon-dl"></i>'
+                }),
+                $txt = $('<span>', {
+                    text: 'Tải nhạc 320kbps'
                 });
-            } else {
-                GM_xmlhttpRequest({
-                    method: 'GET',
-                    url: songSource,
-                    responseType: 'blob',
-                    onload: function (source) {
-                        complete(source.response, songName);
-                    },
-                    onprogress: function (e) {
-                        if (e.total) {
-                            progress(Math.floor(e.loaded * 100 / e.total) + '%');
-                        } else {
-                            progress('');
-                        }
-                    },
-                    onerror: function (e) {
-                        console.error(e);
-                        error();
-                    }
-                });
-            }
-        },
-        onerror: function (e) {
-            console.error(e);
-            error();
+
+            $('#tabService').replaceWith($btn.append($txt));
+        } else {
+            $('.fn-dlsong').replaceWith(function () {
+                var songId = $(this).data('item').slice(5);
+
+                return '<a title="Tải nhạc 320kbps" class="bv-download bv-icon" href="#download" data-id="' + songId + '"></a>';
+            });
         }
-    });
-}
 
-GM_addStyle('.bv-icon{background-image:url(http://static.mp3.zdn.vn/skins/zmp3-v4.1/images/icon.png)!important;background-repeat:no-repeat!important;background-position:-25px -2459px!important;}.bv-download{background-color:#721799!important;border-color:#721799!important;}.bv-download span{color:#fff!important;margin-left:8px!important;}.bv-disable,.bv-download:hover{background-color:#2c3e50!important;border-color:#2c3e50!important;}.bv-text{background-image:none!important;color:#fff!important;text-align:center!important;font-size:smaller!important;line-height:25px!important;}.bv-waiting{cursor:wait!important;background-color:#2980b9!important;border-color:#2980b9!important;}.bv-complete{background-color:#27ae60!important;border-color:#27ae60!important;}.bv-error{background-color:#c0392b!important;border-color:#c0392b!important;}.bv-disable{cursor:wait!important;opacity:0.4!important;}');
+        $('.bv-download').on('click', function (e) {
+            e.preventDefault();
+            var $this = $(this);
 
-window.URL = window.URL || window.webkitURL;
-
-if (location.pathname.indexOf('/bai-hat/') === 0) {
-
-    var $btn = $('<a>', {
-            'class': 'button-style-1 pull-left bv-download',
-            href: '#download',
-            html: '<i class="zicon icon-dl"></i>'
-        }),
-        $txt = $('<span>', {
-            text: 'Tải nhạc 320kbps'
-        }),
-        disableClick;
-
-    $('#tabService').replaceWith($btn.append($txt));
-
-    $btn.on('click', function (e) {
-        e.preventDefault();
-
-        if (disableClick) return;
-        disableClick = true;
-
-        $btn.addClass('bv-waiting');
-        $txt.text('Chờ một chút...');
-
-        downloadSong($('#tabAdd').data('id'), function (percent) {
-            $txt.text('Đang tải... ' + percent);
-        }, function (blob, fileName) {
-
-            if (blob !== 'GM_download') {
-                $btn.attr({
-                    href: window.URL.createObjectURL(blob),
-                    download: fileName
-                }).off('click');
-                saveAs(blob, fileName);
-            } else {
-                disableClick = false;
-            }
-
-            $btn.removeClass('bv-waiting').addClass('bv-complete');
-            $txt.text('Nhấn để tải nhạc');
-
-        }, function () {
-            $btn.removeClass('bv-waiting').addClass('bv-error');
-            $txt.text('Lỗi! Không tải được');
+            $this.removeClass('bv-waiting bv-complete bv-error').addClass('bv-waiting');
+            linksVip($(this).data('id'));
         });
-    });
 
-} else {
+    } else {
 
-    var disableClick = [];
+        if (window.name.indexOf('mp3Zing320') !== 0) return;
 
-    $('.fn-dlsong').replaceWith(function () {
-        var songId = $(this).data('item').slice(5);
-        disableClick[songId] = false;
-        return '<a title="Tải nhạc 320kbps" class="bv-download bv-icon" href="#download" data-id="' + songId + '"></a>';
-    });
+        if (location.pathname.indexOf('/thankyou/') === 0) {
+            window.setTimeout(function () {
+                postMessage('complete');
+            }, 1000);
+        } else {
+            waitForKeyElements('#option_result .fa-cloud-download', function () {
+                var $link = $('#option_result a:contains(320 Kbps)');
 
-    $('.bv-download').on('click', function (e) {
-        e.preventDefault();
+                if ($link.length) {
+                    window.location.assign($link.attr('href'));
+                } else {
+                    postMessage('error');
+                }
+            });
+        }
 
-        var $this = $(this),
-            songId = $this.data('id');
+    }
 
-        if (disableClick[songId]) return;
-        disableClick[songId] = true;
-
-        $this.addClass('bv-waiting bv-text').text('...');
-
-        downloadSong(songId, function (percent) {
-            if (percent !== '') {
-                $this.text(percent);
-            }
-        }, function (blob, fileName) {
-
-            if (blob !== 'GM_download') {
-                $this.attr({
-                    href: window.URL.createObjectURL(blob),
-                    download: fileName
-                }).off('click');
-                saveAs(blob, fileName);
-            } else {
-                disableClick = false;
-            }
-
-            $this.removeClass('bv-waiting bv-text').addClass('bv-complete').text('');
-        }, function () {
-            $this.removeClass('bv-waiting bv-text').addClass('bv-error').text('');
-        });
-    });
-
-}
+})(jQuery, window, document);
