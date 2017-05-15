@@ -2,7 +2,7 @@
 // @name         Worldcosplay download
 // @namespace    http://devs.forumvi.com/
 // @description  Download photo(s) on worldcosplay.net
-// @version      2.0.1
+// @version      2.1.0
 // @icon         http://i.imgur.com/gJLjIzb.png
 // @author       Zzbaivong
 // @license      MIT
@@ -11,6 +11,7 @@
 // @match        http://worldcosplay.net/photo/*
 // @match        http://worldcosplay.net/tag/*
 // @match        http://worldcosplay.net/search/photos?*
+// @match        http://worldcosplay.net/collections/*
 // @match        http://worldcosplay.net/character/*
 // @match        http://worldcosplay.net/title/*
 // @match        http://worldcosplay.net/photos
@@ -19,6 +20,7 @@
 // @match        http://worldcosplay.net/*/photo/*
 // @match        http://worldcosplay.net/*/tag/*
 // @match        http://worldcosplay.net/*/search/photos?*
+// @match        http://worldcosplay.net/*/collections/*
 // @match        http://worldcosplay.net/*/character/*
 // @match        http://worldcosplay.net/*/title/*
 // @match        http://worldcosplay.net/*/photos
@@ -29,6 +31,7 @@
 // @match        https://worldcosplay.net/photo/*
 // @match        https://worldcosplay.net/tag/*
 // @match        https://worldcosplay.net/search/photos?*
+// @match        https://worldcosplay.net/collections/*
 // @match        https://worldcosplay.net/character/*
 // @match        https://worldcosplay.net/title/*
 // @match        https://worldcosplay.net/photos
@@ -37,13 +40,14 @@
 // @match        https://worldcosplay.net/*/photo/*
 // @match        https://worldcosplay.net/*/tag/*
 // @match        https://worldcosplay.net/*/search/photos?*
+// @match        https://worldcosplay.net/*/collections/*
 // @match        https://worldcosplay.net/*/character/*
 // @match        https://worldcosplay.net/*/title/*
 // @match        https://worldcosplay.net/*/photos
 // @match        https://worldcosplay.net/*/popular
 // @match        https://worldcosplay.net/*/ranking/good*
-// @require      https://code.jquery.com/jquery-2.2.4.min.js
-// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=135609
+// @require      https://code.jquery.com/jquery-3.2.1.slim.min.js
+// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=164030
 // @require      https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js?version=115012
 // @noframes
 // @connect      self
@@ -53,7 +57,8 @@
 // @grant        GM_download
 // ==/UserScript==
 
-(function ($, window, document, undefined) {
+/* global GM_download, waitForKeyElements */
+(function ($, window) {
     'use strict';
 
     window.URL = window.URL || window.webkitURL;
@@ -116,7 +121,7 @@
                 $btn.on('click', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    downloadPhoto(this, $this.find('.photo_img').css('backgroundImage').slice(5, -2).replace('sq300/', ''));
+                    downloadPhoto(this, $this.find('.photo_img').css('backgroundImage').slice(5, -2).replace('-350x600.', '-3000.'));
                 });
                 $this.find('.options').append($btn);
                 $this.addClass('added-download-btn');
@@ -128,4 +133,4 @@
 
     }
 
-})(jQuery, window, document);
+})(jQuery, window);
