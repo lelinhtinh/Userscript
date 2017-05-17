@@ -2,7 +2,7 @@
 // @name         anti social locker
 // @namespace    http://baivong.github.io/
 // @description  Anti social locker plugin required user like or share before viewing content. If script doesn't work, please refresh the page to rebuild the cache and try again.
-// @version      1.0.0
+// @version      1.0.1
 // @icon         http://i.imgur.com/nOuUrIW.png
 // @author       Zzbaivong
 // @license      MIT
@@ -17,17 +17,19 @@
 (function (global) {
     'use strict';
 
-    document.addEventListener('DOMContentLoaded', function () {
+    function antiSocialLocker() {
 
         // Panda Lockers (https://codecanyon.net/item/optin-panda-for-wordpress/10224279)
         // Social Locker for Wordpress (https://codecanyon.net/item/social-locker-for-wordpress/3667715)
         (function () {
             if (!document.querySelectorAll('.onp-sl-content').length && !document.querySelectorAll('[data-lock-id]').length) return;
+            if (document.getElementById('anti_social_locker') !== null) return;
 
             var css = '.onp-sl-content,[data-lock-id]{display:block!important}.onp-sl,.onp-sl-transparence-mode,.onp-sl-overlap-box{display:none!important}.onp-sl-blur-area{filter:none!important}',
                 head = document.head || document.getElementsByTagName('head')[0],
                 style = document.createElement('style');
 
+            style.id = 'anti_social_locker';
             style.appendChild(document.createTextNode(css));
 
             head.appendChild(style);
@@ -242,6 +244,17 @@
             }
         })(jQuery);
 
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        antiSocialLocker();
+        setTimeout(antiSocialLocker, 4000);
+
+    });
+
+    window.addEventListener('load', function () {
+        antiSocialLocker();
+        setTimeout(antiSocialLocker, 0);
     });
 
 })(window);
