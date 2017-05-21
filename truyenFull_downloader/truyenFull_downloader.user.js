@@ -2,7 +2,7 @@
 // @name         TruyenFull downloader
 // @namespace    https://baivong.github.io/
 // @description  Tải truyện từ truyenfull.vn định dạng txt hoặc html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
-// @version      2.0.0
+// @version      2.0.1
 // @icon         https://i.imgur.com/FQY8btq.png
 // @author       Zzbaivong
 // @license      MIT
@@ -221,7 +221,9 @@
         document.title = '[...] Vui lòng chờ trong giây lát';
 
         $.post('/ajax.php', 'type=chapter_option&data=' + $novelId.val()).done(function (data) {
-            chapList = data.match(/chuong-[^"]+(?=")/gm);
+            chapList = data.match(/(?:value\=")[^"]+(?=")/g).map(function (val) {
+                return val.slice(7);
+            });
 
             if (e.type === 'contextmenu') {
                 var startFrom = prompt('Nhập ID chương truyện bắt đầu tải:', chapList[0]);
