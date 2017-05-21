@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         TruyenFull downloader
 // @namespace    https://baivong.github.io/
-// @description  Tải truyện từ truyenfull.vn định dạng txt hoặc html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
-// @version      2.0.1
+// @description  Tải truyện từ truyenfull.vn định dạng epub
+// @version      2.0.2
 // @icon         https://i.imgur.com/FQY8btq.png
 // @author       Zzbaivong
 // @license      MIT
