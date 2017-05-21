@@ -221,7 +221,9 @@
         document.title = '[...] Vui lòng chờ trong giây lát';
 
         $.post('/ajax.php', 'type=chapter_option&data=' + $novelId.val()).done(function (data) {
-            chapList = data.match(/chuong-[^"]+(?=")/gm);
+            chapList = data.match(/(?:value\=")[^"]+(?=")/g).map(function (val) {
+                return val.slice(7);
+            });
 
             if (e.type === 'contextmenu') {
                 var startFrom = prompt('Nhập ID chương truyện bắt đầu tải:', chapList[0]);
