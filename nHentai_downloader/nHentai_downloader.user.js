@@ -2,7 +2,7 @@
 // @name         nHentai Downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on nHentai.net
-// @version      1.3.2
+// @version      1.3.3
 // @icon         http://i.imgur.com/FAsQ4vZ.png
 // @author       Zzbaivong
 // @license      MIT
@@ -120,7 +120,7 @@ jQuery(function ($) {
         total = 0,
         images = [],
         $images = $('#thumbnail-container img'),
-        $download = $('#download-torrent'),
+        $download = $('#download-torrent, #download'),
         doc = document,
         tit = doc.title,
         $win = $(window),
