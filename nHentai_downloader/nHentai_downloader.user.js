@@ -2,7 +2,7 @@
 // @name         nHentai Downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on nHentai.net
-// @version      1.3.3
+// @version      1.4.0
 // @icon         http://i.imgur.com/FAsQ4vZ.png
 // @author       Zzbaivong
 // @license      MIT
@@ -41,7 +41,36 @@ jQuery(function ($) {
         if (debug) console.timeEnd('nHentai');
     }
 
+    function getInfo() {
+        var $info = $('#info'),
+            $h1 = $info.find('h1'),
+            $h2 = $info.find('h2'),
+            $tags = $('#tags').clone(),
+            info = '';
+
+        $tags.find('.tag-container.hidden').remove();
+        $tags.find('.count').remove();
+        $tags.find('.tags a').replaceWith(function () {
+            return this.textContent.trim() + ', ';
+        });
+        $tags.find('.tags').replaceWith(function () {
+            return this.textContent.trim().slice(0, -1);
+        });
+        $tags.find('.tag-container').replaceWith(function () {
+            return this.textContent.trim().replace(/[\n\s\t]{2,}/, ' ');
+        });
+
+        if ($h1.length) info += $h1.text().trim() + '\r\n';
+        if ($h2.length) info += $h2.text().trim() + '\r\n';
+        if ($tags.length) info += '\r\n' + $tags.text().trim().replace(/[\n\s\t]{2,}/g, '\r\n');
+
+        if (debug) console.log(info);
+        return info;
+    }
+
     function genZip() {
+        zip.file('info.txt', getInfo());
+
         zip.generateAsync({
             type: 'blob'
         }).then(function (blob) {
@@ -125,7 +154,7 @@ jQuery(function ($) {
         tit = doc.title,
         $win = $(window),
         comicId = location.pathname.match(/\d+/)[0],
-        debug = true;
+        debug = false;
 
     if (!$images.length || !$download.length) return;
 
