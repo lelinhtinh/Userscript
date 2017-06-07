@@ -2,7 +2,7 @@
 // @name         TruyenFull downloader
 // @namespace    https://baivong.github.io/
 // @description  Tải truyện từ truyenfull.vn định dạng epub
-// @version      2.0.2
+// @version      2.1.0
 // @icon         https://i.imgur.com/FQY8btq.png
 // @author       Zzbaivong
 // @license      MIT
@@ -220,20 +220,32 @@
         e.preventDefault();
         document.title = '[...] Vui lòng chờ trong giây lát';
 
-        $.post('/ajax.php', 'type=chapter_option&data=' + $novelId.val()).done(function (data) {
-            chapList = data.match(/(?:value\=")[^"]+(?=")/g).map(function (val) {
-                return val.slice(7);
-            });
+        $.when($.get('/ajax.php', {
+			type: 'hash'
+		})).done(function(res) {
+            $.get('/ajax.php', {
+                type: 'chapter_option',
+                data: $novelId.val(),
+                bnum: '',
+                num: 1,
+                hash: res
+            }).done(function (data) {
+	            chapList = data.match(/(?:value\=")[^"]+(?=")/g).map(function (val) {
+	                return val.slice(7);
+	            });
 
-            if (e.type === 'contextmenu') {
-                var startFrom = prompt('Nhập ID chương truyện bắt đầu tải:', chapList[0]);
-                startFrom = chapList.indexOf(startFrom);
-                if (startFrom !== -1) chapList = chapList.slice(startFrom);
-            }
+	            if (e.type === 'contextmenu') {
+	                var startFrom = prompt('Nhập ID chương truyện bắt đầu tải:', chapList[0]);
+	                startFrom = chapList.indexOf(startFrom);
+	                if (startFrom !== -1) chapList = chapList.slice(startFrom);
+	            }
 
-            chapListSize = chapList.length;
-            if (chapListSize > 0) downloadEbook();
-        }).fail(function (jqXHR, textStatus) {
+	            chapListSize = chapList.length;
+	            if (chapListSize > 0) downloadEbook();
+	        }).fail(function (jqXHR, textStatus) {
+	            downloadError(textStatus);
+	        });
+	    }).fail(function (jqXHR, textStatus) {
             downloadError(textStatus);
         });
     });
