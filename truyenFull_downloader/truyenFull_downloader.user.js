@@ -2,7 +2,7 @@
 // @name         TruyenFull downloader
 // @namespace    https://baivong.github.io/
 // @description  Tải truyện từ truyenfull.vn định dạng epub
-// @version      2.1.0
+// @version      2.1.1
 // @icon         https://i.imgur.com/FQY8btq.png
 // @author       Zzbaivong
 // @license      MIT
@@ -31,6 +31,15 @@
 /* global EpubMaker */
 (function ($, window, document) {
     'use strict';
+
+    /**
+     * Hiển thị liên kết xem online cuối chương
+     * [>]
+     * @type {Boolean} true
+     *                 false
+     */
+    var readOnline = true;
+
 
     function cleanHtml(str) {
         str = str.replace(/&nbsp\;/gm, ' ');
@@ -104,7 +113,7 @@
                     if ($referrer.length) $referrer.remove();
 
                     epubMaker.withSection(new EpubMaker.Section('chapter', chapId, {
-                        content: cleanHtml($chapter.html()),
+                        content: cleanHtml($chapter.html() + chapRef(referrer + chapId),
                         title: chapTitle
                     }, true, false));
 
@@ -208,7 +217,11 @@
         ebookType = [],
         beginEnd = '',
         titleError = [],
-        credits = '<p>Truyện được tải từ <a href="' + location.origin + pathname + '">TruyenFull</a></p><p>Userscript được viết bởi: <a href="https://baivong.github.io/">Zzbaivong</a></p>',
+        referrer = location.origin + pathname,
+        credits = '<p>Truyện được tải từ <a href="' + referrer + '">TruyenFull</a></p><p>Userscript được viết bởi: <a href="https://baivong.github.io/">Zzbaivong</a></p>',
+        chapRef = function (ref) {
+            return readOnline ? '<p><a href="' + ref + '/" target="_blank">[>]</a></p>' : '';
+        },
 
         epubMaker;
 
