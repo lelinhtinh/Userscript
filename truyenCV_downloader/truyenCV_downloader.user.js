@@ -105,7 +105,7 @@
                     });
 
                     epubMaker.withSection(new EpubMaker.Section('chapter', chapId, {
-                        content: cleanHtml($chapter.html()) + chapRef(referrer + chapId),
+                        content: cleanHtml($chapter.html()) + chapRef(referrer + chapId)),
                         title: chapTitle
                     }, true, false));
 
