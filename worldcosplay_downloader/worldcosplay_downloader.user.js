@@ -2,7 +2,7 @@
 // @name         Worldcosplay download
 // @namespace    http://devs.forumvi.com/
 // @description  Download photo(s) on worldcosplay.net
-// @version      2.1.0
+// @version      2.2.0
 // @icon         http://i.imgur.com/gJLjIzb.png
 // @author       Zzbaivong
 // @license      MIT
@@ -94,6 +94,10 @@
         }
     }
 
+    function getImage3000(url) {
+        return url.replace(/\-[\dx]+\./, '-3000.');
+    }
+
     if (/^(\/[a-z\-]+)?\/photo\/\d+$/.test(location.pathname)) {
 
         var $btn = $('<a>', {
@@ -104,7 +108,7 @@
         $btn.on('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
-            downloadPhoto(this, $('#photoContainer').find('.img').attr('src'));
+            downloadPhoto(this, getImage3000($('#photoContainer').find('.img').attr('src')));
         });
         $btn.insertAfter('.side_buttons');
 
@@ -121,7 +125,7 @@
                 $btn.on('click', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    downloadPhoto(this, $this.find('.photo_img').css('backgroundImage').slice(5, -2).replace('-350x600.', '-3000.'));
+                    downloadPhoto(this, getImage3000($this.find('.photo_img').css('backgroundImage').slice(5, -2)));
                 });
                 $this.find('.options').append($btn);
                 $this.addClass('added-download-btn');
