@@ -2,7 +2,7 @@
 // @name         Image viewer
 // @namespace    http://devs.forumvi.com/
 // @description  Use grid wallpaper to highlight transparent image. Support to view the large image by holding the right mouse and drag.
-// @version      1.0.6
+// @version      2.0.0
 // @icon         http://i.imgur.com/ItcjCPc.png
 // @author       Zzbaivong
 // @license      MIT
@@ -18,15 +18,21 @@
 
     'use strict';
 
-    var theme = 'light', // dark|light
+    /**
+     * Background mode
+     * @type {string} dark
+     *                light
+     */
+    var theme = 'dark',
 
-        url,
+
+        color,
         doc = document;
 
     if (theme === 'light') {
-        url = 'data:image/gif;base64,R0lGODlhCgAKAIAAAAAAAP///yH5BAEAAAAALAAAAAAKAAoAAAIRhB2ZhxoM3GMSykqd1VltzxQAOw==';
+        color = ['#eee', 'white'];
     } else {
-        url = 'data:image/gif;base64,R0lGODlhCgAKAPAAACIiIgAAACH5BAHoAwEALAAAAAAKAAoAAAIRjA2Zhwoc3GMSykqd1VltzxQAOw==';
+        color = ['gray', '#444'];
     }
 
     function scrollByDragging(container, disableH, disableV) {
@@ -71,7 +77,7 @@
 
     if (document.contentType.indexOf('image/') === 0) {
 
-        GM_addStyle('body{background:url(' + url + ') repeat scroll rgba(0, 0, 0, 0.3) !important;} body > img {background-color: transparent !important; background-image: none !important; display: block; margin: auto; position: absolute; left: 0; top: 0; right: 0; bottom: 0;} body > img:hover {background: rgba(0, 0, 0, 0.4) !important; outline: 3px solid #333;} body > img[style*="cursor: zoom-out;"], body > img.overflowing {position: relative !important;}');
+        GM_addStyle('body{background-attachment: fixed !important; background-position: 0px 0px, 10px 10px !important; background-size: 20px 20px !important; background-image: linear-gradient(45deg, ' + color[0] + ' 25%, transparent 25%, transparent 75%, ' + color[0] + ' 75%, ' + color[0] + ' 100%),linear-gradient(45deg, ' + color[0] + ' 25%, ' + color[1] + ' 25%, ' + color[1] + ' 75%, ' + color[0] + ' 75%, ' + color[0] + ' 100%) !important;} body > img {background-color: transparent !important; background-image: none !important; display: block; margin: auto; position: absolute; left: 0; top: 0; right: 0; bottom: 0;} body > img:hover {background: rgba(0, 0, 0, 0.4) !important; outline: 3px solid #333;} body > img[style*="cursor: zoom-out;"], body > img.overflowing {position: relative !important;}');
 
         scrollByDragging(doc.body);
         scrollByDragging(doc.documentElement);
