@@ -221,8 +221,8 @@
         document.title = '[...] Vui lòng chờ trong giây lát';
 
         $.when($.get('/ajax.php', {
-			type: 'hash'
-		})).done(function(res) {
+            type: 'hash'
+        })).done(function (res) {
             $.get('/ajax.php', {
                 type: 'chapter_option',
                 data: $novelId.val(),
@@ -230,22 +230,22 @@
                 num: 1,
                 hash: res
             }).done(function (data) {
-	            chapList = data.match(/(?:value\=")[^"]+(?=")/g).map(function (val) {
-	                return val.slice(7);
-	            });
+                chapList = data.match(/(?:value\=")[^"]+(?=")/g).map(function (val) {
+                    return val.slice(7);
+                });
 
-	            if (e.type === 'contextmenu') {
-	                var startFrom = prompt('Nhập ID chương truyện bắt đầu tải:', chapList[0]);
-	                startFrom = chapList.indexOf(startFrom);
-	                if (startFrom !== -1) chapList = chapList.slice(startFrom);
-	            }
+                if (e.type === 'contextmenu') {
+                    var startFrom = prompt('Nhập ID chương truyện bắt đầu tải:', chapList[0]);
+                    startFrom = chapList.indexOf(startFrom);
+                    if (startFrom !== -1) chapList = chapList.slice(startFrom);
+                }
 
-	            chapListSize = chapList.length;
-	            if (chapListSize > 0) downloadEbook();
-	        }).fail(function (jqXHR, textStatus) {
-	            downloadError(textStatus);
-	        });
-	    }).fail(function (jqXHR, textStatus) {
+                chapListSize = chapList.length;
+                if (chapListSize > 0) downloadEbook();
+            }).fail(function (jqXHR, textStatus) {
+                downloadError(textStatus);
+            });
+        }).fail(function (jqXHR, textStatus) {
             downloadError(textStatus);
         });
     });
