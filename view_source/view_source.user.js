@@ -2,7 +2,7 @@
 // @name         viewsource
 // @namespace    devs.forumvi.com
 // @description  View and beauty website source code. Support to view the source code by holding the right mouse and drag. Shortcut: Alt+U.
-// @version      2.3.9
+// @version      2.4.0
 // @icon         http://i.imgur.com/6yZMOeH.png
 // @author       Zzbaivong
 // @license      MIT
@@ -29,7 +29,7 @@
 
     'use strict';
 
-    var theme = 'light', // light|dark
+    var theme = 'dark', // light|dark
 
         win = window,
         urlpage = location.href,
@@ -135,9 +135,12 @@
                 var attrUrl = doc.getElementsByClassName('hljs-attr');
                 for (var j = 0; j < attrUrl.length; j++) {
                     if (/\b(src|href\b)/.test(attrUrl[j].textContent)) {
-                        var link = attrUrl[j].nextSibling.nextSibling;
-                        var url = link.textContent.slice(1, -1);
-                        link.innerHTML = '<a href="' + url + '" target="_blank">' + url + '</a>';
+                        var link = attrUrl[j].nextSibling.nextSibling,
+                            url = link.textContent,
+                            quote = url.slice(0, 1);
+
+                        url = url.slice(1, -1);
+                        link.innerHTML = quote + '<a href="' + url + '" target="_blank">' + url + '</a>' + quote;
                     }
                 }
 
