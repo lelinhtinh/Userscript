@@ -2,7 +2,7 @@
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyencv.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
-// @version      2.0.0
+// @version      2.0.1
 // @icon         http://i.imgur.com/o5cmtkU.png
 // @author       Zzbaivong
 // @license      MIT
@@ -105,7 +105,7 @@
                     });
 
                     epubMaker.withSection(new EpubMaker.Section('chapter', chapId, {
-                        content: cleanHtml($chapter.html()) + chapRef(referrer + chapId)),
+                        content: cleanHtml($chapter.html()) + chapRef(referrer + chapId),
                         title: chapTitle
                     }, true, false));
 
