@@ -40,6 +40,6 @@
             window.open(url, '_blank');
         });
 
-		link.setAttribute('title', 'Click to download this image\nRight Click to open in new tab');
+        link.setAttribute('title', 'Click to download this image\nRight Click to open in new tab');
     });
 })();
