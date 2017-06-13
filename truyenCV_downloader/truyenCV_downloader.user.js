@@ -2,7 +2,7 @@
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyencv.com định dạng epub
-// @version      2.0.2
+// @version      2.1.0
 // @icon         http://i.imgur.com/o5cmtkU.png
 // @author       Zzbaivong
 // @license      MIT
@@ -96,16 +96,21 @@
                 } else {
                     $downloadStatus('warning');
 
-                    if ($notContent.length) $notContent.remove();
-                    if ($referrer.length) $referrer.remove();
+                    if ($chapter.find('#btnChapterVip').length) {
+                    	$chapter = '<p>Chương truyện mất phí, không tải được.</p>'
+                    } else {
+                    	if ($notContent.length) $notContent.remove();
+	                    if ($referrer.length) $referrer.remove();
 
-                    var $img = $chapter.find('img');
-                    if ($img.length) $img.replaceWith(function () {
-                        return '<br /><a href="' + this.src + '">Click để xem ảnh</a><br />';
-                    });
+	                    var $img = $chapter.find('img');
+	                    if ($img.length) $img.replaceWith(function () {
+	                        return '<br /><a href="' + this.src + '">Click để xem ảnh</a><br />';
+	                    });
+	                    $chapter = cleanHtml($chapter.html());
+                    }
 
                     epubMaker.withSection(new EpubMaker.Section('chapter', chapId, {
-                        content: cleanHtml($chapter.html()) + chapRef(referrer + chapId),
+                        content: $chapter + chapRef(referrer + chapId),
                         title: chapTitle
                     }, true, false));
 
@@ -239,7 +244,7 @@
             type: showChapList[3]
         }).done(function (data) {
             chapList = data.match(/(?:href\=")[^"\)]+(?=")/g);
-            chapList = chapList.reverse();
+            if (data.indexOf('panel panel-vip') === -1) chapList = chapList.reverse();
             chapList = chapList.map(function (val) {
                 val = val.slice(6, -1);
                 val = val.replace(referrer, '');
