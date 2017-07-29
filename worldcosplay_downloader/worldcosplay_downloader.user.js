@@ -2,7 +2,7 @@
 // @name         Worldcosplay download
 // @namespace    http://devs.forumvi.com/
 // @description  Download photo(s) on worldcosplay.net
-// @version      2.2.0
+// @version      2.2.1
 // @icon         http://i.imgur.com/gJLjIzb.png
 // @author       Zzbaivong
 // @license      MIT
@@ -95,6 +95,9 @@
     }
 
     function getImage3000(url) {
+        var hasMax = url.match(/\/max\-(\d+)\//);
+        if (hasMax) return url.replace(/\-[\dx]+\./, '-' + hasMax[1] + '.');
+
         return url.replace(/\-[\dx]+\./, '-3000.');
     }
 
