@@ -6,12 +6,8 @@
 // @icon         http://i.imgur.com/PnF4UN2.png
 // @author       Zzbaivong
 // @license      MIT
-// @match        http://mp3.zing.vn/bai-hat/*
-// @match        http://mp3.zing.vn/album/*
-// @match        http://mp3.zing.vn/playlist/*
-// @match        http://mp3.zing.vn/nghe-si/*
-// @match        http://mp3.zing.vn/tim-kiem/bai-hat.html?q=*
-// @match        http://mp3.zing.vn/bang-xep-hang/*
+// @match        http://mp3.zing.vn/*
+// @match        https://mp3.zing.vn/*
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js
 // @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=164030
 // @noframes
@@ -25,7 +21,7 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-(function ($, window) {
+(function ($, window, document) {
     'use strict';
 
     GM_addStyle('.bv-icon{background-image:url(http://static.mp3.zdn.vn/skins/zmp3-v4.1/images/icon.png)!important;background-repeat:no-repeat!important;background-position:-25px -2459px!important;}.bv-download{background-color:#721799!important;border-color:#721799!important;}.bv-download span{color:#fff!important;margin-left:8px!important;}.bv-disable,.bv-download:hover{background-color:#2c3e50!important;border-color:#2c3e50!important;}.bv-text{background-image:none!important;color:#fff!important;text-align:center!important;font-size:smaller!important;line-height:25px!important;}.bv-waiting{cursor:wait!important;background-color:#2980b9!important;border-color:#2980b9!important;}.bv-complete,.bv-complete:hover{background-color:#27ae60!important;border-color:#27ae60!important;}.bv-error,.bv-error:hover{background-color:#c0392b!important;border-color:#c0392b!important;}.bv-disable{cursor:not-allowed!important;opacity:0.4!important;}');
@@ -61,8 +57,8 @@
 
     window.URL = window.URL || window.webkitURL;
 
-    if (location.pathname.indexOf('/bai-hat/') === 0) {
-
+    var $largeBtn = $('#tabService');
+    if ($largeBtn.length) {
         var songId = location.pathname.match(/\/(\w+)\.html/)[1],
             $btn = $('<a>', {
                 'class': 'button-style-1 pull-left bv-download',
@@ -73,7 +69,7 @@
                 text: 'Tải nhạc 320kbps'
             });
 
-        $('#tabService').replaceWith($btn.append($txt));
+        $largeBtn.replaceWith($btn.append($txt));
 
         $btn.one('click', function (e) {
             e.preventDefault();
@@ -101,11 +97,14 @@
                 }
             );
         });
+    }
 
-    } else {
+    function multiDownloads() {
+        var $smallBtn = $('.fn-dlsong');
+        if (!$smallBtn.length) return;
 
-        $('.fn-dlsong').replaceWith(function () {
-            var songId = $(this).data('item').slice(5);
+        $smallBtn.replaceWith(function () {
+            var songId = $(this).closest('li, .item-song').attr('id').replace(/(chartitem)?song(rec)?/, '');
 
             return '<a title="Tải nhạc 320kbps" class="bv-download bv-icon" href="' + linksVip(songId) + '" data-id="' + songId + '"></a>';
         });
@@ -138,7 +137,10 @@
                 }
             );
         });
-
     }
+
+    multiDownloads();
+    $(document).on('ready', multiDownloads);
+    $(window).on('load', multiDownloads);
 
 })(jQuery, window, document);
