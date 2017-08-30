@@ -2,7 +2,7 @@
 // @name         Download nhạc mp3 zing 320kbps
 // @namespace    baivong.download.mp3zing
 // @description  Download nhạc nhất lượng cao 320kbps tại mp3.zing.vn
-// @version      5.2.1
+// @version      5.2.2
 // @icon         http://i.imgur.com/PnF4UN2.png
 // @author       Zzbaivong
 // @license      MIT
@@ -30,20 +30,6 @@
 
     GM_addStyle('.bv-icon{background-image:url(http://static.mp3.zdn.vn/skins/zmp3-v4.1/images/icon.png)!important;background-repeat:no-repeat!important;background-position:-25px -2459px!important;}.bv-download{background-color:#721799!important;border-color:#721799!important;}.bv-download span{color:#fff!important;margin-left:8px!important;}.bv-disable,.bv-download:hover{background-color:#2c3e50!important;border-color:#2c3e50!important;}.bv-text{background-image:none!important;color:#fff!important;text-align:center!important;font-size:smaller!important;line-height:25px!important;}.bv-waiting{cursor:wait!important;background-color:#2980b9!important;border-color:#2980b9!important;}.bv-complete,.bv-complete:hover{background-color:#27ae60!important;border-color:#27ae60!important;}.bv-error,.bv-error:hover{background-color:#c0392b!important;border-color:#c0392b!important;}.bv-disable{cursor:not-allowed!important;opacity:0.4!important;}');
 
-    function bodauTiengViet(str) {
-        str = str.toLowerCase();
-        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
-        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
-        str = str.replace(/ì|í|ị|ỉ|ĩ/g, 'i');
-        str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o');
-        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u');
-        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y');
-        str = str.replace(/đ/g, 'd');
-        str = str.replace(/\W+/g, ' ');
-        str = str.replace(/\s/g, '-');
-        return str;
-    }
-
     function linksVip(songId) {
         return 'https://linksvip.net/download/zingmp3.php?code=' + songId + '&q=320';
     }
@@ -55,7 +41,7 @@
             responseType: 'blob',
 
             onload: function (source) {
-                complete(source.response, bodauTiengViet($('h1.txt-primary').text().trim()) + '.mp3');
+                complete(source.response, source.finalUrl.split('filename=')[1]);
             },
 
             onprogress: function (e) {
@@ -95,21 +81,25 @@
             $btn.addClass('bv-waiting');
             $txt.text('Chờ một chút...');
 
-            downloadSong(songId, function (percent) {
-                $txt.text('Đang tải... ' + percent);
-            }, function (blob, fileName) {
+            downloadSong(
+                songId,
+                function (percent) {
+                    $txt.text('Đang tải... ' + percent);
+                },
+                function (blob, fileName) {
+                    $btn.attr({
+                        href: window.URL.createObjectURL(blob),
+                        download: fileName
+                    }).removeClass('bv-waiting').addClass('bv-complete').off('click');
+                    $txt.text('Nhấn để tải nhạc');
 
-                $btn.attr({
-                    href: window.URL.createObjectURL(blob),
-                    download: fileName
-                }).removeClass('bv-waiting').addClass('bv-complete').off('click');
-                $txt.text('Nhấn để tải nhạc');
-
-                saveAs(blob, fileName);
-            }, function () {
-                $btn.removeClass('bv-waiting').addClass('bv-error');
-                $txt.text('Lỗi! Không tải được');
-            });
+                    saveAs(blob, fileName);
+                },
+                function () {
+                    $btn.removeClass('bv-waiting').addClass('bv-error');
+                    $txt.text('Lỗi! Không tải được');
+                }
+            );
         });
 
     } else {
@@ -128,21 +118,25 @@
 
             $this.addClass('bv-waiting bv-text').text('...');
 
-            downloadSong(songId, function (percent) {
-                if (percent !== '') {
-                    $this.text(percent + '%');
+            downloadSong(
+                songId,
+                function (percent) {
+                    if (percent !== '') {
+                        $this.text(percent);
+                    }
+                },
+                function (blob, fileName) {
+                    $this.attr({
+                        href: window.URL.createObjectURL(blob),
+                        download: fileName
+                    }).removeClass('bv-waiting bv-text').addClass('bv-complete').text('').off('click');
+
+                    saveAs(blob, fileName);
+                },
+                function () {
+                    $this.removeClass('bv-waiting bv-text').addClass('bv-error').text('');
                 }
-            }, function (blob, fileName) {
-
-                $this.attr({
-                    href: window.URL.createObjectURL(blob),
-                    download: fileName
-                }).removeClass('bv-waiting bv-text').addClass('bv-complete').text('').off('click');
-
-                saveAs(blob, fileName);
-            }, function () {
-                $this.removeClass('bv-waiting bv-text').addClass('bv-error').text('');
-            });
+            );
         });
 
     }
