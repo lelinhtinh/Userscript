@@ -2,7 +2,7 @@
 // @name         Download nhạc mp3 zing 320kbps
 // @namespace    baivong.download.mp3zing
 // @description  Download nhạc nhất lượng cao 320kbps tại mp3.zing.vn
-// @version      5.2.3
+// @version      5.3.0
 // @icon         http://i.imgur.com/PnF4UN2.png
 // @author       Zzbaivong
 // @license      MIT
@@ -30,6 +30,21 @@
         return 'https://linksvip.net/download/zingmp3.php?code=' + songId + '&q=320';
     }
 
+    function albumCounter() {
+        if (!enableAlbum) return;
+        if (!$album.length) return;
+
+        var temp = ++listCurr;
+        if (temp === listSize) {
+            $btnAll.removeClass('bv-waiting').addClass('bv-disable').off('click');
+            $txtAll.text('Đã tải toàn bộ');
+            return;
+        }
+
+        $txtAll.text('Đã tải ' + temp + '/' + listSize);
+        $list.eq(temp).trigger('click');
+    }
+
     function downloadSong(songId, progress, complete, error) {
         GM_xmlhttpRequest({
             method: 'GET',
@@ -38,6 +53,7 @@
 
             onload: function (source) {
                 complete(source.response, source.finalUrl.split('filename=')[1]);
+                albumCounter();
             },
 
             onprogress: function (e) {
@@ -51,6 +67,7 @@
             onerror: function (e) {
                 console.error(e);
                 error();
+                albumCounter();
             }
         });
     }
@@ -115,7 +132,9 @@
             var $this = $(this),
                 songId = $this.data('id');
 
-            $this.addClass('bv-waiting bv-text').text('...');
+            $this.addClass('bv-waiting bv-text').text('...').attr({
+                href: '#downloading'
+            }).off('contextmenu');
 
             downloadSong(
                 songId,
@@ -142,5 +161,58 @@
     multiDownloads();
     $(document).on('ready', multiDownloads);
     $(window).on('load', multiDownloads);
+
+
+    var $album = $('#playlistItems'),
+        $btnAll,
+        $txtAll,
+        $list,
+        listCurr = 0,
+        listSize = 0,
+        checkList = function () {
+            $list = $album.find('.bv-multi-download[href*="linksvip.net"]');
+            listSize = $list.length;
+
+            return listSize > 0;
+        },
+        enableAlbum;
+
+    if ($album.length) {
+        $btnAll = $('<a>', {
+            'class': 'button-style-1 pull-left bv-download',
+            href: '#download-album',
+            html: '<i class="zicon icon-dl"></i>'
+        });
+        $txtAll = $('<span>', {
+            text: 'Tải toàn bộ'
+        });
+        $btnAll.append($txtAll).insertAfter('#tabAdd');
+
+        if (!checkList()) return;
+
+        $list.one('contextmenu', function (e) {
+            e.preventDefault();
+
+            $(this).removeClass('bv-multi-download').addClass('bv-disable').attr({
+                href: '#download-disabled',
+            }).off('click');
+        });
+
+        $btnAll.one('click', function (e) {
+            e.preventDefault();
+
+            if (!checkList()) {
+                $btnAll.addClass('bv-error').off('click');
+                $txtAll.text('Không có nhạc cần tải');
+                return;
+            }
+
+            enableAlbum = true;
+            $btnAll.addClass('bv-waiting');
+            $txtAll.text('Đang tải...');
+
+            $list.eq(listCurr).trigger('click');
+        });
+    }
 
 })(jQuery, window, document);
