@@ -2,7 +2,7 @@
 // @name         Download nhạc mp3 zing 320kbps
 // @namespace    baivong.download.mp3zing
 // @description  Download nhạc nhất lượng cao 320kbps tại mp3.zing.vn
-// @version      5.3.0
+// @version      5.3.1
 // @icon         http://i.imgur.com/PnF4UN2.png
 // @author       Zzbaivong
 // @license      MIT
@@ -52,7 +52,12 @@
             responseType: 'blob',
 
             onload: function (source) {
-                complete(source.response, source.finalUrl.split('filename=')[1]);
+                var sourceUrl = source.finalUrl;
+                if (sourceUrl.indexOf('linksvip.net') !== -1) {
+                    error();
+                } else {
+                    complete(source.response, sourceUrl.split('filename=')[1]);
+                }                
                 albumCounter();
             },
 
@@ -78,7 +83,7 @@
     if ($largeBtn.length) {
         var songId = location.pathname.match(/\/(\w+)\.html/)[1],
             $btn = $('<a>', {
-                'class': 'button-style-1 pull-left bv-download',
+                class: 'button-style-1 pull-left bv-download',
                 href: linksVip(songId),
                 html: '<i class="zicon icon-dl"></i>'
             }),
@@ -179,7 +184,7 @@
 
     if ($album.length) {
         $btnAll = $('<a>', {
-            'class': 'button-style-1 pull-left bv-download',
+            class: 'button-style-1 pull-left bv-download',
             href: '#download-album',
             html: '<i class="zicon icon-dl"></i>'
         });
