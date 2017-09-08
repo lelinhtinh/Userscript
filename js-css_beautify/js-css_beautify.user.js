@@ -2,15 +2,15 @@
 // @name         Javascript-css beautify
 // @namespace    http://devs.forumvi.com
 // @description  Beautify and syntax highlighting for source code javascript, json, css. Support to view the source code by holding the right mouse and drag.
-// @version      2.3.9
+// @version      2.4.0
 // @icon         http://i.imgur.com/kz8nqz1.png
 // @author       Zzbaivong
 // @license      MIT
 // @match        http://*/*
 // @match        https://*/*
-// @resource     light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github-gist.min.css
-// @resource     dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/monokai-sublime.min.css
-// @require      https://greasyfork.org/scripts/18531-beautify-js/code/beautify-js.js?version=194235
+// @resource     light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css
+// @resource     dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css
+// @require      https://greasyfork.org/scripts/18531-beautify-js/code/beautify-js.js?version=216536
 // @require      https://greasyfork.org/scripts/18528-beautify-css/code/beautify-css.js?version=194233
 // @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js
 // @noframes
@@ -26,6 +26,10 @@
     'use strict';
 
     var theme = 'light', // light|dark
+        lineColor = {
+            light: ['#a7a7a7', '#e8e8e7'],
+            dark: ['#4d4d4d', '#3a3a3a']
+        },
 
         url = location.pathname,
         doc = document,
@@ -79,7 +83,7 @@
             lines = 0,
             l = '';
 
-        GM_addStyle(GM_getResourceText(theme) + 'html,body,pre{margin:0;padding:0}.hljs{word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:#d2d2d2;text-align:right;width:3.5em;left:-.5em;border-right:1px solid rgba(221, 221, 221, 0.36);padding-right:.5em}');
+        GM_addStyle(GM_getResourceText(theme) + 'html,body,pre{margin:0;padding:0}.hljs{word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:' + lineColor[theme][0] + ';text-align:right;width:3.5em;left:-.5em;border-right:1px solid ' + lineColor[theme][1] + ';padding-right:.5em}');
 
         if (contenttype === 'text/css' || /.+\.css$/.test(url)) {
             lang = 'css';
