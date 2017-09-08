@@ -2,7 +2,7 @@
 // @name         Javascript-css beautify
 // @namespace    http://devs.forumvi.com
 // @description  Beautify and syntax highlighting for source code javascript, json, css. Support to view the source code by holding the right mouse and drag.
-// @version      2.4.0
+// @version      2.4.1
 // @icon         http://i.imgur.com/kz8nqz1.png
 // @author       Zzbaivong
 // @license      MIT
@@ -29,6 +29,10 @@
         lineColor = {
             light: ['#a7a7a7', '#e8e8e7'],
             dark: ['#4d4d4d', '#3a3a3a']
+        },
+        bgColor = {
+            light: '#ffffff',
+            dark: '#1d1f21'
         },
 
         url = location.pathname,
@@ -83,7 +87,7 @@
             lines = 0,
             l = '';
 
-        GM_addStyle(GM_getResourceText(theme) + 'html,body,pre{margin:0;padding:0}.hljs{word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:' + lineColor[theme][0] + ';text-align:right;width:3.5em;left:-.5em;border-right:1px solid ' + lineColor[theme][1] + ';padding-right:.5em}');
+        GM_addStyle(GM_getResourceText(theme) + 'html,body,pre{margin:0;padding:0;background:' + bgColor[theme] + '}.hljs{word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:' + lineColor[theme][0] + ';text-align:right;width:3.5em;left:-.5em;border-right:1px solid ' + lineColor[theme][1] + ';padding-right:.5em}');
 
         if (contenttype === 'text/css' || /.+\.css$/.test(url)) {
             lang = 'css';
