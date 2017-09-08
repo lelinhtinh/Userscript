@@ -2,7 +2,7 @@
 // @name         viewsource
 // @namespace    devs.forumvi.com
 // @description  View and beauty website source code. Support to view the source code by holding the right mouse and drag. Shortcut: Alt+U.
-// @version      2.5.1
+// @version      2.5.2
 // @icon         http://i.imgur.com/6yZMOeH.png
 // @author       Zzbaivong
 // @license      MIT
@@ -33,6 +33,10 @@
         lineColor = {
             light: ['#a7a7a7', '#e8e8e7'],
             dark: ['#4d4d4d', '#3a3a3a']
+        },
+        bgColor = {
+            light: '#ffffff',
+            dark: '#1d1f21'
         },
         linkColor = {
             light: ['#718c00', '#556416'],
@@ -117,7 +121,7 @@
                 content.removeAttribute('style');
                 doc.title = 'view-source:' + urlpage;
 
-                GM_addStyle(GM_getResourceText(theme) + 'html,body,pre{margin:0;padding:0}.hljs{word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:' + lineColor[theme][0] + ';text-align:right;width:3.5em;left:-.5em;border-right:1px solid ' + lineColor[theme][1] + ';padding-right:.5em}a{color:' + linkColor[theme][0] + '}a:active,a:hover,a:visited{color:' + linkColor[theme][1] + '}');
+                GM_addStyle(GM_getResourceText(theme) + 'html,body,pre{margin:0;padding:0;background:' + bgColor[theme] + '}.hljs{word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:' + lineColor[theme][0] + ';text-align:right;width:3.5em;left:-.5em;border-right:1px solid ' + lineColor[theme][1] + ';padding-right:.5em}a{color:' + linkColor[theme][0] + '}a:active,a:hover,a:visited{color:' + linkColor[theme][1] + '}');
 
                 var output = doc.createElement('PRE');
                 output.setAttribute('class', 'xml');
