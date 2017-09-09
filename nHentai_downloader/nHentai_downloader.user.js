@@ -2,7 +2,7 @@
 // @name         nHentai Downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on nHentai.net
-// @version      1.4.0
+// @version      1.5.0
 // @icon         http://i.imgur.com/FAsQ4vZ.png
 // @author       Zzbaivong
 // @license      MIT
@@ -33,6 +33,18 @@ jQuery(function ($) {
      * $ rename 's/\.zip$/\.cbz/' *.zip
      */
     var outputExt = 'cbz'; // or 'zip'
+
+    /**
+     * Multithreading
+     * @type {Number} [1 -> 32]
+     */
+    var threading = 8;
+
+    /**
+     * Logging
+     * @type {Boolean}
+     */
+    var debug = false;
 
 
     function end() {
@@ -103,49 +115,63 @@ jQuery(function ($) {
     }
 
     function dlImg(url, success, error) {
+        var filename = url.replace(/.*\//g, '');
+
+        if (debug) console.log(filename, 'progress');
         GM_xmlhttpRequest({
             method: 'GET',
             url: url,
             responseType: 'arraybuffer',
             onload: function (response) {
-                success(response);
+                final++;
+                success(response, filename);
             },
             onerror: function (err) {
-                error(err);
+                final++;
+                error(err, filename);
             }
         });
     }
 
     function next() {
-        current++;
+        $download.html('<i class="fa fa-cog fa-spin"></i> ' + final + '/' + total);
+        if (debug) console.log(final, current);
 
-        $download.html('<i class="fa fa-cog fa-spin"></i> ' + current + '/' + total);
-
-        current < total ? addZip() : genZip();
+        if (final < current) return;
+        final < total ? addZip() : genZip();
     }
 
     function addZip() {
-        var url = images[current],
-            filename = url.replace(/.*\//g, '');
+        var max = current + threading;
+        if (max > total) max = total;
 
-        dlImg(url, function (response) {
-            zip.file(filename, response.response);
+        for (current; current < max; current++) {
+            var url = images[current];
 
-            if (debug) console.log(url);
-            next();
-        }, function (err) {
-            zip.file(filename + '_' + comicId + '_error.gif', 'R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=', { base64: true });
-            $download.css('backgroundColor', '#FF7F7F');
+            if (debug) console.log(url, 'download');
+            dlImg(url, function (response, filename) {
+                zip.file(filename, response.response);
 
-            if (debug) console.error(err, url);
-            next();
-        });
+                if (debug) console.log(filename, 'success');
+                next();
+            }, function (err, filename) {
+                zip.file(filename + '_' + comicId + '_error.gif', 'R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=', {
+                    base64: true
+                });
+                $download.css('backgroundColor', '#FF7F7F');
+
+                if (debug) console.log(filename, 'error');
+                next();
+            });
+        }
+        if (debug) console.log(current, 'current');
     }
 
 
     var zip = new JSZip(),
         prevZip = false,
         current = 0,
+        final = 0,
         total = 0,
         images = [],
         $images = $('#thumbnail-container img'),
@@ -153,8 +179,7 @@ jQuery(function ($) {
         doc = document,
         tit = doc.title,
         $win = $(window),
-        comicId = location.pathname.match(/\d+/)[0],
-        debug = false;
+        comicId = location.pathname.match(/\d+/)[0];
 
     if (!$images.length || !$download.length) return;
 
@@ -164,6 +189,9 @@ jQuery(function ($) {
         .one('click', function (e) {
             e.preventDefault();
             if (debug) console.time('nHentai');
+
+            if (threading < 1) threading = 1;
+            if (threading > 32) threading = 32;
 
             $win.on('beforeunload', function () {
                 return 'Progress is running...';
