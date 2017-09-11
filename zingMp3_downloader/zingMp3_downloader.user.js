@@ -2,16 +2,19 @@
 // @name         Download nhạc mp3 zing 320kbps
 // @namespace    baivong.download.mp3zing
 // @description  Download nhạc nhất lượng cao 320kbps tại mp3.zing.vn
-// @version      5.3.1
+// @version      5.4.0
 // @icon         http://i.imgur.com/PnF4UN2.png
 // @author       Zzbaivong
 // @license      MIT
-// @match        http://mp3.zing.vn/*
-// @match        https://mp3.zing.vn/*
+// @match        http://mp3.zing.vn/bai-hat/*
+// @match        http://mp3.zing.vn/album/*
+// @match        http://mp3.zing.vn/playlist/*
+// @match        http://mp3.zing.vn/bang-xep-hang/*
+// @match        http://mp3.zing.vn/nghe-si/*
+// @match        http://mp3.zing.vn/tim-kiem/bai-hat.html?q=*
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js
 // @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=164030
 // @noframes
-// @connect      linksvip.net
 // @connect      zing.vn
 // @connect      zadn.vn
 // @connect      zdn.vn
@@ -24,11 +27,14 @@
 (function ($, window, document) {
     'use strict';
 
-    GM_addStyle('.bv-icon{background-image:url(http://static.mp3.zdn.vn/skins/zmp3-v4.1/images/icon.png)!important;background-repeat:no-repeat!important;background-position:-25px -2459px!important;}.bv-download{background-color:#721799!important;border-color:#721799!important;}.bv-download span{color:#fff!important;margin-left:8px!important;}.bv-disable,.bv-download:hover{background-color:#2c3e50!important;border-color:#2c3e50!important;}.bv-text{background-image:none!important;color:#fff!important;text-align:center!important;font-size:smaller!important;line-height:25px!important;}.bv-waiting{cursor:wait!important;background-color:#2980b9!important;border-color:#2980b9!important;}.bv-complete,.bv-complete:hover{background-color:#27ae60!important;border-color:#27ae60!important;}.bv-error,.bv-error:hover{background-color:#c0392b!important;border-color:#c0392b!important;}.bv-disable{cursor:not-allowed!important;opacity:0.4!important;}');
+    /**
+     * Cookie tài khoản VIP
+     * 04/10/2017
+     */
+    var vipKey = 'miup.107493696.0.HpC1cghJzuNgwf-3gjFtXT_Hfbc9CFm2gxSKCFFJzuK';
 
-    function linksVip(songId) {
-        return 'https://linksvip.net/download/zingmp3.php?code=' + songId + '&q=320';
-    }
+
+    GM_addStyle('.bv-icon{background-image:url(http://static.mp3.zdn.vn/skins/zmp3-v4.1/images/icon.png)!important;background-repeat:no-repeat!important;background-position:-25px -2459px!important;}.bv-download{background-color:#721799!important;border-color:#721799!important;}.bv-download span{color:#fff!important;margin-left:8px!important;}.bv-disable,.bv-download:hover{background-color:#2c3e50!important;border-color:#2c3e50!important;}.bv-text{background-image:none!important;color:#fff!important;text-align:center!important;font-size:smaller!important;line-height:25px!important;}.bv-waiting{cursor:wait!important;background-color:#2980b9!important;border-color:#2980b9!important;}.bv-complete,.bv-complete:hover{background-color:#27ae60!important;border-color:#27ae60!important;}.bv-error,.bv-error:hover{background-color:#c0392b!important;border-color:#c0392b!important;}.bv-disable{cursor:not-allowed!important;opacity:0.4!important;}');
 
     function albumCounter() {
         if (!enableAlbum) return;
@@ -45,27 +51,47 @@
         $list.eq(temp).trigger('click');
     }
 
-    function downloadSong(songId, progress, complete, error) {
+    function downloadSong(songCode, progress, complete, error) {
         GM_xmlhttpRequest({
             method: 'GET',
-            url: linksVip(songId),
-            responseType: 'blob',
+            url: 'http://mp3.zing.vn/json/song/get-source/' + songCode,
+            headers: {
+                'Cookie': 'wsid=' + vipKey
+            },
+            responseType: 'json',
 
             onload: function (source) {
-                var sourceUrl = source.finalUrl;
-                if (sourceUrl.indexOf('linksvip.net') !== -1) {
-                    error();
-                } else {
-                    complete(source.response, sourceUrl.split('filename=')[1]);
-                }                
-                albumCounter();
-            },
+                var data = source.response.data;
 
-            onprogress: function (e) {
-                if (e.total) {
-                    progress(Math.floor(e.loaded * 100 / e.total) + '%');
+                if (data) data = data[0];
+                if (data.source_list && data.source_list.length >= 2 && data.source_list[1] !== '') {
+                    GM_xmlhttpRequest({
+                        method: 'GET',
+                        url: data.source_list[1],
+                        responseType: 'blob',
+
+                        onload: function (source) {
+                            complete(source.response, data.link.match(/^\/bai-hat\/([^\/]+)/)[1] + '.mp3');
+                            albumCounter();
+                        },
+
+                        onprogress: function (e) {
+                            if (e.lengthComputable) {
+                                progress(Math.floor(e.loaded * 100 / e.total) + '%');
+                            } else {
+                                progress('');
+                            }
+                        },
+
+                        onerror: function (e) {
+                            console.error(e);
+                            error();
+                            albumCounter();
+                        }
+                    });
                 } else {
-                    progress('');
+                    error();
+                    albumCounter();
                 }
             },
 
@@ -81,10 +107,10 @@
 
     var $largeBtn = $('#tabService');
     if ($largeBtn.length) {
-        var songId = location.pathname.match(/\/(\w+)\.html/)[1],
+        var songCode = $largeBtn.data('code'),
             $btn = $('<a>', {
                 class: 'button-style-1 pull-left bv-download',
-                href: linksVip(songId),
+                href: '#download',
                 html: '<i class="zicon icon-dl"></i>'
             }),
             $txt = $('<span>', {
@@ -100,7 +126,7 @@
             $txt.text('Chờ một chút...');
 
             downloadSong(
-                songId,
+                songCode,
                 function (percent) {
                     $txt.text('Đang tải... ' + percent);
                 },
@@ -126,23 +152,23 @@
         if (!$smallBtn.length) return;
 
         $smallBtn.replaceWith(function () {
-            var songId = $(this).closest('li, .item-song').attr('id').replace(/(chartitem)?song(rec)?/, '');
+            var songCode = $(this).closest('[data-code]').data('code');
 
-            return '<a title="Tải nhạc 320kbps" class="bv-download bv-multi-download bv-icon" href="' + linksVip(songId) + '" data-id="' + songId + '"></a>';
+            if (songCode !== '') return '<a title="Tải nhạc 320kbps" class="bv-download bv-multi-download bv-icon" href="#download" data-code="' + songCode + '"></a>';
         });
 
         $('.bv-multi-download').one('click', function (e) {
             e.preventDefault();
 
             var $this = $(this),
-                songId = $this.data('id');
+                songCode = $this.data('code');
 
             $this.addClass('bv-waiting bv-text').text('...').attr({
                 href: '#downloading'
             }).off('contextmenu');
 
             downloadSong(
-                songId,
+                songCode,
                 function (percent) {
                     if (percent !== '') {
                         $this.text(percent);
@@ -175,7 +201,7 @@
         listCurr = 0,
         listSize = 0,
         checkList = function () {
-            $list = $album.find('.bv-multi-download[href*="linksvip.net"]');
+            $list = $album.find('.bv-multi-download[href="#download"]');
             listSize = $list.length;
 
             return listSize > 0;
