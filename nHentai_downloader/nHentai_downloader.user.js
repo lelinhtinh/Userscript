@@ -2,7 +2,7 @@
 // @name         nHentai Downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on nHentai.net
-// @version      1.5.0
+// @version      1.5.1
 // @icon         http://i.imgur.com/FAsQ4vZ.png
 // @author       Zzbaivong
 // @license      MIT
@@ -116,6 +116,8 @@ jQuery(function ($) {
 
     function dlImg(url, success, error) {
         var filename = url.replace(/.*\//g, '');
+        filename = filename.split('.');
+        filename = ('0000' + filename[0]).slice(-4) + '.' + filename[1];
 
         if (debug) console.log(filename, 'progress');
         GM_xmlhttpRequest({
