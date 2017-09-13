@@ -48,7 +48,7 @@
 // @match        https://worldcosplay.net/*/ranking/good*
 // @require      https://code.jquery.com/jquery-3.2.1.slim.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js
-// @require      https://gist.githubusercontent.com/raw/2625891/waitForKeyElements.js
+// @require      https://cdn.rawgit.com/BrockA/2625891/raw/fd02ec05e3079cdd52cf5892a7ba27b67b6b6131/waitForKeyElements.js
 // @noframes
 // @connect      self
 // @supportURL   https://github.com/baivong/Userscript/issues
