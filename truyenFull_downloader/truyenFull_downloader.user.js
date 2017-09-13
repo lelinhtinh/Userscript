@@ -44,6 +44,7 @@
     function cleanHtml(str) {
         str = str.replace(/&nbsp\;/gm, ' ');
         str = str.replace(/<(br|hr|img)([^>]+)?>/gm, '<$1$2 />');
+        str = str.replace(/[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]+/gm, '');
         return '<p>' + str + '</p>';
     }
 
