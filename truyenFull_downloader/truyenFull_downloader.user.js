@@ -20,7 +20,7 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/2.6.1/jszip.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jszip-utils/0.0.2/jszip-utils.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js
-// @require      https://unpkg.com/epub-maker@1.2.0/dist/js-epub-maker.min.js
+// @require      https://cdn.jsdelivr.net/npm/epub-maker@1.2.0/dist/js-epub-maker.min.js
 // @noframes
 // @connect      self
 // @supportURL   https://github.com/baivong/Userscript/issues
