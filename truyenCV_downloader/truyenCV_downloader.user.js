@@ -37,7 +37,7 @@
         str = str.replace(/&nbsp\;/gm, ' ');
         str = str.replace(/<(br|hr|img)([^>]+)?>/gm, '<$1$2 />');
         str = str.replace(/[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]+/gm, '');
-        str = str.replace(/\s[a-zA-Z0-9]{6,8}(="")?\s/gm, function(key, attr){
+        str = str.replace(/\s[a-zA-Z0-9]{6,8}(="")?\s/gm, function (key, attr) {
             if (attr) return ' ';
             if (!isNaN(key)) return key;
             if (key.split(/[A-Z]/).length > 2) return ' ';
@@ -105,16 +105,16 @@
                     $downloadStatus('warning');
 
                     if ($chapter.find('#btnChapterVip').length) {
-                    	$chapter = '<p>Chương truyện mất phí, không tải được.</p>'
+                        $chapter = '<p>Chương truyện mất phí, không tải được.</p>';
                     } else {
-                    	if ($notContent.length) $notContent.remove();
-	                    if ($referrer.length) $referrer.remove();
+                        if ($notContent.length) $notContent.remove();
+                        if ($referrer.length) $referrer.remove();
 
-	                    var $img = $chapter.find('img');
-	                    if ($img.length) $img.replaceWith(function () {
-	                        return '<br /><a href="' + this.src + '">Click để xem ảnh</a><br />';
-	                    });
-	                    $chapter = cleanHtml($chapter.html());
+                        var $img = $chapter.find('img');
+                        if ($img.length) $img.replaceWith(function () {
+                            return '<br /><a href="' + this.src + '">Click để xem ảnh</a><br />';
+                        });
+                        $chapter = cleanHtml($chapter.html());
                     }
 
                     epubMaker.withSection(new EpubMaker.Section('chapter', chapId, {
