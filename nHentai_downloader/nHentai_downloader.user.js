@@ -2,15 +2,15 @@
 // @name         nHentai Downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on nHentai.net
-// @version      1.5.1
+// @version      1.5.2
 // @icon         http://i.imgur.com/FAsQ4vZ.png
 // @author       Zzbaivong
 // @license      MIT
 // @match        http://nhentai.net/g/*
 // @match        https://nhentai.net/g/*
 // @require      https://code.jquery.com/jquery-3.2.1.slim.min.js
-// @require      https://greasyfork.org/scripts/19855-jszip/code/jszip.js?version=164038
-// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=164030
+// @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.4/jszip.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js
 // @noframes
 // @connect      self
 // @supportURL   https://github.com/baivong/Userscript/issues

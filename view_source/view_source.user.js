@@ -2,7 +2,7 @@
 // @name         viewsource
 // @namespace    devs.forumvi.com
 // @description  View and beauty website source code. Support to view the source code by holding the right mouse and drag. Shortcut: Alt+U.
-// @version      2.5.2
+// @version      2.5.3
 // @icon         http://i.imgur.com/6yZMOeH.png
 // @author       Zzbaivong
 // @license      MIT
@@ -10,9 +10,9 @@
 // @match        https://*/*
 // @resource     light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css
 // @resource     dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css
-// @require      https://greasyfork.org/scripts/18530-beautify-html/code/beautify-html.js?version=194234
-// @require      https://greasyfork.org/scripts/18531-beautify-js/code/beautify-js.js?version=216536
-// @require      https://greasyfork.org/scripts/18528-beautify-css/code/beautify-css.js?version=194233
+// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.14/beautify-html.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.14/beautify.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.14/beautify-css.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js
 // @noframes
 // @connect      self
@@ -150,13 +150,13 @@
                         var link = attrUrl[j].nextSibling.nextSibling,
                             url = link.textContent,
                             quote = url.slice(0, 1);
-                        
+
                         if (quote !== '\'' && quote !== '"') {
                             quote = '';
                         } else {
                             url = url.slice(1, -1);
                         }
-                        
+
                         link.innerHTML = quote + '<a href="' + url + '" target="_blank">' + url + '</a>' + quote;
                     }
                 }

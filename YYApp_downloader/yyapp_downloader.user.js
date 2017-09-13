@@ -2,13 +2,13 @@
 // @name         YYApp downloader
 // @namespace    https://baivong.github.io/
 // @description  Tải truyện từ app.truyenyy.com định dạng txt hoặc html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
-// @version      1.1.0
+// @version      1.1.1
 // @icon         http://i.imgur.com/3lomxTC.png
 // @author       Zzbaivong
 // @license      MIT
 // @include      /^https?:\/\/app\.truyenyy\.com\/truyen\/[^\/]+\/(danh\-sach\-chuong\/(\?p=\d+)?)?$/
-// @require      https://code.jquery.com/jquery-3.2.0.min.js
-// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=164030
+// @require      https://code.jquery.com/jquery-3.2.1.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js
 // @noframes
 // @connect      self
 // @supportURL   https://github.com/baivong/Userscript/issues
@@ -16,7 +16,7 @@
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
-(function ($, window, document, undefined) {
+(function ($, window, document) {
     'use strict';
 
     /**
@@ -289,7 +289,7 @@
             e.preventDefault();
 
             if (e.type === 'contextmenu') {
-                var beginUrl = prompt("Nhập URL chương truyện bắt đầu tải:", location.origin + url);
+                var beginUrl = prompt('Nhập URL chương truyện bắt đầu tải:', location.origin + url);
                 if (beginUrl !== null && /^https?:\/\/app\.truyenyy\.com\/chuong\/[^\/]+\/$/i.test(beginUrl.trim())) url = beginUrl.replace(location.origin, '');
 
                 $download.off('click');

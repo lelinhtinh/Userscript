@@ -2,7 +2,7 @@
 // @name         Javascript-css beautify
 // @namespace    http://devs.forumvi.com
 // @description  Beautify and syntax highlighting for source code javascript, json, css. Support to view the source code by holding the right mouse and drag.
-// @version      2.4.1
+// @version      2.4.2
 // @icon         http://i.imgur.com/kz8nqz1.png
 // @author       Zzbaivong
 // @license      MIT
@@ -10,8 +10,8 @@
 // @match        https://*/*
 // @resource     light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css
 // @resource     dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css
-// @require      https://greasyfork.org/scripts/18531-beautify-js/code/beautify-js.js?version=216536
-// @require      https://greasyfork.org/scripts/18528-beautify-css/code/beautify-css.js?version=194233
+// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.14/beautify.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.14/beautify-css.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js
 // @noframes
 // @supportURL   https://github.com/baivong/Userscript/issues
