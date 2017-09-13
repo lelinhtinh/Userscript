@@ -2,17 +2,17 @@
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyencv.com định dạng epub
-// @version      2.1.1
+// @version      2.1.2
 // @icon         http://i.imgur.com/o5cmtkU.png
 // @author       Zzbaivong
 // @license      MIT
 // @match        http://truyencv.com/*/
-// @require      https://code.jquery.com/jquery-3.2.0.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.2/handlebars.min.js
-// @require      https://greasyfork.org/scripts/20307-jszip-v2/code/jszip-v2.js?version=196156
-// @require      https://greasyfork.org/scripts/29904-jszip-utils/code/jszip-utils.js?version=196137
-// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=164030
-// @require      https://greasyfork.org/scripts/29905-js-epub-maker/code/js-epub-maker.js?version=196139
+// @require      https://code.jquery.com/jquery-3.2.1.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/2.6.1/jszip.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/jszip-utils/0.0.2/jszip-utils.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js
+// @require      https://unpkg.com/epub-maker@1.2.0/dist/js-epub-maker.min.js
 // @noframes
 // @connect      self
 // @supportURL   https://github.com/baivong/Userscript/issues
@@ -41,7 +41,7 @@
             if (attr) return ' ';
             if (!isNaN(key)) return key;
             if (key.split(/[A-Z]/).length > 2) return ' ';
-            if (key.split(/[0-9]/).length > 2) return ' ';
+            if (key.split(/\d/).length > 1) return ' ';
             return key;
         });
         return '<p>' + str + '</p>';
