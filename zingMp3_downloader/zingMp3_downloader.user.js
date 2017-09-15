@@ -2,7 +2,7 @@
 // @name         Download nhạc mp3 zing 320kbps
 // @namespace    baivong.download.mp3zing
 // @description  Download nhạc nhất lượng cao 320kbps tại mp3.zing.vn
-// @version      5.4.1
+// @version      5.5.0
 // @icon         http://i.imgur.com/PnF4UN2.png
 // @author       Zzbaivong
 // @license      MIT
@@ -51,7 +51,7 @@
         $list.eq(temp).trigger('click');
     }
 
-    function downloadSong(songCode, progress, complete, error) {
+    function get320kbps(songCode, callback) {
         GM_xmlhttpRequest({
             method: 'GET',
             url: 'http://mp3.zing.vn/json/song/get-source/' + songCode,
@@ -65,41 +65,51 @@
 
                 if (data) data = data[0];
                 if (data.source_list && data.source_list.length >= 2 && data.source_list[1] !== '') {
-                    GM_xmlhttpRequest({
-                        method: 'GET',
-                        url: data.source_list[1],
-                        responseType: 'blob',
-
-                        onload: function (source) {
-                            complete(source.response, data.link.match(/^\/bai-hat\/([^\/]+)/)[1] + '.mp3');
-                            albumCounter();
-                        },
-
-                        onprogress: function (e) {
-                            if (e.lengthComputable) {
-                                progress(Math.floor(e.loaded * 100 / e.total) + '%');
-                            } else {
-                                progress('');
-                            }
-                        },
-
-                        onerror: function (e) {
-                            console.error(e);
-                            error();
-                            albumCounter();
-                        }
-                    });
+                    callback(data);
                 } else {
-                    error();
-                    albumCounter();
+                    callback();
                 }
             },
 
             onerror: function (e) {
                 console.error(e);
+                callback();
+            }
+        });
+    }
+
+    function downloadSong(songCode, progress, complete, error) {
+        get320kbps(songCode, function(data){
+            if (!data) {
                 error();
                 albumCounter();
+                return;
             }
+
+            GM_xmlhttpRequest({
+                method: 'GET',
+                url: data.source_list[1],
+                responseType: 'blob',
+
+                onload: function (source) {
+                    complete(source.response, data.link.match(/^\/bai-hat\/([^\/]+)/)[1] + '.mp3');
+                    albumCounter();
+                },
+
+                onprogress: function (e) {
+                    if (e.lengthComputable) {
+                        progress(Math.floor(e.loaded * 100 / e.total) + '%');
+                    } else {
+                        progress('');
+                    }
+                },
+
+                onerror: function (e) {
+                    console.error(e);
+                    error();
+                    albumCounter();
+                }
+            });
         });
     }
 
@@ -144,6 +154,13 @@
                     $txt.text('Lỗi! Không tải được');
                 }
             );
+        });
+
+        get320kbps(songCode, function(data){
+            if (!data) return;
+
+            $('#zplayerjs').attr('src', data.source_list[1]);
+            GM_addStyle('.zm-quanlity-display{font-size:0!important}.zm-quanlity-display::after{content:"320kbps";font-size:12px!important}.zm-quanlity .zm-tooltip{display:none!important}');
         });
     }
 
