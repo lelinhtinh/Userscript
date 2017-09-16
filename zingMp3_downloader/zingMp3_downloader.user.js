@@ -1,17 +1,12 @@
 // ==UserScript==
 // @name         Download nhạc mp3 zing 320kbps
 // @namespace    baivong.download.mp3zing
-// @description  Download nhạc nhất lượng cao 320kbps tại mp3.zing.vn
-// @version      5.5.0
+// @description  Nghe và tải nhạc nhất lượng cao 320kbps tại mp3.zing.vn
+// @version      5.6.0
 // @icon         http://i.imgur.com/PnF4UN2.png
 // @author       Zzbaivong
 // @license      MIT
-// @match        http://mp3.zing.vn/bai-hat/*
-// @match        http://mp3.zing.vn/album/*
-// @match        http://mp3.zing.vn/playlist/*
-// @match        http://mp3.zing.vn/bang-xep-hang/*
-// @match        http://mp3.zing.vn/nghe-si/*
-// @match        http://mp3.zing.vn/tim-kiem/bai-hat.html?q=*
+// @match        http://mp3.zing.vn/*
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js
 // @noframes
@@ -48,13 +43,18 @@
         }
 
         $txtAll.text('Đã tải ' + temp + '/' + listSize);
-        $list.eq(temp).trigger('click');
+
+        if ($list.eq(temp).attr('href') !== '#download') {
+            albumCounter();
+            return;
+        }
+        multiDownloads($list.eq(temp));
     }
 
-    function get320kbps(songCode, callback) {
+    function getData(callback, songCode) {
         GM_xmlhttpRequest({
             method: 'GET',
-            url: 'http://mp3.zing.vn/json/song/get-source/' + songCode,
+            url: songCode ? '/json/song/get-source/' + songCode : $('#zplayerjs-wrapper').attr('data-xml'),
             headers: {
                 'Cookie': 'wsid=' + vipKey
             },
@@ -62,9 +62,7 @@
 
             onload: function (source) {
                 var data = source.response.data;
-
-                if (data) data = data[0];
-                if (data.source_list && data.source_list.length >= 2 && data.source_list[1] !== '') {
+                if (data && data.length) {
                     callback(data);
                 } else {
                     callback();
@@ -78,46 +76,35 @@
         });
     }
 
-    function downloadSong(songCode, progress, complete, error) {
-        get320kbps(songCode, function(data){
-            if (!data) {
+    function downloadSong(url, name, progress, complete, error) {
+        GM_xmlhttpRequest({
+            method: 'GET',
+            url: url,
+            responseType: 'blob',
+
+            onload: function (source) {
+                complete(source.response, name + '.mp3');
+                albumCounter();
+            },
+
+            onprogress: function (e) {
+                if (e.lengthComputable) {
+                    progress(Math.floor(e.loaded * 100 / e.total) + '%');
+                } else {
+                    progress('');
+                }
+            },
+
+            onerror: function (e) {
+                console.error(e);
                 error();
                 albumCounter();
-                return;
             }
-
-            GM_xmlhttpRequest({
-                method: 'GET',
-                url: data.source_list[1],
-                responseType: 'blob',
-
-                onload: function (source) {
-                    complete(source.response, data.link.match(/^\/bai-hat\/([^\/]+)/)[1] + '.mp3');
-                    albumCounter();
-                },
-
-                onprogress: function (e) {
-                    if (e.lengthComputable) {
-                        progress(Math.floor(e.loaded * 100 / e.total) + '%');
-                    } else {
-                        progress('');
-                    }
-                },
-
-                onerror: function (e) {
-                    console.error(e);
-                    error();
-                    albumCounter();
-                }
-            });
         });
     }
 
-    window.URL = window.URL || window.webkitURL;
-
-    var $largeBtn = $('#tabService');
-    if ($largeBtn.length) {
-        var songCode = $largeBtn.data('code'),
+    function baiHat() {
+        var $largeBtn = $('#tabService'),
             $btn = $('<a>', {
                 class: 'button-style-1 pull-left bv-download',
                 href: '#download',
@@ -125,9 +112,28 @@
             }),
             $txt = $('<span>', {
                 text: 'Tải nhạc 320kbps'
-            });
+            }),
+            downloadFail = function () {
+                $btn.removeClass('bv-waiting').addClass('bv-error');
+                $txt.text('Lỗi! Không tải được');
+            };
 
         $largeBtn.replaceWith($btn.append($txt));
+
+        getData(function (data) {
+            if (data && data[0].source_list && data[0].source_list.length >= 2 && data[0].source_list[1] !== '') {
+                $('#zplayerjs').attr('src', data[0].source_list[1]);
+                GM_addStyle('.zm-quanlity-display{font-size:0!important}.zm-quanlity-display::after{content:"320kbps";font-size:12px!important}.zm-quanlity .zm-tooltip{display:none!important}');
+
+                $btn.attr({
+                    'data-name': data[0].link.match(/^\/bai-hat\/([^\/]+)/)[1],
+                    'data-mp3': data[0].source_list[1]
+                });
+            } else {
+                downloadFail();
+                return;
+            }
+        });
 
         $btn.one('click', function (e) {
             e.preventDefault();
@@ -136,7 +142,8 @@
             $txt.text('Chờ một chút...');
 
             downloadSong(
-                songCode,
+                $btn.data('mp3'),
+                $btn.data('name'),
                 function (percent) {
                     $txt.text('Đang tải... ' + percent);
                 },
@@ -150,66 +157,100 @@
                     saveAs(blob, fileName);
                 },
                 function () {
-                    $btn.removeClass('bv-waiting').addClass('bv-error');
-                    $txt.text('Lỗi! Không tải được');
-                }
-            );
-        });
-
-        get320kbps(songCode, function(data){
-            if (!data) return;
-
-            $('#zplayerjs').attr('src', data.source_list[1]);
-            GM_addStyle('.zm-quanlity-display{font-size:0!important}.zm-quanlity-display::after{content:"320kbps";font-size:12px!important}.zm-quanlity .zm-tooltip{display:none!important}');
-        });
-    }
-
-    function multiDownloads() {
-        var $smallBtn = $('.fn-dlsong');
-        if (!$smallBtn.length) return;
-
-        $smallBtn.replaceWith(function () {
-            var songCode = $(this).closest('[data-code]').data('code');
-
-            if (songCode !== '') return '<a title="Tải nhạc 320kbps" class="bv-download bv-multi-download bv-icon" href="#download" data-code="' + songCode + '"></a>';
-        });
-
-        $('.bv-multi-download').one('click', function (e) {
-            e.preventDefault();
-
-            var $this = $(this),
-                songCode = $this.data('code');
-
-            $this.addClass('bv-waiting bv-text').text('...').attr({
-                href: '#downloading'
-            }).off('contextmenu');
-
-            downloadSong(
-                songCode,
-                function (percent) {
-                    if (percent !== '') {
-                        $this.text(percent);
-                    }
-                },
-                function (blob, fileName) {
-                    $this.attr({
-                        href: window.URL.createObjectURL(blob),
-                        download: fileName
-                    }).removeClass('bv-waiting bv-text').addClass('bv-complete').text('').off('click');
-
-                    saveAs(blob, fileName);
-                },
-                function () {
-                    $this.removeClass('bv-waiting bv-text').addClass('bv-error').text('');
+                    downloadFail();
                 }
             );
         });
     }
 
-    multiDownloads();
-    $(document).on('ready', multiDownloads);
-    $(window).on('load', multiDownloads);
+    function multiDownloads($btn) {
+        $btn.addClass('bv-waiting bv-text').text('...').attr({
+            href: '#downloading'
+        }).off('contextmenu');
 
+        downloadSong(
+            $btn.data('mp3'),
+            $btn.data('name'),
+            function (percent) {
+                if (percent !== '') {
+                    $btn.text(percent);
+                }
+            },
+            function (blob, fileName) {
+                $btn.attr({
+                    href: window.URL.createObjectURL(blob),
+                    download: fileName
+                }).removeClass('bv-waiting bv-text').addClass('bv-complete').text('').off('click');
+
+                saveAs(blob, fileName);
+            },
+            function () {
+                $btn.removeClass('bv-waiting bv-text').addClass('bv-error').text('');
+            }
+        );
+    }
+
+    function album() {
+        getData(function (data) {
+            if (data) $album.find('.fn-dlsong').each(function (i, v) {
+                if (data[i].source_list && data[i].source_list.length >= 2 && data[i].source_list[1] !== '') {
+                    $(v).replaceWith('<a title="Tải nhạc 320kbps" class="bv-download bv-album-download bv-icon" href="#download" data-name="' + data[i].link.match(/^\/bai-hat\/([^\/]+)/)[1] + '" data-mp3="' + data[i].source_list[1] + '"></a>');
+                }
+            });
+
+            $btnAll = $('<a>', {
+                class: 'button-style-1 pull-left bv-download',
+                href: '#download-album',
+                html: '<i class="zicon icon-dl"></i>'
+            });
+            $txtAll = $('<span>', {
+                text: 'Tải toàn bộ'
+            });
+            $btnAll.append($txtAll).insertAfter('#tabAdd');
+
+            if (!checkList()) return;
+
+            $list.one('contextmenu', function (e) {
+                e.preventDefault();
+
+                $(this).addClass('bv-disable').attr({
+                    href: '#download-disabled',
+                }).off('click');
+            }).one('click', function (e) {
+                e.preventDefault();
+
+                multiDownloads($(this));
+            });
+
+            $btnAll.one('click', function (e) {
+                e.preventDefault();
+
+                if (!checkList()) {
+                    $btnAll.addClass('bv-error').off('click');
+                    $txtAll.text('Không có nhạc cần tải');
+                    return;
+                }
+
+                enableAlbum = true;
+                $btnAll.addClass('bv-waiting');
+                $txtAll.text('Đang tải...');
+
+                $list.off('click');
+
+                listCurr = 0;
+                multiDownloads($list.eq(listCurr));
+            });
+        });
+    }
+
+    function checkPath(key) {
+        return (location.pathname.indexOf('/' + key + '/') === 0);
+    }
+
+
+    window.URL = window.URL || window.webkitURL;
+
+    if (checkPath('bai-hat')) baiHat();
 
     var $album = $('#playlistItems'),
         $btnAll,
@@ -218,49 +259,41 @@
         listCurr = 0,
         listSize = 0,
         checkList = function () {
-            $list = $album.find('.bv-multi-download[href="#download"]');
+            $list = $album.find('.bv-album-download[href="#download"]');
             listSize = $list.length;
 
             return listSize > 0;
         },
         enableAlbum;
+    if (checkPath('album') || checkPath('playlist')) album();
 
-    if ($album.length) {
-        $btnAll = $('<a>', {
-            class: 'button-style-1 pull-left bv-download',
-            href: '#download-album',
-            html: '<i class="zicon icon-dl"></i>'
+    $(document).on('mouseenter', 'li[data-code]', function (e) {
+        e.preventDefault();
+        var $this = $(this),
+            $btn = $this.find('.fn-dlsong');
+
+        if ($this.closest('#playlistItems').length) return;
+        if ($this.data('code') === '') return;
+        if (!$btn.length) return;
+
+        $btn.replaceWith(function () {
+            return '<a title="Tải nhạc 320kbps" class="bv-download bv-multi-download bv-icon" href="#download" data-code="' + $this.data('code') + '"></a>';
         });
-        $txtAll = $('<span>', {
-            text: 'Tải toàn bộ'
-        });
-        $btnAll.append($txtAll).insertAfter('#tabAdd');
+    }).on('click', '.bv-multi-download', function (e) {
+        e.preventDefault();
+        var $this = $(this);
 
-        if (!checkList()) return;
-
-        $list.one('contextmenu', function (e) {
-            e.preventDefault();
-
-            $(this).removeClass('bv-multi-download').addClass('bv-disable').attr({
-                href: '#download-disabled',
-            }).off('click');
-        });
-
-        $btnAll.one('click', function (e) {
-            e.preventDefault();
-
-            if (!checkList()) {
-                $btnAll.addClass('bv-error').off('click');
-                $txtAll.text('Không có nhạc cần tải');
-                return;
+        getData(function (data) {
+            if (data && data[0].source_list && data[0].source_list.length >= 2 && data[0].source_list[1] !== '') {
+                $this.attr({
+                    'data-name': data[0].link.match(/^\/bai-hat\/([^\/]+)/)[1],
+                    'data-mp3': data[0].source_list[1]
+                });
+                multiDownloads($this);
+            } else {
+                $this.removeClass('bv-waiting bv-text').addClass('bv-error').text('');
             }
-
-            enableAlbum = true;
-            $btnAll.addClass('bv-waiting');
-            $txtAll.text('Đang tải...');
-
-            $list.eq(listCurr).trigger('click');
-        });
-    }
+        }, $this.data('code'));
+    });
 
 })(jQuery, window, document);
