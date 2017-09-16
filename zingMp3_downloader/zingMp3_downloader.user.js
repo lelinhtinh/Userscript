@@ -2,7 +2,7 @@
 // @name         Download nhạc mp3 zing 320kbps
 // @namespace    baivong.download.mp3zing
 // @description  Nghe và tải nhạc nhất lượng cao 320kbps tại mp3.zing.vn
-// @version      5.6.0
+// @version      5.6.1
 // @icon         http://i.imgur.com/PnF4UN2.png
 // @author       Zzbaivong
 // @license      MIT
@@ -29,7 +29,7 @@
     var vipKey = 'miup.107493696.0.HpC1cghJzuNgwf-3gjFtXT_Hfbc9CFm2gxSKCFFJzuK';
 
 
-    GM_addStyle('.bv-icon{background-image:url(http://static.mp3.zdn.vn/skins/zmp3-v4.1/images/icon.png)!important;background-repeat:no-repeat!important;background-position:-25px -2459px!important;}.bv-download{background-color:#721799!important;border-color:#721799!important;}.bv-download span{color:#fff!important;margin-left:8px!important;}.bv-disable,.bv-download:hover{background-color:#2c3e50!important;border-color:#2c3e50!important;}.bv-text{background-image:none!important;color:#fff!important;text-align:center!important;font-size:smaller!important;line-height:25px!important;}.bv-waiting{cursor:wait!important;background-color:#2980b9!important;border-color:#2980b9!important;}.bv-complete,.bv-complete:hover{background-color:#27ae60!important;border-color:#27ae60!important;}.bv-error,.bv-error:hover{background-color:#c0392b!important;border-color:#c0392b!important;}.bv-disable{cursor:not-allowed!important;opacity:0.4!important;}');
+    GM_addStyle('.bv-icon{background-image:url(http://static.mp3.zdn.vn/skins/zmp3-v4.1/images/icon.png)!important;background-repeat:no-repeat!important;background-position:-25px -2459px!important;}.bv-download{background-color:#721799!important;border-color:#721799!important;}.bv-download span{color:#fff!important;margin-left:8px!important;}.bv-disable,.bv-download:hover{background-color:#2c3e50!important;border-color:#2c3e50!important;}.bv-text{background-image:none!important;color:#fff!important;text-align:center!important;font-size:smaller!important;line-height:25px!important;}.bv-waiting{cursor:wait!important;background-color:#2980b9!important;border-color:#2980b9!important;}.bv-complete,.bv-complete:hover{background-color:#27ae60!important;border-color:#27ae60!important;}.bv-error,.bv-error:hover{background-color:#c0392b!important;border-color:#c0392b!important;}.bv-disable{cursor:not-allowed!important;opacity:0.4!important;}.zm-quanlity-display{font-size:0!important}.zm-quanlity-display::after{content:"320kbps";font-size:12px!important}.zm-quanlity .zm-tooltip{display:none!important}');
 
     function albumCounter() {
         if (!enableAlbum) return;
@@ -123,7 +123,6 @@
         getData(function (data) {
             if (data && data[0].source_list && data[0].source_list.length >= 2 && data[0].source_list[1] !== '') {
                 $('#zplayerjs').attr('src', data[0].source_list[1]);
-                GM_addStyle('.zm-quanlity-display{font-size:0!important}.zm-quanlity-display::after{content:"320kbps";font-size:12px!important}.zm-quanlity .zm-tooltip{display:none!important}');
 
                 $btn.attr({
                     'data-name': data[0].link.match(/^\/bai-hat\/([^\/]+)/)[1],
@@ -192,11 +191,16 @@
 
     function album() {
         getData(function (data) {
+            var playlist = window.eval('window.playlist;');
+
             if (data) $album.find('.fn-dlsong').each(function (i, v) {
                 if (data[i].source_list && data[i].source_list.length >= 2 && data[i].source_list[1] !== '') {
+                    playlist[i].sourceLevel[0].source = data[i].source_list[1];
                     $(v).replaceWith('<a title="Tải nhạc 320kbps" class="bv-download bv-album-download bv-icon" href="#download" data-name="' + data[i].link.match(/^\/bai-hat\/([^\/]+)/)[1] + '" data-mp3="' + data[i].source_list[1] + '"></a>');
                 }
             });
+
+            window.eval('var disableRePlaying; player2.on("play", function(){ if (!disableRePlaying) { $(".fn-name", ".playing.fn-current").click(); disableRePlaying = true; } });');
 
             $btnAll = $('<a>', {
                 class: 'button-style-1 pull-left bv-download',
