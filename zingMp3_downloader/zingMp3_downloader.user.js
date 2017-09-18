@@ -2,7 +2,7 @@
 // @name         Download nhạc mp3 zing 320kbps
 // @namespace    baivong.download.mp3zing
 // @description  Nghe và tải nhạc nhất lượng cao 320kbps tại mp3.zing.vn
-// @version      5.6.1
+// @version      5.6.2
 // @icon         http://i.imgur.com/PnF4UN2.png
 // @author       Zzbaivong
 // @license      MIT
@@ -165,7 +165,7 @@
     function multiDownloads($btn) {
         $btn.addClass('bv-waiting bv-text').text('...').attr({
             href: '#downloading'
-        }).off('contextmenu');
+        });
 
         downloadSong(
             $btn.data('mp3'),
@@ -191,7 +191,11 @@
 
     function album() {
         getData(function (data) {
-            var playlist = window.eval('window.playlist;');
+            var playlist = window.eval('window.playlist;'),
+                download = function (e) {
+                    e.preventDefault();
+                    multiDownloads($(this));
+                };
 
             if (data) $album.find('.fn-dlsong').each(function (i, v) {
                 if (data[i].source_list && data[i].source_list.length >= 2 && data[i].source_list[1] !== '') {
@@ -214,17 +218,21 @@
 
             if (!checkList()) return;
 
-            $list.one('contextmenu', function (e) {
+            $list.on('contextmenu', function (e) {
                 e.preventDefault();
+                var $this = $(this),
+                    href = $this.attr('href');
 
-                $(this).addClass('bv-disable').attr({
-                    href: '#download-disabled',
-                }).off('click');
-            }).one('click', function (e) {
-                e.preventDefault();
-
-                multiDownloads($(this));
-            });
+                if (href === '#download') {
+                    $this.addClass('bv-disable').attr({
+                        href: '#download-disabled',
+                    }).off('click', download);
+                } else if (href === '#download-disabled') {
+                    $this.removeClass('bv-disable').attr({
+                        href: '#download',
+                    }).one('click', download);
+                }
+            }).one('click', download);
 
             $btnAll.one('click', function (e) {
                 e.preventDefault();
