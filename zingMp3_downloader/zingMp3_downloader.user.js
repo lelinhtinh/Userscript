@@ -2,7 +2,7 @@
 // @name         Download nhạc mp3 zing 320kbps
 // @namespace    baivong.download.mp3zing
 // @description  Nghe và tải nhạc nhất lượng cao 320kbps tại mp3.zing.vn
-// @version      5.6.2
+// @version      5.7.0
 // @icon         http://i.imgur.com/PnF4UN2.png
 // @author       Zzbaivong
 // @license      MIT
@@ -29,7 +29,57 @@
     var vipKey = 'miup.107493696.0.HpC1cghJzuNgwf-3gjFtXT_Hfbc9CFm2gxSKCFFJzuK';
 
 
-    GM_addStyle('.bv-icon{background-image:url(http://static.mp3.zdn.vn/skins/zmp3-v4.1/images/icon.png)!important;background-repeat:no-repeat!important;background-position:-25px -2459px!important;}.bv-download{background-color:#721799!important;border-color:#721799!important;}.bv-download span{color:#fff!important;margin-left:8px!important;}.bv-disable,.bv-download:hover{background-color:#2c3e50!important;border-color:#2c3e50!important;}.bv-text{background-image:none!important;color:#fff!important;text-align:center!important;font-size:smaller!important;line-height:25px!important;}.bv-waiting{cursor:wait!important;background-color:#2980b9!important;border-color:#2980b9!important;}.bv-complete,.bv-complete:hover{background-color:#27ae60!important;border-color:#27ae60!important;}.bv-error,.bv-error:hover{background-color:#c0392b!important;border-color:#c0392b!important;}.bv-disable{cursor:not-allowed!important;opacity:0.4!important;}.page-play-song .zm-quanlity-display{font-size:0!important}.page-play-song .zm-quanlity-display::after{content:"320kbps";font-size:12px!important}.page-play-song .zm-quanlity .zm-tooltip{display:none!important}.page-play-album .zm-quanlity-display{font-size:0!important}.page-play-album .zm-quanlity-display::after{content:"320kbps";font-size:12px!important}.page-play-album .zm-quanlity .zm-tooltip{display:none!important}');
+    GM_addStyle('.bv-icon{background-image:url(http://static.mp3.zdn.vn/skins/zmp3-v4.1/images/icon.png)!important;background-repeat:no-repeat!important;background-position:-25px -2459px!important;}.bv-download{background-color:#721799!important;border-color:#721799!important;}.bv-download span{color:#fff!important;margin-left:8px!important;}.bv-disable,.bv-download:hover{background-color:#2c3e50!important;border-color:#2c3e50!important;}.bv-text{background-image:none!important;color:#fff!important;text-align:center!important;font-size:smaller!important;line-height:25px!important;}.bv-waiting{cursor:wait!important;background-color:#2980b9!important;border-color:#2980b9!important;}.bv-complete,.bv-complete:hover{background-color:#27ae60!important;border-color:#27ae60!important;}.bv-error,.bv-error:hover{background-color:#c0392b!important;border-color:#c0392b!important;}.bv-disable{cursor:not-allowed!important;opacity:0.4!important;}');
+
+    function getCookie(name) {
+        var cname = name + '=',
+            cpos = document.cookie.indexOf(cname),
+            cstart,
+            cend;
+
+        if (cpos !== -1) {
+            cstart = cpos + cname.length;
+            cend = document.cookie.indexOf(';', cstart);
+            if (cend === -1) cend = document.cookie.length;
+            return decodeURIComponent(document.cookie.substring(cstart, cend));
+        }
+
+        return null;
+    }
+
+    function setCookie(cname, cvalue, exdays, path) {
+        var domain = '',
+            d = new Date();
+
+        if (exdays) {
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            exdays = '; expires=' + d.toUTCString();
+        }
+        if (!path) path = '/';
+
+        document.cookie = cname + '=' + cvalue + '; path=' + path + exdays + domain + ';';
+    }
+
+    function getParams(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+
+    function setQuanlity(qty) {
+        var $qtyStyle = $('#bv-quanlity-style');
+
+        if (!$qtyStyle.length) $qtyStyle = $('<style />', {
+            id: 'bv-quanlity-style',
+            type: 'text/css'
+        }).appendTo('head');
+
+        $qtyStyle.text('.zm-quanlity-display{font-size:0!important}.zm-quanlity-display::after{content:"' + qty + '";font-size:12px!important}');
+    }
 
     function albumCounter() {
         if (!enableAlbum) return;
@@ -52,9 +102,25 @@
     }
 
     function getData(callback, songCode) {
+        var url = $('#zplayerjs-wrapper').data('xml'),
+            key;
+
+        if (songCode) {
+            key = songCode;
+            url = '/json/song/get-source/' + songCode;
+        } else {
+            key = getParams('key', url);
+            url = 'http://mp3.zing.vn/xhr' + url;
+        }
+
+        if (cache[key]) {
+            callback(cache[key]);
+            return;
+        }
+
         GM_xmlhttpRequest({
             method: 'GET',
-            url: songCode ? '/json/song/get-source/' + songCode : $('#zplayerjs-wrapper').attr('data-xml'),
+            url: url,
             headers: {
                 'Cookie': 'wsid=' + vipKey
             },
@@ -62,7 +128,9 @@
 
             onload: function (source) {
                 var data = source.response.data;
-                if (data && data.length) {
+
+                if (data) {
+                    cache[key] = data;
                     callback(data);
                 } else {
                     callback();
@@ -121,14 +189,17 @@
         $largeBtn.replaceWith($btn.append($txt));
 
         getData(function (data) {
-            if (data && data[0].source_list && data[0].source_list.length >= 2 && data[0].source_list[1] !== '') {
-                $('#zplayerjs').attr('src', data[0].source_list[1]);
+            if (data && data.source && data.source['320']) {
+                $('#zplayerjs').attr('src', data.source['320']);
+                setQuanlity('320kbps');
 
                 $btn.attr({
-                    'data-name': data[0].link.match(/^\/bai-hat\/([^\/]+)/)[1],
-                    'data-mp3': data[0].source_list[1]
+                    'data-name': data.link.match(/^\/bai-hat\/([^\/]+)/)[1],
+                    'data-mp3': data.source['320']
                 });
             } else {
+                setQuanlity('128kbps');
+
                 downloadFail();
                 return;
             }
@@ -197,14 +268,17 @@
                     multiDownloads($(this));
                 };
 
-            if (data) $album.find('.fn-dlsong').each(function (i, v) {
-                if (data[i].source_list && data[i].source_list.length >= 2 && data[i].source_list[1] !== '') {
-                    playlist[i].sourceLevel[0].source = data[i].source_list[1];
-                    $(v).replaceWith('<a title="Tải nhạc 320kbps" class="bv-download bv-album-download bv-icon" href="#download" data-name="' + data[i].link.match(/^\/bai-hat\/([^\/]+)/)[1] + '" data-mp3="' + data[i].source_list[1] + '"></a>');
+            if (!(data && data.items)) return;
+            setQuanlity('320kbps');
+
+            $album.find('.fn-dlsong').each(function (i, v) {
+                if (data.items[i] && data.items[i].source && data.items[i].source['320']) {
+                    playlist[i].sourceLevel[0].source = data.items[i].source['320'];
+                    $(v).replaceWith('<a title="Tải nhạc 320kbps" class="bv-download bv-album-download bv-icon" href="#download" data-name="' + data.items[i].link.match(/^\/bai-hat\/([^\/]+)/)[1] + '" data-mp3="' + data.items[i].source['320'] + '"></a>');
                 }
             });
 
-            window.eval('var disableRePlaying; player2.on("play", function(){ if (!disableRePlaying) { $(".fn-name", ".playing.fn-current").click(); disableRePlaying = true; } });');
+            window.eval('var disableRePlaying; player2.on("play", function (){ if (!disableRePlaying) { $(".fn-name", ".playing.fn-current").click(); disableRePlaying = true; } });');
 
             $btnAll = $('<a>', {
                 class: 'button-style-1 pull-left bv-download',
@@ -255,14 +329,42 @@
         });
     }
 
+    function video() {
+        var videoPlay = function (qty) {
+            getData(function (data) {
+                if (data && data.source && data.source[qty]) {
+                    window.eval('player2.setSource("' + data.source[qty] + '");');
+                } else {
+                    console.warn(data);
+                }
+
+                setCookie('videoQuanlity', qty, 30, '/');
+                setQuanlity(qty);
+            });
+        }
+
+        if (getCookie('videoQuanlity') !== null) videoPlay(getCookie('videoQuanlity'));
+
+        $(document).on('click', '.zm-list-quanlity li', function (e) {
+            e.preventDefault();
+            var qty = this.textContent.replace('(VIP)', '').trim();
+
+            videoPlay(qty);
+        });
+    }
+
     function checkPath(key) {
         return (location.pathname.indexOf('/' + key + '/') === 0);
     }
 
 
     window.URL = window.URL || window.webkitURL;
+    var cache = [];
+
+    window.eval('zmp3Login._show = zmp3Login.show; zmp3Login.show = function (){ return; }; $(".fn-login").on("click", zmp3Login._show);');
 
     if (checkPath('bai-hat')) baiHat();
+    if (checkPath('video-clip')) video();
 
     var $album = $('#playlistItems'),
         $btnAll,
