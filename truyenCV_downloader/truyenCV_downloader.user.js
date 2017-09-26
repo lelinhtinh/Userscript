@@ -2,7 +2,7 @@
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyencv.com định dạng epub
-// @version      2.1.2
+// @version      2.2.0
 // @icon         http://i.imgur.com/o5cmtkU.png
 // @author       Zzbaivong
 // @license      MIT
@@ -32,6 +32,12 @@
      */
     var readOnline = true;
 
+    /**
+     * Cookie tài khoản để tải chương bắt buộc đăng nhập
+     * @type {String}
+     */
+    var accountKey = 'c65319af7693e3ad0dc5d72511fe0307';
+
 
     function cleanHtml(str) {
         str = str.replace(/&nbsp\;/gm, ' ');
@@ -44,6 +50,7 @@
             if (key.split(/\d/).length > 1) return ' ';
             return key;
         });
+        str = str.split(/(ps:|hoan nghênh quảng đại bạn đọc quang lâm|Huyền ảo khoái trí ân cừu)/i)[0];
         return '<p>' + str + '</p>';
     }
 
@@ -85,6 +92,9 @@
         chapId = chapList[count];
 
         GM_xmlhttpRequest({
+            headers: {
+                'Cookie': 'USER=' + accountKey
+            },
             method: 'GET',
             url: pathname + chapId + '/',
             onload: function (response) {
@@ -106,6 +116,12 @@
 
                     if ($chapter.find('#btnChapterVip').length) {
                         $chapter = '<p>Chương truyện mất phí, không tải được.</p>';
+                        downloadError('Require VIP.');
+                    } else if ($chapter.filter(function () {
+                        return (this.textContent.toLowerCase().indexOf('vui lòng đăng nhập để đọc chương này') !== -1);
+                    }).length) {
+                        $chapter = '<p>Chương truyện yêu cầu đăng nhập, không tải được.</p>';
+                        downloadError('Require Login.');
                     } else {
                         if ($notContent.length) $notContent.remove();
                         if ($referrer.length) $referrer.remove();
