@@ -2,7 +2,7 @@
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyencv.com định dạng epub
-// @version      2.2.0
+// @version      2.2.1
 // @icon         http://i.imgur.com/o5cmtkU.png
 // @author       Zzbaivong
 // @license      MIT
@@ -100,7 +100,7 @@
             onload: function (response) {
                 var $data = $(response.responseText),
                     $chapter = $data.find('#js-truyencv-content'),
-                    $notContent = $chapter.find('script, style, a, div, p:last'),
+                    $notContent = $chapter.find('iframe, script, style, a, div, p'),
                     $referrer = $chapter.find('[style]').filter(function () {
                         return (this.style.fontSize === '1px' || this.style.fontSize === '0px' || this.style.color === 'white');
                     });
