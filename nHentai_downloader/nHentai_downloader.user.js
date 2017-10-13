@@ -21,6 +21,8 @@
 jQuery(function ($) {
     'use strict';
 
+    var extractedInfo = null;
+
     /**
      * Output extension
      * @type {String} zip
@@ -33,6 +35,12 @@ jQuery(function ($) {
      * $ rename 's/\.zip$/\.cbz/' *.zip
      */
     var outputExt = 'cbz'; // or 'zip'
+
+    /**
+     * Put images in subfolder inside archive
+     * @type {Boolean}
+     */
+    var subfolder = false;
 
     /**
      * Multithreading
@@ -54,6 +62,9 @@ jQuery(function ($) {
     }
 
     function getInfo() {
+        if(extractedInfo){
+            return extractedInfo;
+        }
         var $info = $('#info'),
             $h1 = $info.find('h1'),
             $h2 = $info.find('h2'),
@@ -77,11 +88,12 @@ jQuery(function ($) {
         if ($tags.length) info += '\r\n' + $tags.text().trim().replace(/[\n\s\t]{2,}/g, '\r\n');
 
         if (debug) console.log(info);
+        extractedInfo = info;
         return info;
     }
 
     function genZip() {
-        zip.file('info.txt', getInfo());
+        zip.file((subfolder === true ? getInfo().split('\n')[0]+ '/' : '')+'info.txt', getInfo());
 
         zip.generateAsync({
             type: 'blob'
@@ -152,7 +164,7 @@ jQuery(function ($) {
 
             if (debug) console.log(url, 'download');
             dlImg(url, function (response, filename) {
-                zip.file(filename, response.response);
+                zip.file((subfolder === true ? getInfo().split('\n')[0]+ '/' : '')+filename, response.response);
 
                 if (debug) console.log(filename, 'success');
                 next();
