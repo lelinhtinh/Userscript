@@ -2,7 +2,7 @@
 // @name         nHentai Downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on nHentai.net
-// @version      1.5.2
+// @version      1.6.0
 // @icon         http://i.imgur.com/FAsQ4vZ.png
 // @author       Zzbaivong
 // @license      MIT
@@ -11,11 +11,13 @@
 // @require      https://code.jquery.com/jquery-3.2.1.slim.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.4/jszip.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js
+// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @noframes
 // @connect      self
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-idle
 // @grant        GM_xmlhttpRequest
+// @grant        GM.xmlHttpRequest
 // ==/UserScript==
 
 jQuery(function ($) {
@@ -120,7 +122,7 @@ jQuery(function ($) {
         filename = ('0000' + filename[0]).slice(-4) + '.' + filename[1];
 
         if (debug) console.log(filename, 'progress');
-        GM_xmlhttpRequest({
+        GM.xmlHttpRequest({
             method: 'GET',
             url: url,
             responseType: 'arraybuffer',
