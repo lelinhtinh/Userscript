@@ -2,7 +2,7 @@
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyencv.com định dạng epub
-// @version      2.2.1
+// @version      2.2.2
 // @icon         http://i.imgur.com/o5cmtkU.png
 // @author       Zzbaivong
 // @license      MIT
@@ -40,7 +40,7 @@
 
 
     function cleanHtml(str) {
-        str = str.replace(/&nbsp\;/gm, ' ');
+        str = str.replace(/&nbsp;/gm, ' ');
         str = str.replace(/<(br|hr|img)([^>]+)?>/gm, '<$1$2 />');
         str = str.replace(/[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]+/gm, ''); // eslint-disable-line
         str = str.replace(/\s[a-zA-Z0-9]{6,8}(="")?\s/gm, function (key, attr) {
@@ -131,12 +131,12 @@
                             $chapter = '<p>Chương truyện không có nội dung.</p>';
                             downloadError('Content is empty.');
                         } else {
-                        var $img = $chapter.find('img');
-                        if ($img.length) $img.replaceWith(function () {
-                            return '<br /><a href="' + this.src + '">Click để xem ảnh</a><br />';
-                        });
-                        $chapter = cleanHtml($chapter.html());
-                    }
+                            var $img = $chapter.find('img');
+                            if ($img.length) $img.replaceWith(function () {
+                                return '<br /><a href="' + this.src + '">Click để xem ảnh</a><br />';
+                            });
+                            $chapter = cleanHtml($chapter.html());
+                        }
                     }
 
                     epubMaker.withSection(new EpubMaker.Section('chapter', chapId, {
@@ -263,7 +263,7 @@
         document.title = '[...] Vui lòng chờ trong giây lát';
 
         showChapList = showChapList.attr('onclick');
-        showChapList = showChapList.match(/\(([^\(\)]+)\)/)[1];
+        showChapList = showChapList.match(/\(([^()]+)\)/)[1];
         showChapList = showChapList.match(/[^',]+/g);
 
         $.post('/index.php', {
@@ -273,7 +273,7 @@
             page: showChapList[2],
             type: showChapList[3]
         }).done(function (data) {
-            chapList = data.match(/(?:href\=")[^"\)]+(?=")/g);
+            chapList = data.match(/(?:href=")[^")]+(?=")/g);
             if (data.indexOf('panel panel-vip') === -1) chapList = chapList.reverse();
             chapList = chapList.map(function (val) {
                 val = val.slice(6, -1);
