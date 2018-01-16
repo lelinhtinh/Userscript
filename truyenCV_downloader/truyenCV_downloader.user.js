@@ -100,7 +100,7 @@
             onload: function (response) {
                 var $data = $(response.responseText),
                     $chapter = $data.find('#js-truyencv-content'),
-                    $notContent = $chapter.find('iframe, script, style, a, div, p'),
+                    $notContent = $chapter.find('iframe, script, style, a, div, p:has(a[href*="truyencv.com"])'),
                     $referrer = $chapter.find('[style]').filter(function () {
                         return (this.style.fontSize === '1px' || this.style.fontSize === '0px' || this.style.color === 'white');
                     });
