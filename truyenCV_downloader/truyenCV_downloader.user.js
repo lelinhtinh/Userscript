@@ -50,6 +50,7 @@
             if (key.split(/\d/).length > 1) return ' ';
             return key;
         });
+        str = str.replace(/\([^(]+<button[^/]+<\/button>[^)]*\)\s*/gi, '');
         str = str.split(/(ps:|hoan nghênh quảng đại bạn đọc quang lâm|Huyền ảo khoái trí ân cừu)/i)[0];
         return '<p>' + str + '</p>';
     }
