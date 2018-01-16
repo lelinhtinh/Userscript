@@ -126,11 +126,16 @@
                         if ($notContent.length) $notContent.remove();
                         if ($referrer.length) $referrer.remove();
 
+                        if ($chapter.text().trim() === '') {
+                            $chapter = '<p>Chương truyện không có nội dung.</p>';
+                            downloadError('Content is empty.');
+                        } else {
                         var $img = $chapter.find('img');
                         if ($img.length) $img.replaceWith(function () {
                             return '<br /><a href="' + this.src + '">Click để xem ảnh</a><br />';
                         });
                         $chapter = cleanHtml($chapter.html());
+                    }
                     }
 
                     epubMaker.withSection(new EpubMaker.Section('chapter', chapId, {
