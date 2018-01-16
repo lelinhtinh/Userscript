@@ -2,22 +2,24 @@
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyencv.com định dạng epub
-// @version      2.2.2
+// @version      3.0.0
 // @icon         http://i.imgur.com/o5cmtkU.png
 // @author       Zzbaivong
 // @license      MIT
 // @match        http://truyencv.com/*/
-// @require      https://code.jquery.com/jquery-3.2.1.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js
+// @require      https://code.jquery.com/jquery-3.2.1.slim.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/2.6.1/jszip.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jszip-utils/0.0.2/jszip-utils.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js
 // @require      https://cdn.jsdelivr.net/npm/epub-maker@1.2.0/dist/js-epub-maker.min.js
+// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @noframes
 // @connect      self
 // @supportURL   https://github.com/baivong/Userscript/issues
 // @run-at       document-idle
 // @grant        GM_xmlhttpRequest
+// @grant        GM.xmlHttpRequest
 // ==/UserScript==
 
 /* global EpubMaker */
@@ -92,7 +94,7 @@
         if (endDownload) return;
         chapId = chapList[count];
 
-        GM_xmlhttpRequest({
+        GM.xmlHttpRequest({
             headers: {
                 'Cookie': 'USER=' + accountKey
             },
@@ -219,12 +221,12 @@
     var pageName = document.title,
         $win = $(window),
         $download = $('<a>', {
-            class: 'btn btn-truyencv',
+            class: 'btn btn-info',
             href: '#download',
             text: 'Tải xuống'
         }),
         $downloadStatus = function (status) {
-            $download.removeClass('btn-truyencv btn-primary btn-success btn-info btn-warning btn-danger').addClass('btn-' + status);
+            $download.removeClass('btn-primary btn-success btn-info btn-warning btn-danger').addClass('btn-' + status);
         },
 
         $novelId = $('.basic'),
@@ -255,7 +257,7 @@
 
     if (!$novelId.length) return;
 
-    $download.appendTo('.info .buttons');
+    $download.insertAfter('#btnregistRecentReadingStory');
     $download.one('click contextmenu', function (e) {
         e.preventDefault();
         var showChapList = $('.truyencv-detail-block a[href="#truyencv-detail-chap"]');
@@ -266,31 +268,34 @@
         showChapList = showChapList.match(/\(([^()]+)\)/)[1];
         showChapList = showChapList.match(/[^',]+/g);
 
-        $.post('/index.php', {
-            showChapter: 1,
-            media_id: showChapList[0],
-            number: showChapList[1],
-            page: showChapList[2],
-            type: showChapList[3]
-        }).done(function (data) {
-            chapList = data.match(/(?:href=")[^")]+(?=")/g);
-            if (data.indexOf('panel panel-vip') === -1) chapList = chapList.reverse();
-            chapList = chapList.map(function (val) {
-                val = val.slice(6, -1);
-                val = val.replace(referrer, '');
-                return val;
-            });
+        GM.xmlHttpRequest({
+            method: 'POST',
+            url: '/index.php',
+            data: 'showChapter=1&media_id=' + showChapList[0] + '&number=' + showChapList[1] + '&page=' + showChapList[2] + '&type=' + showChapList[3],
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            onload: function (response) {
+                chapList = response.responseText.match(/(?:href=")[^")]+(?=")/g);
+                if (response.responseText.indexOf('panel panel-vip') === -1) chapList = chapList.reverse();
+                chapList = chapList.map(function (val) {
+                    val = val.slice(6, -1);
+                    val = val.replace(referrer, '');
+                    return val;
+                });
 
-            if (e.type === 'contextmenu') {
-                var startFrom = prompt('Nhập ID chương truyện bắt đầu tải:', chapList[0]);
-                startFrom = chapList.indexOf(startFrom);
-                if (startFrom !== -1) chapList = chapList.slice(startFrom);
+                if (e.type === 'contextmenu') {
+                    var startFrom = prompt('Nhập ID chương truyện bắt đầu tải:', chapList[0]);
+                    startFrom = chapList.indexOf(startFrom);
+                    if (startFrom !== -1) chapList = chapList.slice(startFrom);
+                }
+
+                chapListSize = chapList.length;
+                if (chapListSize > 0) downloadEbook();
+            },
+            onerror: function (err) {
+                downloadError(err.statusText);
             }
-
-            chapListSize = chapList.length;
-            if (chapListSize > 0) downloadEbook();
-        }).fail(function (jqXHR, textStatus) {
-            downloadError(textStatus);
         });
     });
 
