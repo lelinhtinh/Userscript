@@ -1,31 +1,32 @@
 {
-    "env": {
-        "browser": true,
-        "jquery": true,
-        "greasemonkey": true
-    },
-    "globals": {
-        "saveAs": false,
-        "JSZip": false
-    },
-    "extends": "eslint:recommended",
-    "rules": {
-        "indent": [
-            "error",
-            4
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
-        "no-console": 0
-    }
+  "env": {
+    "browser": true,
+    "jquery": true,
+    "greasemonkey": true
+  },
+  "globals": {
+    "saveAs": false,
+    "JSZip": false,
+    "jEpub": false
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+    "indent": [
+      "error",
+      4
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "no-console": 0
+  }
 }
