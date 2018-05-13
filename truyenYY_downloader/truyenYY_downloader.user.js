@@ -1,169 +1,211 @@
 // ==UserScript==
 // @name         TruyenYY downloader
 // @namespace    http://devs.forumvi.com/
-// @description  Tải truyện từ truyenyy.com định dạng html. Sau đó, bạn có thể dùng Mobipocket Creator để tạo ebook prc
-// @version      1.3.0
-// @icon         http://i.imgur.com/obHcq8v.png
+// @description  Tải truyện từ truyenyy.com định dạng epub
+// @version      4.0.0
+// @icon         https://i.imgur.com/obHcq8v.png
 // @author       Zzbaivong
-// @license      MIT
-// @match        http://truyenyy.com/truyen/*
-// @match        https://truyenyy.com/truyen/*
-// @require      https://code.jquery.com/jquery-2.2.4.min.js
-// @require      https://greasyfork.org/scripts/18532-filesaver/code/FileSaver.js?version=135609
+// @license      MIT; https://baivong.mit-license.org/license.txt
+// @match        https://truyenyy.com/truyen/*/
+// @require      https://code.jquery.com/jquery-3.3.1.min.js
+// @require      https://unpkg.com/jepub/dist/jepub.min.js
+// @require      https://unpkg.com/file-saver/FileSaver.min.js
+// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @noframes
 // @connect      self
-// @supportURL   https://github.com/baivong/Userscript/issues
+// @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
 // @grant        GM_xmlhttpRequest
+// @grant        GM.xmlHttpRequest
 // ==/UserScript==
 
-(function ($, window, document, undefined) {
-
+(function ($, window, document) {
     'use strict';
 
-    function downloadFail(url, wait) {
-
-        console.log('%cError: ' + url, 'color:red;');
-        $download.html('<i class="icon-repeat icon-white"></i> Resume...').css('background', 'red');
-        disableClick = false;
-
-        setTimeout(function () {
-            $download.trigger('click');
-        }, (wait ? 100000 : 3000));
-
+    function cleanText(str) {
+        return str.replace(/[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]+/gm, ''); // eslint-disable-line
     }
 
-    function getContent(url) {
-        GM_xmlhttpRequest({
+    function downloadError(err, noOutput) {
+        downloadStatus('danger');
+        titleError.push(chapTitle);
+        if (!noOutput) {
+            return '<a href="' + referrer + chapId + '">' + err + '</a>';
+        } else {
+            console.error(err);
+        }
+    }
+
+    function saveEbook() {
+        if (endDownload) return;
+        endDownload = true;
+
+        if (titleError.length) {
+            titleError = '<p><strong>Các chương lỗi: </strong>' + titleError.join(', ') + '</p>';
+        } else {
+            titleError = '';
+        }
+        beginEnd = '<p>Nội dung từ <strong>' + begin + '</strong> đến <strong>' + end + '</strong></p>';
+
+        jepub.notes(beginEnd + titleError + '<br /><br />' + credits);
+
+        jepub.generate().then(function (epubZipContent) {
+            document.title = '[⇓] ' + ebookTitle;
+            $win.off('beforeunload');
+
+            $download.attr({
+                href: window.URL.createObjectURL(epubZipContent),
+                download: ebookFilename
+            }).html('<i class="iconfont icon-save"></i> Tải xong').off('click');
+            if (!$download.hasClass('btn-danger')) downloadStatus('success');
+
+            saveAs(epubZipContent, ebookFilename);
+        }).catch(function (err) {
+            downloadStatus('danger');
+            console.error(err);
+        });
+    }
+
+    function getContent(pageId) {
+        if (endDownload) return;
+        chapId = pageId;
+
+        GM.xmlHttpRequest({
             method: 'GET',
-            url: url,
+            url: pathname + chapId,
             onload: function (response) {
-
                 var $data = $(response.responseText),
-                    title = $data.find('h1').text().trim(),
-                    $chapter = $data.find('#id_noidung_chuong'),
-                    $notContent = $chapter.find('script, style'),
-                    $referrer = $chapter.find('[style]').filter(function () {
-                        return (this.style.fontSize === '1px' || this.style.fontSize === '0px' || this.style.color === 'white');
-                    });
+                    $chapter = $data.find('#id_chap_content .inner p'),
+                    chapContent = [],
+                    $next = $data.find('.buttons .btn-primary'),
+                    $vip = $data.find('#btn_buy');
 
-                if ($chapter.length && title !== 'Chương thứ yyy: Ra đảo') {
+                if (endDownload) return;
 
-                    console.log('%cComplete: ' + url, 'color:green;');
-                    $download.html('<i class="icon-refresh icon-white"></i> ' + count + '/' + max).css('background', 'orange');
+                chapTitle = $data.find('h1.chapter-title').text().trim();
 
-                    if ($notContent.length) $notContent.remove();
-                    if ($referrer.length) $referrer.remove();
-                    txt += '<h2 class="title">' + title + '</h2>' + $chapter.html();
-
-                    ++count;
-                    getChapter();
-
+                if ($vip.length) {
+                    chapContent = downloadError('Chương VIP');
+                } else if (!$chapter.length) {
+                    chapContent = downloadError('Không có nội dung');
                 } else {
-                    downloadFail(url, true);
+                    downloadStatus('warning');
+
+                    $chapter.each(function () {
+                        chapContent.push(cleanText(this.textContent.trim()));
+                    });
                 }
 
+                jepub.add(chapTitle, chapContent);
+
+                if (count === 0) begin = chapTitle;
+                end = chapTitle;
+                ++count;
+
+                downloadProgress(count);
+
+                if ($next.hasClass('disabled')) {
+                    saveEbook();
+                } else {
+                    getContent(downloadId($next.attr('href')));
+                }
             },
             onerror: function (err) {
-
-                downloadFail(url);
-                console.error(err);
-
+                downloadError(err, true);
+                saveEbook();
             }
         });
     }
 
-    function getChapter() {
 
-        var fileName = path.slice(8, -1) + '_' + begin + '-' + end + '.htm',
-            blob;
+    var pageName = document.title,
+        $win = $(window),
 
-        if (count > max) {
+        $download = $('.more-buttons').find('a[href$="/epub/"]'),
+        downloadStatus = function (status) {
+            $download.removeClass('btn-primary btn-success btn-info btn-warning btn-danger').addClass('btn-' + status);
+        },
+        downloadProgress = function (progress) {
+            document.title = '[' + count + '] ' + pageName;
+            $download.html('<i class="iconfont icon-setting"></i> Đã tải:<span class="pl-2">' + progress + '</span>');
+        },
+        downloadId = function (url) {
+            return url.trim().replace(/^.*\//, '');
+        },
 
-            txt = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><h1><font color="red">' + $('h1').text() + '</font></h1><h3><font color="blue">' + $('.lww p:eq(0)').text() + '</font></h3><h3><font color="green">' + $('.lww p:eq(1)').text() + '</font></h3><h3><font color="gray">Tổng số chương: ' + (end - begin + 1) + '</font></h3><br><br>' + credits + '<br><br><br>' + txt + '</body></html>';
+        $novelInfo = $('.novel-info'),
+        chapId = '',
+        chapTitle = '',
+        count = 0,
+        begin = '',
+        end = '',
+        endDownload = false,
 
-            blob = new Blob([txt], {
-                type: 'text/html'
-            });
+        ebookTitle = $('h1.name').text().trim(),
+        ebookAuthor = $('h2.author').text().trim(),
+        // ebookCover = $('.novel-info .zoom-me').attr('src'),
+        ebookDesc = $('#id_novel_summary').html(),
+        // ebookType = [],
+        beginEnd = '',
+        titleError = [],
 
-            $download.attr({
-                href: window.URL.createObjectURL(blob),
-                download: fileName
-            }).html('<i class="icon-ok icon-white"></i> Download Finished!').css('background', 'green').off('click');
+        host = location.host,
+        pathname = location.pathname,
+        referrer = location.protocol + '//' + host + pathname,
 
-            $(window).off('beforeunload');
+        ebookFilename = pathname.slice(8, -1) + '.epub',
 
-            console.log('%cDownload Finished!', 'color:blue;');
+        credits = '<p>Truyện được tải từ <a href="' + referrer + '">TruyenFull</a></p><p>Userscript được viết bởi: <a href="https://github.com/lelinhtinh/jEpub">Zzbaivong</a></p>',
 
-            saveAs(blob, fileName);
-
-        } else {
-
-            url = path.replace('/truyen/', '/doc-truyen/') + 'chuong-' + count;
-
-            getContent(url);
-
-        }
-
-    }
+        jepub;
 
 
-    var $download = $('[href="#dschuong"]'),
-        count = 1,
-        max = parseInt($('.ip5').first().find('a').attr('href').match(/\/chuong-(\d+)\/$/)[1], 10),
-        begin,
-        end,
-        txt = '',
-        enablePrompt = true,
-        disableClick = false,
-        path = location.pathname,
-        url,
-        credits = '<p>Truyện được tải từ: TruyenYY - http://truyenyy.com</p><p>Userscript được viết bởi: Zzbaivong - http://devs.forumvi.com</p>';
+    if (!$novelInfo.length) return;
 
-    window.URL = window.URL || window.webkitURL;
+    // var $ebookType = $('a', '.tag-list.list-unstyled.mt-2');
+    // if ($ebookType.length) {
+    //     $ebookType.each(function () {
+    //         ebookType.push($(this).text().trim());
+    //     });
+    //     ebookType = ebookType.join(', ');
+    //     ebookType = '<p><strong>Thể loại:</strong> ' + ebookType + '</p>';
+    // } else {
+    //     ebookType = '';
+    // }
 
-    $download.html('<i class="icon-download icon-white"></i> Download').css('background', 'orange').on('click', function (e) {
+    jepub = new jEpub({
+        title: ebookTitle,
+        author: ebookAuthor,
+        publisher: host,
+        description: ebookDesc
+    }).uuid(referrer);
 
+    $download.addClass('btn btn-primary text-light');
+    $download.one('click contextmenu', function (e) {
         e.preventDefault();
+        document.title = '[...] Vui lòng chờ trong giây lát';
 
-        if (disableClick) return;
+        var firstChap = $('.info .btn:contains("Đọc Từ Đầu")');
+        firstChap = downloadId(firstChap.attr('href'));
+        var startFrom = firstChap;
 
-        if (enablePrompt) {
-
-            begin = prompt('Chọn Chương bắt đầu tải', count);
-            end = prompt('Chọn Chương kết thúc tải', max);
-
-            if (begin !== null && /^\d+$/.test(begin)) {
-                begin = parseInt(begin, 10);
-                count = begin;
-            } else {
-                begin = count;
-            }
-
-            if (end !== null && /^\d+$/.test(end)) {
-                end = parseInt(end, 10);
-                if (end > count) {
-                    max = end;
-                } else {
-                    max = count;
-                    end = count;
-                }
-            } else {
-                end = max;
-            }
-
-            $(window).on('beforeunload', function () {
-                return 'Truyện đang được tải xuống...';
-            });
-
-            enablePrompt = false;
-
+        if (e.type === 'contextmenu') {
+            $download.off('click');
+            startFrom = prompt('Nhập ID chương truyện bắt đầu tải:', firstChap) || firstChap;
+        } else {
+            $download.off('contextmenu');
         }
 
-        getChapter();
+        $win.on('beforeunload', function () {
+            return 'Truyện đang được tải xuống...';
+        });
 
-        disableClick = true;
+        $download.one('click', function (e) {
+            e.preventDefault();
+            saveEbook();
+        });
 
+        getContent(startFrom);
     });
 
 })(jQuery, window, document);
