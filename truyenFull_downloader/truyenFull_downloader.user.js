@@ -2,7 +2,7 @@
 // @name         TruyenFull downloader
 // @namespace    https://baivong.github.io/
 // @description  Tải truyện từ truyenfull.vn định dạng epub
-// @version      4.0.0
+// @version      4.1.0
 // @icon         https://i.imgur.com/FQY8btq.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -16,8 +16,8 @@
 // @exclude      http://truyenfull.vn/tos/
 // @exclude      http://truyenfull.vn/sitemap.xml
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
-// @require      https://unpkg.com/jepub/dist/jepub.js
-// @require      https://cdn.jsdelivr.net/npm/file-saver@1.3.8/FileSaver.min.js
+// @require      https://unpkg.com/jepub/dist/jepub.min.js
+// @require      https://unpkg.com/file-saver/FileSaver.min.js
 // @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @noframes
 // @connect      self
@@ -47,8 +47,6 @@
 
     function cleanHtml(str) {
         str = str.replace(/\s*Chương\s*\d+\s?:[^<\n]/, '');
-        str = str.replace(/&nbsp;/gm, ' ');
-        str = str.replace(/<(br|hr|img)([^>]+)?>/gm, '<$1$2 />');
         str = str.replace(/[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]+/gm, ''); // eslint-disable-line
         return '<div>' + str + '</div>';
     }
@@ -151,7 +149,7 @@
         $win = $(window),
 
         $download = $('<a>', {
-            class: 'btn btn-primary btn-lg',
+            class: 'btn btn-primary',
             href: '#download',
             text: 'Tải xuống'
         }),
@@ -172,7 +170,7 @@
         ebookTitle = $('h1').text().trim(),
         ebookAuthor = $('.info a[itemprop="author"]').text().trim(),
         // ebookCover = $('.books img').attr('src'),
-        // ebookDesc = $('.desc-text-full').html(),
+        ebookDesc = $('.desc-text').html(),
         // ebookType = [],
         beginEnd = '',
         titleError = [],
@@ -207,7 +205,8 @@
     jepub = new jEpub({
         title: ebookTitle,
         author: ebookAuthor,
-        publisher: host
+        publisher: host,
+        description: ebookDesc
     }).uuid(referrer);
 
     $download.insertAfter('.info');

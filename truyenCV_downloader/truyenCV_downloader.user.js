@@ -2,14 +2,14 @@
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyencv.com định dạng epub
-// @version      4.0.0
+// @version      4.1.0
 // @icon         http://i.imgur.com/o5cmtkU.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        http://truyencv.com/*/
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
-// @require      https://unpkg.com/jepub/dist/jepub.js
-// @require      https://cdn.jsdelivr.net/npm/file-saver@1.3.8/FileSaver.min.js
+// @require      https://unpkg.com/jepub/dist/jepub.min.js
+// @require      https://unpkg.com/file-saver/FileSaver.min.js
 // @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @noframes
 // @connect      self
@@ -28,7 +28,14 @@
      * @type {Boolean} true
      *                 false
      */
-    var readOnline = true;
+    var readOnline = false;
+
+    /**
+     * Những đoạn ghi chú cuối chương của converter
+     * Chỉ cần ghi phần bắt đầu, không phân biệt hoa thường
+     * Ngăn cách các đoạn bằng dấu |
+     */
+    var converter = 'ps:|hoan nghênh quảng đại bạn đọc quang lâm|Huyền ảo khoái trí ân cừu';
 
     /**
      * Cookie tài khoản để tải chương bắt buộc đăng nhập
@@ -37,10 +44,9 @@
     var accountKey = 'c65319af7693e3ad0dc5d72511fe0307';
 
 
+    converter = new RegExp('(' + converter + ')', 'i');
     function cleanHtml(str) {
         str = str.replace(/\s*Chương\s*\d+\s?:[^<\n]/, '');
-        str = str.replace(/&nbsp;/gm, ' ');
-        str = str.replace(/<(br|hr|img)([^>]+)?>/gm, '<$1$2 />');
         str = str.replace(/[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]+/gm, ''); // eslint-disable-line
         str = str.replace(/\s[a-zA-Z0-9]{6,8}(="")?\s/gm, function (key, attr) {
             if (attr) return ' ';
@@ -50,7 +56,7 @@
             return key;
         });
         str = str.replace(/\([^(]+<button[^/]+<\/button>[^)]*\)\s*/gi, '');
-        str = str.split(/(ps:|hoan nghênh quảng đại bạn đọc quang lâm|Huyền ảo khoái trí ân cừu)/i)[0];
+        str = str.split(converter)[0];
         return '<div>' + str + '</div>';
     }
 
@@ -189,7 +195,7 @@
         ebookTitle = '',
         ebookAuthor = '',
         // ebookCover = '',
-        // ebookDesc = '',
+        ebookDesc = '',
         // ebookType = [],
         beginEnd = '',
         titleError = [],
@@ -215,7 +221,7 @@
     ebookTitle = $infoBlock.find('h1').text().trim();
     ebookAuthor = $infoBlock.find('.author').text().trim();
     // ebookCover = $infoBlock.find('.img-responsive').attr('src');
-    // ebookDesc = $('.brief').html(),
+    ebookDesc = $('.brief').html(),
 
     // var $ebookType = $infoBlock.find('.categories a');
     // if ($ebookType.length) {
@@ -231,7 +237,8 @@
     jepub = new jEpub({
         title: ebookTitle,
         author: ebookAuthor,
-        publisher: host
+        publisher: host,
+        description: ebookDesc
     }).uuid(referrer);
 
     $download.insertAfter('#btnregistRecentReadingStory');
