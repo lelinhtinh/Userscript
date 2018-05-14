@@ -2,7 +2,7 @@
 // @name         TruyenYY downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyenyy.com định dạng epub
-// @version      4.0.0
+// @version      4.1.0
 // @icon         https://i.imgur.com/obHcq8v.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -145,7 +145,7 @@
         ebookAuthor = $('h2.author').text().trim(),
         // ebookCover = $('.novel-info .zoom-me').attr('src'),
         ebookDesc = $('#id_novel_summary').html(),
-        // ebookType = [],
+        ebookType = [],
         beginEnd = '',
         titleError = [],
 
@@ -155,29 +155,24 @@
 
         ebookFilename = pathname.slice(8, -1) + '.epub',
 
-        credits = '<p>Truyện được tải từ <a href="' + referrer + '">TruyenFull</a></p><p>Userscript được viết bởi: <a href="https://github.com/lelinhtinh/jEpub">Zzbaivong</a></p>',
+        credits = '<p>Truyện được tải từ <a href="' + referrer + '">TruyenYY</a></p><p>Userscript được viết bởi: <a href="https://github.com/lelinhtinh/jEpub">Zzbaivong</a></p>',
 
         jepub;
 
 
     if (!$novelInfo.length) return;
 
-    // var $ebookType = $('a', '.tag-list.list-unstyled.mt-2');
-    // if ($ebookType.length) {
-    //     $ebookType.each(function () {
-    //         ebookType.push($(this).text().trim());
-    //     });
-    //     ebookType = ebookType.join(', ');
-    //     ebookType = '<p><strong>Thể loại:</strong> ' + ebookType + '</p>';
-    // } else {
-    //     ebookType = '';
-    // }
+    var $ebookType = $('a', '.tag-list.list-unstyled.mt-2');
+    if ($ebookType.length) $ebookType.each(function () {
+        ebookType.push($(this).text().trim());
+    });
 
     jepub = new jEpub({
         title: ebookTitle,
         author: ebookAuthor,
         publisher: host,
-        description: ebookDesc
+        description: ebookDesc,
+        tags: ebookType
     }).uuid(referrer);
 
     $download.addClass('btn btn-primary text-light');
