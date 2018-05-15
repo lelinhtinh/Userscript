@@ -2,15 +2,15 @@
 // @name         TruyenYY downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyenyy.com định dạng epub
-// @version      4.1.0
+// @version      4.2.0
 // @icon         https://i.imgur.com/obHcq8v.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        https://truyenyy.com/truyen/*/
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
-// @require      https://unpkg.com/jepub/dist/jepub.min.js
-// @require      https://unpkg.com/file-saver/FileSaver.min.js
-// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
+// @require      https://unpkg.com/jepub@1.2.0/dist/jepub.min.js
+// @require      https://unpkg.com/file-saver@1.3.8/FileSaver.min.js
+// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect      self
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
@@ -30,7 +30,7 @@
         downloadStatus('danger');
         titleError.push(chapTitle);
         if (!noOutput) {
-            return '<a href="' + referrer + chapId + '">' + err + '</a>';
+            return '<p class="no-indent"><a href="' + referrer + chapId + '">' + err + '</a></p>';
         } else {
             console.error(err);
         }
@@ -41,11 +41,11 @@
         endDownload = true;
 
         if (titleError.length) {
-            titleError = '<p><strong>Các chương lỗi: </strong>' + titleError.join(', ') + '</p>';
+            titleError = '<p class="no-indent"><strong>Các chương lỗi: </strong>' + titleError.join(', ') + '</p>';
         } else {
             titleError = '';
         }
-        beginEnd = '<p>Nội dung từ <strong>' + begin + '</strong> đến <strong>' + end + '</strong></p>';
+        beginEnd = '<p class="no-indent">Nội dung từ <strong>' + begin + '</strong> đến <strong>' + end + '</strong></p>';
 
         jepub.notes(beginEnd + titleError + '<br /><br />' + credits);
 
@@ -127,7 +127,7 @@
         },
         downloadProgress = function (progress) {
             document.title = '[' + count + '] ' + pageName;
-            $download.html('<i class="iconfont icon-setting"></i> Đã tải:<span class="pl-2">' + progress + '</span>');
+            $download.html('<i class="iconfont icon-more"></i> Đã tải:<span class="pl-2">' + progress + '</span>');
         },
         downloadId = function (url) {
             return url.trim().replace(/^.*\//, '');
@@ -155,7 +155,7 @@
 
         ebookFilename = pathname.slice(8, -1) + '.epub',
 
-        credits = '<p>Truyện được tải từ <a href="' + referrer + '">TruyenYY</a></p><p>Userscript được viết bởi: <a href="https://github.com/lelinhtinh/jEpub">Zzbaivong</a></p>',
+        credits = '<p>Truyện được tải từ <a href="' + referrer + '">TruyenYY</a></p><p>Userscript được viết bởi: <a href="https://lelinhtinh.github.io/jEpub/">Zzbaivong</a></p>',
 
         jepub;
 
