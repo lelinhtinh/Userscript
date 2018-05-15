@@ -5,6 +5,7 @@
 // @version      4.2.1
 // @icon         http://i.imgur.com/o5cmtkU.png
 // @author       Zzbaivong
+// @oujs:author  baivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        http://truyencv.com/*/
 // @require      https://code.jquery.com/jquery-3.3.1.min.js

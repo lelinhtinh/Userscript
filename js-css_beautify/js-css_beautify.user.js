@@ -2,19 +2,20 @@
 // @name         Javascript-css beautify
 // @namespace    http://devs.forumvi.com
 // @description  Beautify and syntax highlighting for source code javascript, json, css. Support to view the source code by holding the right mouse and drag.
-// @version      2.4.2
+// @version      2.4.3
 // @icon         http://i.imgur.com/kz8nqz1.png
 // @author       Zzbaivong
-// @license      MIT
+// @oujs:author  baivong
+// @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        http://*/*
 // @match        https://*/*
 // @resource     light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css
 // @resource     dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css
-// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.14/beautify.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.14/beautify-css.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify-css.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js
 // @noframes
-// @supportURL   https://github.com/baivong/Userscript/issues
+// @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
@@ -25,7 +26,7 @@
 
     'use strict';
 
-    var theme = 'light', // light|dark
+    var theme = 'dark', // light|dark
         lineColor = {
             light: ['#a7a7a7', '#e8e8e7'],
             dark: ['#4d4d4d', '#3a3a3a']

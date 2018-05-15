@@ -5,6 +5,7 @@
 // @version      4.2.1
 // @icon         https://i.imgur.com/FQY8btq.png
 // @author       Zzbaivong
+// @oujs:author  baivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
 // @include      http://truyenfull.vn/*
 // @exclude      http://truyenfull.vn/

@@ -2,21 +2,22 @@
 // @name         viewsource
 // @namespace    devs.forumvi.com
 // @description  View and beauty website source code. Support to view the source code by holding the right mouse and drag. Shortcut: Alt+U.
-// @version      2.5.3
+// @version      2.5.4
 // @icon         http://i.imgur.com/6yZMOeH.png
 // @author       Zzbaivong
-// @license      MIT
+// @oujs:author  baivong
+// @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        http://*/*
 // @match        https://*/*
 // @resource     light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css
 // @resource     dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css
-// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.14/beautify-html.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.14/beautify.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.14/beautify-css.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify-html.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify-css.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js
 // @noframes
 // @connect      self
-// @supportURL   https://github.com/baivong/Userscript/issues
+// @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
@@ -29,7 +30,7 @@
 
     'use strict';
 
-    var theme = 'light', // light|dark
+    var theme = 'dark', // light|dark
         lineColor = {
             light: ['#a7a7a7', '#e8e8e7'],
             dark: ['#4d4d4d', '#3a3a3a']

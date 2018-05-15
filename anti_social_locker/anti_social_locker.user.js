@@ -2,14 +2,15 @@
 // @name         anti social locker
 // @namespace    http://baivong.github.io/
 // @description  Anti social locker plugin required user like or share before viewing content. If script doesn't work, please refresh the page to rebuild the cache and try again.
-// @version      1.0.2
+// @version      1.0.3
 // @icon         http://i.imgur.com/nOuUrIW.png
 // @author       Zzbaivong
-// @license      MIT
+// @oujs:author  baivong
+// @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        http://*/*
 // @match        https://*/*
 // @noframes
-// @supportURL   https://github.com/baivong/Userscript/issues
+// @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-start
 // @grant        none
 // ==/UserScript==
@@ -99,12 +100,12 @@
                     }
                 });
 
-                if (str) cid = str.match(/var\scid\s?=\s?(\d+)\;/);
+                if (str) cid = str.match(/var\scid\s?=\s?(\d+);/);
 
                 if (cid) {
                     cid = cid[1];
                 } else {
-                    cid = str.match(/\['(google|linkedin)(-share)?'\,\s?(\d+)\]/);
+                    cid = str.match(/\['(google|linkedin)(-share)?',\s?(\d+)\]/);
 
                     if (cid) {
                         cid = cid[3];
@@ -184,9 +185,9 @@
                 host = global.location.host,
                 str = '',
                 pid,
-                viralLock = /var\sdata\s?=\s?\{post\:\s?"(\d+)"\,\s?action\:/m,
-                viralPHP = /"virallocker"\,\s?myID:\s?"(myid\d+)"\}/m,
-                viralCoupon = /var\sdata\s?=\s?{\s?action\:\s?"submit"\,\s?myID\:\s?"(\d+)"\}\;/m,
+                viralLock = /var\sdata\s?=\s?\{post:\s?"(\d+)",\s?action:/m,
+                viralPHP = /"virallocker",\s?myID:\s?"(myid\d+)"\}/m,
+                viralCoupon = /var\sdata\s?=\s?{\s?action:\s?"submit",\s?myID:\s?"(\d+)"\};/m,
                 afterUnlock = function () {
                     counter += $locked.length;
                     showCounter();

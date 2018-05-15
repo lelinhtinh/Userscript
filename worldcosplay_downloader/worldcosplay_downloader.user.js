@@ -2,30 +2,11 @@
 // @name         Worldcosplay download
 // @namespace    http://devs.forumvi.com/
 // @description  Download photo(s) on worldcosplay.net
-// @version      2.2.2
+// @version      3.0.0
 // @icon         http://i.imgur.com/gJLjIzb.png
 // @author       Zzbaivong
-// @license      MIT
-// @match        http://worldcosplay.net/*/photos*
-// @match        http://worldcosplay.net/*/favorites*
-// @match        http://worldcosplay.net/photo/*
-// @match        http://worldcosplay.net/tag/*
-// @match        http://worldcosplay.net/search/photos?*
-// @match        http://worldcosplay.net/collections/*
-// @match        http://worldcosplay.net/character/*
-// @match        http://worldcosplay.net/title/*
-// @match        http://worldcosplay.net/photos
-// @match        http://worldcosplay.net/popular
-// @match        http://worldcosplay.net/ranking/good*
-// @match        http://worldcosplay.net/*/photo/*
-// @match        http://worldcosplay.net/*/tag/*
-// @match        http://worldcosplay.net/*/search/photos?*
-// @match        http://worldcosplay.net/*/collections/*
-// @match        http://worldcosplay.net/*/character/*
-// @match        http://worldcosplay.net/*/title/*
-// @match        http://worldcosplay.net/*/photos
-// @match        http://worldcosplay.net/*/popular
-// @match        http://worldcosplay.net/*/ranking/good*
+// @oujs:author  baivong
+// @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        https://worldcosplay.net/*/photos*
 // @match        https://worldcosplay.net/*/favorites*
 // @match        https://worldcosplay.net/photo/*
@@ -46,62 +27,60 @@
 // @match        https://worldcosplay.net/*/photos
 // @match        https://worldcosplay.net/*/popular
 // @match        https://worldcosplay.net/*/ranking/good*
-// @require      https://code.jquery.com/jquery-3.2.1.slim.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js
-// @require      https://cdn.rawgit.com/baivong/Userscript/6f17e5d1d17c4e587aae1c97a3451317a32dd964/libs/waitForKeyElements.min.js
+// @require      https://code.jquery.com/jquery-3.3.1.slim.min.js
+// @require      https://unpkg.com/file-saver@1.3.8/FileSaver.min.js
+// @require      https://greasyfork.org/scripts/6250-waitforkeyelements/code/waitForKeyElements.js?version=23756
+// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect      self
-// @supportURL   https://github.com/baivong/Userscript/issues
+// @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
 // @grant        GM_xmlhttpRequest
-// @grant        GM_download
+// @grant        GM.xmlHttpRequest
 // ==/UserScript==
 
-/* global GM_download, waitForKeyElements */
+/* global waitForKeyElements */
 (function ($, window) {
     'use strict';
 
     window.URL = window.URL || window.webkitURL;
 
     function downloadPhoto(el, url) {
-        var photoName = url.replace(/.*\//g, '');
-        if (typeof GM_download !== 'undefined') {
-            GM_download({
-                url: url,
-                name: photoName,
-                saveAs: false,
-                onerror: function (err) {
-                    console.error(err);
-                }
-            });
-        } else {
-            GM_xmlhttpRequest({
-                method: 'GET',
-                url: url,
-                responseType: 'blob',
-                onload: function (response) {
-                    var blob = response.response;
-                    $(el).attr({
-                        href: window.URL.createObjectURL(blob),
-                        download: photoName
-                    }).off('click');
-                    saveAs(blob, photoName);
-                },
-                onerror: function (err) {
-                    console.error(err);
-                }
-            });
-        }
+        var photoName = url.replace(/.*\//g, ''),
+            $icon = $(el).find('i');
+
+        $icon.addClass('fa-spinner fa-spin');
+
+        GM.xmlHttpRequest({
+            method: 'GET',
+            url: url,
+            responseType: 'blob',
+            onload: function (response) {
+                var blob = response.response;
+
+                $(el).attr({
+                    href: window.URL.createObjectURL(blob),
+                    download: photoName
+                }).off('click');
+                $icon.removeClass('fa-spinner fa-spin').addClass('fa-download');
+
+                saveAs(blob, photoName);
+            },
+            onerror: function (err) {
+                $icon.removeClass('fa-spinner fa-spin').addClass('fa-times');
+                console.error(err);
+            }
+        });
     }
 
     function getImage3000(url) {
-        var hasMax = url.match(/\/max\-(\d+)\//);
-        if (hasMax) return url.replace(/\-[\dx]+\./, '-' + hasMax[1] + '.');
+        var hasMax = url.match(/\/max-(\d+)\//);
+        if (hasMax) return url.replace(/-[\dx]+\./, '-' + hasMax[1] + '.');
 
-        return url.replace(/\-[\dx]+\./, '-3000.');
+        return url.replace(/-[\dx]+\./, '-3000.');
     }
 
-    if (/^(\/[a-z\-]+)?\/photo\/\d+$/.test(location.pathname)) {
+    if (/^(\/[a-z-]+)?\/photo\/\d+$/.test(location.pathname)) {
 
         var $btn = $('<a>', {
             href: '#download',

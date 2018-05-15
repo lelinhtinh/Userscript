@@ -2,14 +2,15 @@
 // @name         Image viewer
 // @namespace    http://devs.forumvi.com/
 // @description  Use grid wallpaper to highlight transparent image. Support to view the large image by holding the right mouse and drag.
-// @version      2.0.0
+// @version      2.0.1
 // @icon         http://i.imgur.com/ItcjCPc.png
 // @author       Zzbaivong
-// @license      MIT
+// @oujs:author  baivong
+// @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        http://*/*
 // @match        https://*/*
 // @noframes
-// @supportURL   https://github.com/baivong/Userscript/issues
+// @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
 // @grant        GM_addStyle
 // ==/UserScript==
