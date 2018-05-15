@@ -2,7 +2,7 @@
 // @name         TruyenFull downloader
 // @namespace    https://baivong.github.io/
 // @description  Tải truyện từ truyenfull.vn định dạng epub
-// @version      4.2.0
+// @version      4.2.1
 // @icon         https://i.imgur.com/FQY8btq.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -102,6 +102,7 @@
                 if (endDownload) return;
 
                 chapTitle = $data.find('.chapter-title').text().trim();
+                if (chapTitle === '') chapTitle = 'Chương ' + chapId.match(/\d+/)[0];
 
                 if (!$chapter.length) {
                     chapContent = downloadError('Không có nội dung');

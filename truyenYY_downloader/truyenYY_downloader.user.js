@@ -2,7 +2,7 @@
 // @name         TruyenYY downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyenyy.com định dạng epub
-// @version      4.2.0
+// @version      4.2.1
 // @icon         https://i.imgur.com/obHcq8v.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -83,6 +83,7 @@
                 if (endDownload) return;
 
                 chapTitle = $data.find('h1.chapter-title').text().trim();
+                if (chapTitle === '') chapTitle = 'Chương ' + chapId.match(/\d+/)[0];
 
                 if ($vip.length) {
                     chapContent = downloadError('Chương VIP');
