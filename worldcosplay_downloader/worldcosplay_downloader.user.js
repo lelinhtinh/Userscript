@@ -2,7 +2,7 @@
 // @name         Worldcosplay download
 // @namespace    http://devs.forumvi.com/
 // @description  Download photo(s) on worldcosplay.net
-// @version      3.0.0
+// @version      3.1.0
 // @icon         http://i.imgur.com/gJLjIzb.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -35,8 +35,8 @@
 // @connect      self
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
-// @grant        GM_xmlhttpRequest
 // @grant        GM.xmlHttpRequest
+// @grant        GM.openInTab
 // ==/UserScript==
 
 /* global waitForKeyElements */
@@ -47,7 +47,7 @@
 
     function downloadPhoto(el, url) {
         var photoName = url.replace(/.*\//g, ''),
-            $icon = $(el).find('i');
+            $icon = $(el).find('.fa');
 
         $icon.addClass('fa-spinner fa-spin');
 
@@ -83,14 +83,20 @@
     if (/^(\/[a-z-]+)?\/photo\/\d+$/.test(location.pathname)) {
 
         var $btn = $('<a>', {
-            href: '#download',
-            'class': 'download-this-photo',
-            html: '<div class="side_buttons" style="right: 250px;"><div class="like-this-photo button fave fa fa-download"><div class="effect-ripple"></div></div></div>'
-        });
+                href: '#download',
+                class: 'download-this-photo',
+                title: 'Click to download this image\nRight Click to open in new tab',
+                html: '<div class="side_buttons" style="right: 250px;"><div class="like-this-photo button fave fa fa-download"><div class="effect-ripple"></div></div></div>'
+            }),
+            img = $('#photoContainer').find('.img').attr('src');
         $btn.on('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
-            downloadPhoto(this, getImage3000($('#photoContainer').find('.img').attr('src')));
+            downloadPhoto(this, getImage3000(img));
+        }).on('contextmenu', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            GM.openInTab(getImage3000(img));
         });
         $btn.insertAfter('.side_buttons');
 
@@ -101,13 +107,18 @@
                 var $this = $(this),
                     $btn = $('<a>', {
                         href: '#download',
-                        'class': 'download-this-photo',
+                        class: 'download-this-photo',
+                        title: 'Click to download this image\nRight Click to open in new tab',
                         html: '<div class="item likes" style="top: 50px;"><span class="like-this-photo"><i class="fa fa-download"></i><span class="effect-ripple"></span></span></div>'
                     });
                 $btn.on('click', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
                     downloadPhoto(this, getImage3000($this.find('.photo_img').css('backgroundImage').slice(5, -2)));
+                }).on('contextmenu', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    GM.openInTab(getImage3000($this.find('.photo_img').css('backgroundImage').slice(5, -2)));
                 });
                 $this.find('.options').append($btn);
                 $this.addClass('added-download-btn');
