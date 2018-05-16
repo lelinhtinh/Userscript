@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wallpaperscraft downloader
 // @namespace    http://baivong.github.io/
-// @version      2.1.1
+// @version      2.1.2
 // @description  1-Click download on Wallpaperscraft. You should select the resolution before downloading.
 // @icon         http://i.imgur.com/NA96TWE.png
 // @author       Zzbaivong
@@ -17,7 +17,9 @@
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
 // @grant        GM.xmlHttpRequest
+// @grant        GM_xmlhttpRequest
 // @grant        GM.openInTab
+// @grant        GM_openInTab
 // ==/UserScript==
 
 (function () {
