@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wallpaperscraft downloader
 // @namespace    http://baivong.github.io/
-// @version      2.0.0
+// @version      2.1.0
 // @description  1-Click download on Wallpaperscraft. You should select the resolution before downloading.
 // @icon         http://i.imgur.com/NA96TWE.png
 // @author       Zzbaivong
@@ -15,7 +15,7 @@
 // @noframes
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
-// @grant        GM_openInTab
+// @grant        GM.xmlHttpRequest
 // @grant        GM.openInTab
 // ==/UserScript==
 
@@ -50,15 +50,26 @@
             e.preventDefault();
             info.innerHTML = 'Downloading...';
 
-            fetch(img).then(function (response) {
-                if (response.ok) return response.blob();
-                throw 'Network response was not ok.';
-            }).then(function (blob) {
-                info.innerHTML = infoContent;
-                link.setAttribute('href', URL.createObjectURL(blob));
-                link.setAttribute('download', imgName);
+            GM.xmlHttpRequest({
+                method: 'GET',
+                url: img,
+                responseType: 'blob',
+                onprogress: function (e) {
+                    var percent = Math.round((e.loaded / e.total) * 100);
+                    info.innerHTML = percent + ' %';
+                },
+                onload: function (response) {
+                    var blob = response.response;
 
-                saveAs(blob, imgName);
+                    info.innerHTML = infoContent;
+                    link.setAttribute('href', URL.createObjectURL(blob));
+                    link.setAttribute('download', imgName);
+
+                    saveAs(blob, imgName);
+                },
+                onerror: function (err) {
+                    console.error(err);
+                }
             });
         });
 
