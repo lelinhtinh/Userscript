@@ -2,26 +2,30 @@
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyencv.com định dạng epub
-// @version      4.2.1
+// @version      4.3.0
 // @icon         http://i.imgur.com/o5cmtkU.png
 // @author       Zzbaivong
 // @oujs:author  baivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        http://truyencv.com/*/
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
-// @require      https://unpkg.com/jepub@1.2.0/dist/jepub.min.js
+// @require      https://unpkg.com/jepub@1.2.1/dist/jepub.min.js
 // @require      https://unpkg.com/file-saver@1.3.8/FileSaver.min.js
 // @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect      self
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
-// @grant        GM_xmlhttpRequest
 // @grant        GM.xmlHttpRequest
 // ==/UserScript==
 
 (function ($, window, document) {
     'use strict';
+
+    /**
+     * Nhận cảnh báo khi có chương bị lỗi
+     */
+    var errorAlert = true;
 
     /**
      * Những đoạn ghi chú cuối chương của converter
@@ -53,19 +57,19 @@
         return '<div>' + str + '</div>';
     }
 
-    function downloadError(err, noOutput) {
+    function downloadError(mess, err) {
         downloadStatus('danger');
         titleError.push(chapTitle);
-        if (!noOutput) {
-            return '<p class="no-indent"><a href="' + referrer + chapId + '">' + err + '</a></p>';
-        } else {
-            console.error(err);
-        }
+        if (errorAlert) errorAlert = confirm('Lỗi! ' + mess + '\nBạn có muốn tiếp tục nhận cảnh báo?');
+
+        if (err) console.error(mess);
+        return '<p class="no-indent"><a href="' + referrer + chapId + '">' + mess + '</a></p>';
     }
 
     function saveEbook() {
         if (endDownload) return;
         endDownload = true;
+        $download.html('Đang nén EPUB');
 
         if (titleError.length) {
             titleError = '<p class="no-indent"><strong>Các chương lỗi: </strong>' + titleError.join(', ') + '</p>';
@@ -83,8 +87,8 @@
             $download.attr({
                 href: window.URL.createObjectURL(epubZipContent),
                 download: ebookFilename
-            }).text('Tải xong').off('click');
-            downloadStatus('success');
+            }).text('Hoàn thành').off('click');
+            if (!$download.hasClass('btn-danger')) downloadStatus('success');
 
             saveAs(epubZipContent, ebookFilename);
         }).catch(function (err) {
@@ -138,7 +142,7 @@
                         if ($chapter.text().trim() === '') {
                             chapContent = downloadError('Nội dung không có');
                         } else {
-                            downloadStatus('warning');
+                            if (!$download.hasClass('btn-danger')) downloadStatus('warning');
                             chapContent = cleanHtml($chapter.html());
                         }
                     }
@@ -160,7 +164,7 @@
                 }
             },
             onerror: function (err) {
-                downloadError(err, true);
+                downloadError('Kết nối không ổn định', err);
                 saveEbook();
             }
         });
