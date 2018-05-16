@@ -2,7 +2,7 @@
 // @name         Javascript-css beautify
 // @namespace    http://devs.forumvi.com
 // @description  Beautify and syntax highlighting for source code javascript, json, css. Support to view the source code by holding the right mouse and drag.
-// @version      2.5.0
+// @version      2.5.1
 // @icon         http://i.imgur.com/kz8nqz1.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -19,6 +19,7 @@
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
 // @grant        GM.getResourceUrl
+// @grant        GM_getResourceURL
 // ==/UserScript==
 
 /* global css_beautify, js_beautify, hljs */
