@@ -2,7 +2,7 @@
 // @name         Worldcosplay download
 // @namespace    http://devs.forumvi.com/
 // @description  Download photo(s) on worldcosplay.net
-// @version      3.1.0
+// @version      3.1.1
 // @icon         http://i.imgur.com/gJLjIzb.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -33,6 +33,7 @@
 // @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect      self
+// @connect      sakurastorage.jp
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
 // @grant        GM.xmlHttpRequest
