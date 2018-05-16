@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         10wallpaper downloader
 // @namespace    http://baivong.github.io/
-// @version      2.1.1
+// @version      2.1.2
 // @description  1-Click download on 10wallpaper. You should select the resolution before downloading.
 // @icon         http://i.imgur.com/08zfJez.png
 // @author       Zzbaivong
@@ -18,7 +18,9 @@
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
 // @grant        GM.xmlHttpRequest
+// @grant        GM_xmlhttpRequest
 // @grant        GM.openInTab
+// @grant        GM_openInTab
 // ==/UserScript==
 
 (function () {
