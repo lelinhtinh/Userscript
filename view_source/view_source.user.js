@@ -2,7 +2,7 @@
 // @name         viewsource
 // @namespace    devs.forumvi.com
 // @description  View and beauty website source code. Support to view the source code by holding the right mouse and drag. Shortcut: Alt+U.
-// @version      2.6.0
+// @version      2.6.1
 // @icon         http://i.imgur.com/6yZMOeH.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -22,6 +22,7 @@
 // @run-at       document-idle
 // @grant        GM.getResourceUrl
 // @grant        GM.xmlHttpRequest
+// @grant        GM_registerMenuCommand
 // ==/UserScript==
 
 /* global html_beautify, hljs */
