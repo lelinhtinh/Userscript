@@ -2,7 +2,7 @@
 // @name         TruyenYY downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyenyy.com định dạng epub
-// @version      4.3.0
+// @version      4.4.0
 // @icon         https://i.imgur.com/obHcq8v.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -11,12 +11,11 @@
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @require      https://unpkg.com/jepub@1.2.1/dist/jepub.min.js
 // @require      https://unpkg.com/file-saver@1.3.8/FileSaver.min.js
-// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect      self
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
-// @grant        GM.xmlHttpRequest
+// @grant        none
 // ==/UserScript==
 
 (function ($, window, document) {
@@ -75,50 +74,45 @@
         if (endDownload) return;
         chapId = pageId;
 
-        GM.xmlHttpRequest({
-            method: 'GET',
-            url: pathname + chapId,
-            onload: function (response) {
-                var $data = $(response.responseText),
-                    $chapter = $data.find('#id_chap_content .inner p'),
-                    chapContent = [],
-                    $next = $data.find('.buttons .btn-primary'),
-                    $vip = $data.find('#btn_buy');
+        $.get(pathname + chapId).done(function (response) {
+            var $data = $(response),
+                $chapter = $data.find('#id_chap_content .inner p'),
+                chapContent = [],
+                $next = $data.find('.buttons .btn-primary'),
+                $vip = $data.find('#btn_buy');
 
-                if (endDownload) return;
+            if (endDownload) return;
 
-                chapTitle = $data.find('h1.chapter-title').text().trim();
-                if (chapTitle === '') chapTitle = 'Chương ' + chapId.match(/\d+/)[0];
+            chapTitle = $data.find('h1.chapter-title').text().trim();
+            if (chapTitle === '') chapTitle = 'Chương ' + chapId.match(/\d+/)[0];
 
-                if ($vip.length) {
-                    chapContent = downloadError('Chương VIP');
-                } else if (!$chapter.length) {
-                    chapContent = downloadError('Không có nội dung');
-                } else {
-                    if (!$download.hasClass('btn-danger')) downloadStatus('warning');
-                    $chapter.each(function () {
-                        chapContent.push(cleanText(this.textContent.trim()));
-                    });
-                }
-
-                jepub.add(chapTitle, chapContent);
-
-                if (count === 0) begin = chapTitle;
-                end = chapTitle;
-                ++count;
-
-                downloadProgress(count);
-
-                if ($next.hasClass('disabled')) {
-                    saveEbook();
-                } else {
-                    getContent(downloadId($next.attr('href')));
-                }
-            },
-            onerror: function (err) {
-                downloadError('Kết nối không ổn định', err);
-                saveEbook();
+            if ($vip.length) {
+                chapContent = downloadError('Chương VIP');
+            } else if (!$chapter.length) {
+                chapContent = downloadError('Không có nội dung');
+            } else {
+                if (!$download.hasClass('btn-danger')) downloadStatus('warning');
+                $chapter.each(function () {
+                    chapContent.push(cleanText(this.textContent.trim()));
+                });
             }
+
+            jepub.add(chapTitle, chapContent);
+
+            if (count === 0) begin = chapTitle;
+            end = chapTitle;
+            ++count;
+
+            downloadProgress(count);
+
+            if ($next.hasClass('disabled')) {
+                saveEbook();
+            } else {
+                getContent(downloadId($next.attr('href')));
+            }
+        }).fail(function (err) {
+            downloadError('Kết nối không ổn định', err);
+            saveEbook();
         });
     }
 
