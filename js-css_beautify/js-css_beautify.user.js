@@ -2,7 +2,7 @@
 // @name         Javascript-css beautify
 // @namespace    http://devs.forumvi.com
 // @description  Beautify and syntax highlighting for source code javascript, json, css. Support to view the source code by holding the right mouse and drag.
-// @version      2.4.3
+// @version      2.5.0
 // @icon         http://i.imgur.com/kz8nqz1.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -14,11 +14,11 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify-css.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js
+// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
-// @grant        GM_addStyle
-// @grant        GM_getResourceText
+// @grant        GM.getResourceUrl
 // ==/UserScript==
 
 /* global css_beautify, js_beautify, hljs */
@@ -88,7 +88,9 @@
             lines = 0,
             l = '';
 
-        GM_addStyle(GM_getResourceText(theme) + 'html,body,pre{margin:0;padding:0;background:' + bgColor[theme] + '}.hljs{word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:' + lineColor[theme][0] + ';text-align:right;width:3.5em;left:-.5em;border-right:1px solid ' + lineColor[theme][1] + ';padding-right:.5em}');
+        GM_getResourceText(theme).then(function (res) {
+            GM_addStyle(res + 'html,body,pre{margin:0;padding:0;background:' + bgColor[theme] + '}.hljs{word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:' + lineColor[theme][0] + ';text-align:right;width:3.5em;left:-.5em;border-right:1px solid ' + lineColor[theme][1] + ';padding-right:.5em}');
+        });
 
         if (contenttype === 'text/css' || /.+\.css$/.test(url)) {
             lang = 'css';

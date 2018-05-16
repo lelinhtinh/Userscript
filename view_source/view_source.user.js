@@ -2,7 +2,7 @@
 // @name         viewsource
 // @namespace    devs.forumvi.com
 // @description  View and beauty website source code. Support to view the source code by holding the right mouse and drag. Shortcut: Alt+U.
-// @version      2.5.4
+// @version      2.6.0
 // @icon         http://i.imgur.com/6yZMOeH.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -15,14 +15,13 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify-css.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js
+// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect      self
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
-// @grant        GM_addStyle
-// @grant        GM_getResourceText
-// @grant        GM_xmlhttpRequest
-// @grant        GM_registerMenuCommand
+// @grant        GM.getResourceUrl
+// @grant        GM.xmlHttpRequest
 // ==/UserScript==
 
 /* global html_beautify, hljs */
@@ -103,7 +102,7 @@
     }
 
     function viewsource() {
-        GM_xmlhttpRequest({
+        GM.xmlHttpRequest({
             method: 'GET',
             url: urlpage,
             onload: function (response) {
@@ -122,7 +121,9 @@
                 content.removeAttribute('style');
                 doc.title = 'view-source:' + urlpage;
 
-                GM_addStyle(GM_getResourceText(theme) + 'html,body,pre{margin:0;padding:0;background:' + bgColor[theme] + '}.hljs{word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:' + lineColor[theme][0] + ';text-align:right;width:3.5em;left:-.5em;border-right:1px solid ' + lineColor[theme][1] + ';padding-right:.5em}a{color:' + linkColor[theme][0] + '}a:active,a:hover,a:visited{color:' + linkColor[theme][1] + '}');
+                GM_getResourceText(theme).then(function (res) {
+                    GM_addStyle(res + 'html,body,pre{margin:0;padding:0;background:' + bgColor[theme] + '}.hljs{word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:' + lineColor[theme][0] + ';text-align:right;width:3.5em;left:-.5em;border-right:1px solid ' + lineColor[theme][1] + ';padding-right:.5em}a{color:' + linkColor[theme][0] + '}a:active,a:hover,a:visited{color:' + linkColor[theme][1] + '}');
+                });
 
                 var output = doc.createElement('PRE');
                 output.setAttribute('class', 'xml');
@@ -166,7 +167,7 @@
         });
     }
 
-    GM_registerMenuCommand('View source', viewsource, 'u');
+    GM_registerMenuCommand('Beautify Page Source', viewsource, 'u');
 
     if (/^application\/(xhtml+xml|xml|rss+xml)|text\/(html|xml)$/.test(doc.contentType)) {
         doc.onkeydown = function (e) {
