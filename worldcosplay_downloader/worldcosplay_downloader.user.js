@@ -2,7 +2,7 @@
 // @name         Worldcosplay download
 // @namespace    http://devs.forumvi.com/
 // @description  Download photo(s) on worldcosplay.net
-// @version      3.1.1
+// @version      3.1.2
 // @icon         http://i.imgur.com/gJLjIzb.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -37,7 +37,9 @@
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
 // @grant        GM.xmlHttpRequest
+// @grant        GM_xmlhttpRequest
 // @grant        GM.openInTab
+// @grant        GM_openInTab
 // ==/UserScript==
 
 /* global waitForKeyElements */
