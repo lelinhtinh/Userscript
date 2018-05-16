@@ -2,7 +2,7 @@
 // @name         TruyenFull downloader
 // @namespace    https://baivong.github.io/
 // @description  Tải truyện từ truyenfull.vn định dạng epub
-// @version      4.3.0
+// @version      4.4.0
 // @icon         https://i.imgur.com/FQY8btq.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -19,12 +19,11 @@
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @require      https://unpkg.com/jepub@1.2.1/dist/jepub.min.js
 // @require      https://unpkg.com/file-saver@1.3.8/FileSaver.min.js
-// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect      self
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
-// @grant        GM.xmlHttpRequest
+// @grant        none
 // ==/UserScript==
 
 (function ($, window, document) {
@@ -92,63 +91,58 @@
         if (endDownload) return;
         chapId = chapList[count];
 
-        GM.xmlHttpRequest({
-            method: 'GET',
-            url: pathname + chapId + '/',
-            onload: function (response) {
-                var $data = $(response.responseText),
-                    $chapter = $data.find('.chapter-c'),
-                    $notContent = $chapter.find('script, style, a'),
-                    $referrer = $chapter.find('[style]').filter(function () {
-                        return (this.style.fontSize === '1px' || this.style.fontSize === '0px' || this.style.color === 'white');
-                    }),
-                    chapContent;
+        $.get(pathname + chapId + '/').done(function (response) {
+            var $data = $(response),
+                $chapter = $data.find('.chapter-c'),
+                $notContent = $chapter.find('script, style, a'),
+                $referrer = $chapter.find('[style]').filter(function () {
+                    return (this.style.fontSize === '1px' || this.style.fontSize === '0px' || this.style.color === 'white');
+                }),
+                chapContent;
 
-                if (endDownload) return;
+            if (endDownload) return;
 
-                chapTitle = $data.find('.chapter-title').text().trim();
-                if (chapTitle === '') chapTitle = 'Chương ' + chapId.match(/\d+/)[0];
+            chapTitle = $data.find('.chapter-title').text().trim();
+            if (chapTitle === '') chapTitle = 'Chương ' + chapId.match(/\d+/)[0];
 
-                if (!$chapter.length) {
-                    chapContent = downloadError('Không có nội dung');
+            if (!$chapter.length) {
+                chapContent = downloadError('Không có nội dung');
+            } else {
+                var $img = $chapter.find('img');
+                if ($img.length) $img.replaceWith(function () {
+                    return '<br /><a href="' + this.src + '">Click để xem ảnh</a><br />';
+                });
+
+                if ($notContent.length) $notContent.remove();
+                if ($referrer.length) $referrer.remove();
+
+                if ($chapter.text().trim() === '') {
+                    chapContent = downloadError('Nội dung không có');
                 } else {
-                    var $img = $chapter.find('img');
-                    if ($img.length) $img.replaceWith(function () {
-                        return '<br /><a href="' + this.src + '">Click để xem ảnh</a><br />';
-                    });
-
-                    if ($notContent.length) $notContent.remove();
-                    if ($referrer.length) $referrer.remove();
-
-                    if ($chapter.text().trim() === '') {
-                        chapContent = downloadError('Nội dung không có');
-                    } else {
-                        if (!$download.hasClass('btn-danger')) downloadStatus('warning');
-                        chapContent = cleanHtml($chapter.html());
-                    }
+                    if (!$download.hasClass('btn-danger')) downloadStatus('warning');
+                    chapContent = cleanHtml($chapter.html());
                 }
-
-                jepub.add(chapTitle, chapContent);
-
-                if (count === 0) begin = chapTitle;
-                end = chapTitle;
-
-                $download.html('Đang tải: ' + Math.floor((count / chapListSize) * 100) + '%');
-
-                count++;
-                document.title = '[' + count + '] ' + pageName;
-                if (count >= chapListSize) {
-                    saveEbook();
-                } else {
-                    setTimeout(function () {
-                        getContent();
-                    }, downloadDelay);
-                }
-            },
-            onerror: function (err) {
-                downloadError('Kết nối không ổn định', err);
-                saveEbook();
             }
+
+            jepub.add(chapTitle, chapContent);
+
+            if (count === 0) begin = chapTitle;
+            end = chapTitle;
+
+            $download.html('Đang tải: ' + Math.floor((count / chapListSize) * 100) + '%');
+
+            count++;
+            document.title = '[' + count + '] ' + pageName;
+            if (count >= chapListSize) {
+                saveEbook();
+            } else {
+                setTimeout(function () {
+                    getContent();
+                }, downloadDelay);
+            }
+        }).fail(function (err) {
+            downloadError('Kết nối không ổn định', err);
+            saveEbook();
         });
     }
 
@@ -255,7 +249,9 @@
                 downloadError(textStatus);
             });
         }).fail(function (jqXHR, textStatus) {
-            downloadError(textStatus);
+            $download.text('Lỗi danh mục');
+            downloadStatus('danger');
+            console.error(err);
         });
     });
 
