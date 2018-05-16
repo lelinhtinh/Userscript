@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wallpaperscraft downloader
 // @namespace    http://baivong.github.io/
-// @version      2.1.0
+// @version      2.1.1
 // @description  1-Click download on Wallpaperscraft. You should select the resolution before downloading.
 // @icon         http://i.imgur.com/NA96TWE.png
 // @author       Zzbaivong
@@ -13,6 +13,7 @@
 // @require      https://unpkg.com/file-saver@1.3.8/FileSaver.min.js
 // @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
+// @connect      self
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
 // @grant        GM.xmlHttpRequest
