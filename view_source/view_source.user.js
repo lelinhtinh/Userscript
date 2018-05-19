@@ -1,187 +1,157 @@
 // ==UserScript==
 // @name         viewsource
 // @namespace    devs.forumvi.com
-// @description  View and beauty website source code. Support to view the source code by holding the right mouse and drag. Shortcut: Alt+U.
-// @version      2.6.2
+// @description  View and beautify page source. Shortcut: Alt+U.
+// @version      3.0.0
 // @icon         http://i.imgur.com/6yZMOeH.png
 // @author       Zzbaivong
 // @oujs:author  baivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        http://*/*
 // @match        https://*/*
-// @resource     light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css
-// @resource     dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css
-// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify-html.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify-css.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js
 // @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
-// @connect      self
+// @connect      *
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
-// @grant        GM.getResourceUrl
-// @grant        GM_getResourceURL
 // @grant        GM.xmlHttpRequest
 // @grant        GM_xmlhttpRequest
+// @grant        GM.openInTab
+// @grant        GM_openInTab
 // @grant        GM_registerMenuCommand
 // ==/UserScript==
 
-/* global html_beautify, hljs */
+/* global importScripts */
 (function () {
-
     'use strict';
 
-    var theme = 'dark', // light|dark
-        lineColor = {
-            light: ['#a7a7a7', '#e8e8e7'],
-            dark: ['#4d4d4d', '#3a3a3a']
-        },
-        bgColor = {
-            light: '#ffffff',
-            dark: '#1d1f21'
-        },
-        linkColor = {
-            light: ['#718c00', '#556416'],
-            dark: ['#b5bd68', '#8b9433']
-        },
-
-        win = window,
+    var doc = document,
         urlpage = location.href,
-        doc = document,
-        wrapcontent = doc.documentElement,
-        content = doc.body;
+        urlbeautify = 'https://lelinhtinh.github.io/Userscript/?beautify-source=';
 
-    function scrollByDragging(container, disableH, disableV) {
+    if (!/^application\/(xhtml+xml|xml|rss+xml)|text\/(html|xml)$/.test(doc.contentType)) return;
 
-        function mouseUp(e) {
-            if (e.which !== 3) return;
-
-            window.removeEventListener('mousemove', mouseMove, true);
-            container.style.cursor = 'default';
-        }
-
-        function mouseDown(e) {
-            if (e.which !== 3) return;
-
-            pos = {
-                x: e.clientX,
-                y: e.clientY
-            };
-
-            window.addEventListener('mousemove', mouseMove, true);
-            container.style.cursor = 'move';
-        }
-
-        function mouseMove(e) {
-            if (!disableH) container.scrollLeft -= (-pos.x + (pos.x = e.clientX));
-            if (!disableV) container.scrollTop -= (-pos.y + (pos.y = e.clientY));
-        }
-
-        var pos = {
-            x: 0,
-            y: 0
+    if (urlpage.indexOf(urlbeautify) !== 0) {
+        var viewsource = function () {
+            if (urlpage.indexOf(urlbeautify) === 0) return;
+            GM.openInTab(urlbeautify + encodeURIComponent(urlpage), false);
         };
 
-        container.oncontextmenu = function (e) {
-            e.preventDefault();
-        };
-
-        container.addEventListener('mousedown', mouseDown, false);
-        window.addEventListener('mouseup', mouseUp, false);
-
-    }
-
-    function removeEvents(ele, attr) {
-        var events = 'onafterprint onbeforeprint onbeforeunload onerror onhashchange onload onmessage onoffline ononline onpagehide onpageshow onpopstate onresize  onstorage onunload onblur onchange oncontextmenu onfocus oninput oninvalid onreset onsearch onselect onsubmit onkeydown onkeypress onkeyup onclick ondblclick ondrag ondragend ondragenter ondragleave ondragover ondragstart ondrop onmousedown onmousemove onmouseout onmouseover onmouseup onmousewheel onscroll onwheel oncopy oncut onpaste onerror onshow ontoggle'.split(' '),
-            x;
-        for (x in events) {
-            var _event = events[x];
-            ele[_event] = null;
-            if (attr) {
-                ele.removeAttribute(_event);
-            }
-        }
-    }
-
-    function viewsource() {
-        GM.xmlHttpRequest({
-            method: 'GET',
-            url: urlpage,
-            onload: function (response) {
-
-                removeEvents(win);
-                removeEvents(doc);
-                removeEvents(wrapcontent, true);
-                removeEvents(content, true);
-
-                var txt = html_beautify(response.response);
-
-                doc.head.innerHTML = '';
-                content.innerHTML = '';
-                content.removeAttribute('id');
-                content.removeAttribute('class');
-                content.removeAttribute('style');
-                doc.title = 'view-source:' + urlpage;
-
-                GM_getResourceText(theme).then(function (res) {
-                    GM_addStyle(res + 'html,body,pre{margin:0;padding:0;background:' + bgColor[theme] + '}.hljs{word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:' + lineColor[theme][0] + ';text-align:right;width:3.5em;left:-.5em;border-right:1px solid ' + lineColor[theme][1] + ';padding-right:.5em}a{color:' + linkColor[theme][0] + '}a:active,a:hover,a:visited{color:' + linkColor[theme][1] + '}');
-                });
-
-                var output = doc.createElement('PRE');
-                output.setAttribute('class', 'xml');
-                output.textContent = txt;
-
-                content.appendChild(output);
-
-                hljs.highlightBlock(output);
-
-                var lines = txt.split('\n'),
-                    l = '';
-                lines = lines ? lines.length : 0;
-                for (var i = 0; i < lines; i++) {
-                    l += (i + 1) + '\n';
-                }
-
-                output.setAttribute('data-lines', l);
-                output.style.width = output.scrollWidth + 'px';
-
-                scrollByDragging(content);
-                scrollByDragging(wrapcontent);
-
-                var attrUrl = doc.getElementsByClassName('hljs-attr');
-                for (var j = 0; j < attrUrl.length; j++) {
-                    if (/\b(src|href\b)/.test(attrUrl[j].textContent)) {
-                        var link = attrUrl[j].nextSibling.nextSibling,
-                            url = link.textContent,
-                            quote = url.slice(0, 1);
-
-                        if (quote !== '\'' && quote !== '"') {
-                            quote = '';
-                        } else {
-                            url = url.slice(1, -1);
-                        }
-
-                        link.innerHTML = quote + '<a href="' + url + '" target="_blank">' + url + '</a>' + quote;
-                    }
-                }
-
-            }
-        });
-    }
-
-    GM_registerMenuCommand('Beautify Page Source', viewsource, 'u');
-
-    if (/^application\/(xhtml+xml|xml|rss+xml)|text\/(html|xml)$/.test(doc.contentType)) {
+        GM_registerMenuCommand('Beautify Page Source', viewsource, 'u');
         doc.onkeydown = function (e) {
-
-            // Alt+U
-            if (e.which === 85 && e.altKey) {
+            if (e.which === 85 && e.altKey) { // Alt+U
                 e.preventDefault();
-
                 viewsource();
             }
         };
+
+        return;
     }
+
+    urlbeautify = urlpage.replace(urlbeautify, '');
+    urlbeautify = decodeURIComponent(urlbeautify);
+
+    var blobURL, worker,
+
+        addstyle = function (aCss) {
+            var head = doc.getElementsByTagName('head')[0];
+            if (!head) return null;
+            var style = doc.createElement('style');
+            style.setAttribute('type', 'text/css');
+            style.textContent = aCss;
+            head.appendChild(style);
+            return style;
+        };
+
+    blobURL = URL.createObjectURL(new Blob(['(',
+        function () {
+            self.window = {};
+
+            self.onmessage = function (e) {
+                var source = e.data.content;
+
+                importScripts('https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify-html.min.js');
+                source = self.window.html_beautify(source);
+
+                self.postMessage({
+                    action: 'beautify',
+                    source: source
+                });
+
+                importScripts('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js');
+                source = self.window.hljs.highlight('xml', source, true).value;
+
+                source = source.split('\n');
+                source = source.join('</code><code>');
+                source = '<code>' + source + '</code>';
+
+                self.postMessage({
+                    action: 'hljs',
+                    source: source
+                });
+            };
+
+        }.toString(),
+        ')()'
+    ], {
+        type: 'text/javascript'
+    }));
+    worker = new Worker(blobURL);
+
+    worker.onmessage = function (e) {
+        if (!e.data) return;
+        var fragment = doc.createDocumentFragment(),
+            pre = doc.createElement('pre');
+
+        if (e.data.action === 'beautify') {
+            addstyle('*{margin:0;padding:0}html{line-height:1em;background:#1d1f21;color:#c5c8c6}pre{counter-reset:line-numbers;white-space:pre-wrap}code::before{counter-increment:line-numbers;content:counter(line-numbers);display:block;position:absolute;left:-4.5em;top:0;width:4em;text-align:right;color:#60686f;white-space:pre}code{display:block;position:relative;margin-left:4em;padding-left:.5em;min-height:1em;border-left:1px solid #32363b}pre{padding:.5em .5em .5em 5em;border-left:1px solid #1d1f21}pre.hljs{padding-left:.5em;border-left:0 none}code::after{content:".";visibility:hidden}a{color:#b5bd68}a:active,a:hover,a:visited{color:#8b9433} .hljs-comment,.hljs-quote{color:#969896}.hljs-variable,.hljs-template-variable,.hljs-tag,.hljs-name,.hljs-selector-id,.hljs-selector-class,.hljs-regexp,.hljs-deletion{color:#c66}.hljs-number,.hljs-built_in,.hljs-builtin-name,.hljs-literal,.hljs-type,.hljs-params,.hljs-meta,.hljs-link{color:#de935f}.hljs-attribute{color:#f0c674}.hljs-string,.hljs-symbol,.hljs-bullet,.hljs-addition{color:#b5bd68}.hljs-title,.hljs-section{color:#81a2be}.hljs-keyword,.hljs-selector-tag{color:#b294bb}.hljs{display:block;overflow-x:auto;background:#1d1f21;color:#c5c8c6;padding:.5em}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}');
+
+            pre.textContent = e.data.source;
+            fragment.appendChild(pre);
+            doc.body.appendChild(fragment);
+        } else {
+            pre.innerHTML = e.data.source;
+            pre.className = 'hljs xml';
+            fragment.appendChild(pre);
+            doc.body.replaceChild(fragment, doc.getElementsByTagName('pre')[0]);
+
+            var attrUrl = doc.getElementsByClassName('hljs-attr');
+            for (var j = 0; j < attrUrl.length; j++) {
+                if (/\b(src|href\b)/.test(attrUrl[j].textContent)) {
+                    var link = attrUrl[j].nextSibling.nextSibling,
+                        url = link.textContent,
+                        quote = url.slice(0, 1);
+
+                    if (quote !== '\'' && quote !== '"') {
+                        quote = '';
+                    } else {
+                        url = url.slice(1, -1);
+                    }
+
+                    link.innerHTML = quote + '<a href="' + url + '" target="_blank">' + url + '</a>' + quote;
+                }
+            }
+        }
+    };
+
+    GM.xmlHttpRequest({
+        method: 'GET',
+        url: urlbeautify,
+        onload: function (response) {
+            doc.title = 'beautify-source:' + urlbeautify;
+            worker.postMessage({
+                content: response.response
+            });
+
+            var baseUrl,
+                baseMatch = response.response.match(/<base\s+href="([^"]+)"\s?[^>]*>/),
+                base = doc.createElement('base');
+
+            baseUrl = baseMatch ? baseMatch[1] : urlbeautify.replace(/[^/]*$/, '');
+
+            base.href = baseUrl;
+            doc.head.appendChild(base);
+        }
+    });
 
 }());

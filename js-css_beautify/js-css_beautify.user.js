@@ -1,122 +1,111 @@
 // ==UserScript==
 // @name         Javascript-css beautify
 // @namespace    http://devs.forumvi.com
-// @description  Beautify and syntax highlighting for source code javascript, json, css. Support to view the source code by holding the right mouse and drag.
-// @version      2.5.1
+// @description  Beautify and syntax highlighting for source code javascript, json, css.
+// @version      3.0.0
 // @icon         http://i.imgur.com/kz8nqz1.png
 // @author       Zzbaivong
 // @oujs:author  baivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        http://*/*
 // @match        https://*/*
-// @resource     light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css
-// @resource     dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css
-// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify-css.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js
-// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
-// @grant        GM.getResourceUrl
-// @grant        GM_getResourceURL
+// @grant        none
 // ==/UserScript==
 
-/* global css_beautify, js_beautify, hljs */
+/* global importScripts */
 (function () {
-
     'use strict';
 
-    var theme = 'dark', // light|dark
-        lineColor = {
-            light: ['#a7a7a7', '#e8e8e7'],
-            dark: ['#4d4d4d', '#3a3a3a']
-        },
-        bgColor = {
-            light: '#ffffff',
-            dark: '#1d1f21'
-        },
+    var doc = document,
+        contenttype = doc.contentType,
+        pathname = location.pathname;
 
-        url = location.pathname,
-        doc = document,
-        contenttype = doc.contentType;
+    if (!(/^application\/(x-javascript|javascript|json)|text\/css$/.test(contenttype) || (/.+\.(js|json|css)$/.test(pathname) && !/^application\/(xhtml+xml|xml|rss+xml)|text\/(html|xml)$/.test(contenttype)))) return;
 
-    function scrollByDragging(container, disableH, disableV) {
+    var output = doc.getElementsByTagName('pre')[0],
+        lang = 'javascript',
+        blobURL, worker,
 
-        function mouseUp(e) {
-            if (e.which !== 3) return;
+        addstyle = function (aCss) {
+            var head = doc.getElementsByTagName('head')[0];
+            if (!head) return null;
+            var style = doc.createElement('style');
+            style.setAttribute('type', 'text/css');
+            style.textContent = aCss;
+            head.appendChild(style);
+            return style;
+        };
 
-            window.removeEventListener('mousemove', mouseMove, true);
-            container.style.cursor = 'default';
-        }
+    if (contenttype === 'text/css' || /.+\.css$/.test(pathname)) lang = 'css';
 
-        function mouseDown(e) {
-            if (e.which !== 3) return;
+    blobURL = URL.createObjectURL(new Blob(['(',
+        function () {
+            self.window = {};
 
-            pos = {
-                x: e.clientX,
-                y: e.clientY
+            self.onmessage = function (e) {
+                var source = e.data.content,
+                    beautify = 'js_beautify';
+
+                if (e.data.lang === 'javascript') {
+                    importScripts('https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify.min.js');
+                } else {
+                    importScripts('https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify-css.min.js');
+                    beautify = 'css_beautify';
+                }
+                source = self.window[beautify](source);
+
+                self.postMessage({
+                    action: 'beautify',
+                    source: source
+                });
+
+                importScripts('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js');
+                source = self.window.hljs.highlight(e.data.lang, source, true).value;
+
+                source = source.split('\n');
+                source = source.join('</code><code>');
+                source = '<code>' + source + '</code>';
+
+                self.postMessage({
+                    action: 'hljs',
+                    source: source
+                });
             };
 
-            window.addEventListener('mousemove', mouseMove, true);
-            container.style.cursor = 'move';
-        }
+        }.toString(),
+        ')()'
+    ], {
+        type: 'text/javascript'
+    }));
+    worker = new Worker(blobURL);
 
-        function mouseMove(e) {
-            if (!disableH) container.scrollLeft -= (-pos.x + (pos.x = e.clientX));
-            if (!disableV) container.scrollTop -= (-pos.y + (pos.y = e.clientY));
-        }
+    worker.onmessage = function (e) {
+        if (!e.data) return;
 
-        var pos = {
-            x: 0,
-            y: 0
-        };
+        var fragment = doc.createDocumentFragment(),
+            pre = doc.createElement('pre');
 
-        container.oncontextmenu = function (e) {
-            e.preventDefault();
-        };
+        if (e.data.action === 'beautify') {
+            addstyle('*{margin:0;padding:0}html{line-height:1em;background:#1d1f21;color:#c5c8c6}pre{counter-reset:line-numbers;white-space:pre-wrap}code::before{counter-increment:line-numbers;content:counter(line-numbers);display:block;position:absolute;left:-4.5em;top:0;width:4em;text-align:right;color:#60686f;white-space:pre}code{display:block;position:relative;margin-left:4em;padding-left:.5em;min-height:1em;border-left:1px solid #32363b}pre{padding:.5em .5em .5em 5em;border-left:1px solid #1d1f21}pre.hljs{padding-left:.5em;border-left:0 none}code::after{content:".";visibility:hidden} .hljs-comment,.hljs-quote{color:#969896}.hljs-variable,.hljs-template-variable,.hljs-tag,.hljs-name,.hljs-selector-id,.hljs-selector-class,.hljs-regexp,.hljs-deletion{color:#c66}.hljs-number,.hljs-built_in,.hljs-builtin-name,.hljs-literal,.hljs-type,.hljs-params,.hljs-meta,.hljs-link{color:#de935f}.hljs-attribute{color:#f0c674}.hljs-string,.hljs-symbol,.hljs-bullet,.hljs-addition{color:#b5bd68}.hljs-title,.hljs-section{color:#81a2be}.hljs-keyword,.hljs-selector-tag{color:#b294bb}.hljs{display:block;overflow-x:auto;background:#1d1f21;color:#c5c8c6;padding:.5em}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}');
 
-        container.addEventListener('mousedown', mouseDown, false);
-        window.addEventListener('mouseup', mouseUp, false);
-
-    }
-
-    if (/^application\/(x-javascript|javascript|json)|text\/css$/.test(contenttype) || (/.+\.(js|json|css)$/.test(url) && !/^application\/(xhtml+xml|xml|rss+xml)|text\/(html|xml)$/.test(contenttype))) {
-
-        var output = doc.getElementsByTagName('pre')[0],
-            txt = output.textContent,
-            lang = 'javascript',
-            lines = 0,
-            l = '';
-
-        GM_getResourceText(theme).then(function (res) {
-            GM_addStyle(res + 'html,body,pre{margin:0;padding:0;background:' + bgColor[theme] + '}.hljs{word-wrap:normal!important;white-space:pre!important;padding-left:4em;line-height:100%}.hljs::before{content:attr(data-lines);position:absolute;color:' + lineColor[theme][0] + ';text-align:right;width:3.5em;left:-.5em;border-right:1px solid ' + lineColor[theme][1] + ';padding-right:.5em}');
-        });
-
-        if (contenttype === 'text/css' || /.+\.css$/.test(url)) {
-            lang = 'css';
-            txt = css_beautify(txt);
+            pre.textContent = e.data.source;
         } else {
-            txt = js_beautify(txt);
+            pre.innerHTML = e.data.source;
+            pre.className = 'hljs ' + lang;
         }
 
-        output.textContent = txt;
-        output.setAttribute('class', lang);
+        fragment.appendChild(pre);
+        doc.body.replaceChild(fragment, output);
 
-        hljs.highlightBlock(output);
+        if (e.data.action === 'beautify') output = doc.getElementsByTagName('pre')[0];
+    };
 
-        lines = txt.split('\n');
-        lines = lines ? lines.length : 0;
-        for (var i = 0; i < lines; i++) {
-            l += (i + 1) + '\n';
-        }
-
-        output.setAttribute('data-lines', l);
-        output.style.width = output.scrollWidth + 'px';
-
-        scrollByDragging(doc.body);
-        scrollByDragging(doc.documentElement);
-
-    }
+    worker.postMessage({
+        lang: lang,
+        content: output.textContent
+    });
 
 }());
