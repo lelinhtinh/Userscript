@@ -2,14 +2,14 @@
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyencv.com định dạng epub
-// @version      4.4.0
+// @version      4.4.1
 // @icon         http://i.imgur.com/o5cmtkU.png
 // @author       Zzbaivong
 // @oujs:author  baivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        http://truyencv.com/*/
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
-// @require      https://unpkg.com/jepub@1.2.1/dist/jepub.min.js
+// @require      https://unpkg.com/jepub@1.2.3/dist/jepub.min.js
 // @require      https://unpkg.com/file-saver@1.3.8/FileSaver.min.js
 // @noframes
 // @connect      self
@@ -119,8 +119,8 @@
                 if ($chapter.find('#btnChapterVip').length) {
                     chapContent = downloadError('Chương VIP');
                 } else if ($chapter.filter(function () {
-                        return (this.textContent.toLowerCase().indexOf('vui lòng đăng nhập để đọc chương này') !== -1);
-                    }).length) {
+                    return (this.textContent.toLowerCase().indexOf('vui lòng đăng nhập để đọc chương này') !== -1);
+                }).length) {
                     chapContent = downloadError('Chương yêu cầu đăng nhập');
                 } else {
                     var $img = $chapter.find('img');

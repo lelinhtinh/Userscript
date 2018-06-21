@@ -2,7 +2,7 @@
 // @name         TruyenFull downloader
 // @namespace    https://baivong.github.io/
 // @description  Tải truyện từ truyenfull.vn định dạng epub
-// @version      4.4.0
+// @version      4.4.1
 // @icon         https://i.imgur.com/FQY8btq.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -17,7 +17,7 @@
 // @exclude      http://truyenfull.vn/tos/
 // @exclude      http://truyenfull.vn/sitemap.xml
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
-// @require      https://unpkg.com/jepub@1.2.1/dist/jepub.min.js
+// @require      https://unpkg.com/jepub@1.2.3/dist/jepub.min.js
 // @require      https://unpkg.com/file-saver@1.3.8/FileSaver.min.js
 // @noframes
 // @connect      self
@@ -248,10 +248,10 @@
             }).fail(function (jqXHR, textStatus) {
                 downloadError(textStatus);
             });
-        }).fail(function (jqXHR, textStatus) {
+        }).fail(function (jqXHR) {
             $download.text('Lỗi danh mục');
             downloadStatus('danger');
-            console.error(err);
+            console.error(jqXHR);
         });
     });
 
