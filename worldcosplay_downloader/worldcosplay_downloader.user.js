@@ -2,7 +2,7 @@
 // @name         Worldcosplay download
 // @namespace    http://devs.forumvi.com/
 // @description  Download photo(s) on worldcosplay.net
-// @version      3.1.2
+// @version      3.1.3
 // @icon         http://i.imgur.com/gJLjIzb.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -18,6 +18,7 @@
 // @match        https://worldcosplay.net/photos
 // @match        https://worldcosplay.net/popular
 // @match        https://worldcosplay.net/ranking/good*
+// @match        https://worldcosplay.net/member/*/characters/*
 // @match        https://worldcosplay.net/*/photo/*
 // @match        https://worldcosplay.net/*/tag/*
 // @match        https://worldcosplay.net/*/search/photos?*
@@ -27,6 +28,7 @@
 // @match        https://worldcosplay.net/*/photos
 // @match        https://worldcosplay.net/*/popular
 // @match        https://worldcosplay.net/*/ranking/good*
+// @match        https://worldcosplay.net/*/member/*/characters/*
 // @require      https://code.jquery.com/jquery-3.3.1.slim.min.js
 // @require      https://unpkg.com/file-saver@1.3.8/FileSaver.min.js
 // @require      https://greasyfork.org/scripts/6250-waitforkeyelements/code/waitForKeyElements.js?version=23756
