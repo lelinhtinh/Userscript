@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.2.2
+// @version      1.3.0
 // @icon         http://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
@@ -177,7 +177,7 @@ jQuery(function ($) {
         if (threading < 1) threading = 1;
         if (threading > 32) threading = 32;
 
-        dlImages = source;
+        dlImages = inMerge ? dlImages.concat(source) : source;
 
         dlTotal = dlImages.length;
         addZip();
@@ -194,7 +194,8 @@ jQuery(function ($) {
 
         $(configs.link + '[href="' + configs.href + '"]').css({
             color: 'orange',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            textDecoration: 'underline'
         });
     }
 
@@ -203,6 +204,47 @@ jQuery(function ($) {
 
         $(configs.link).each(function (i, el) {
             dlAll[i] = $(el).attr('href');
+        });
+
+        $(document).on('click', configs.link, function (e) {
+            if (e.altKey || e.ctrlKey || e.shiftKey) e.preventDefault();
+            var _link = $(this).attr('href');
+
+            if (e.altKey) {
+                dlAll = dlAll.filter(function (e) {
+                    return e !== _link;
+                });
+
+                $(configs.link + '[href="' + _link + '"]').css({
+                    color: 'gray',
+                    fontStyle: 'italic',
+                    textDecoration: 'line-through'
+                });
+            }
+
+            if (e.shiftKey || e.ctrlKey) {
+                if (!inCustom) {
+                    dlAll = [];
+                    inCustom = true;
+                }
+
+                dlAll.push(_link);
+
+                $(configs.link + '[href="' + _link + '"]').css({
+                    color: 'orange',
+                    fontStyle: 'italic',
+                    textDecoration: 'overline'
+                });
+            }
+        }).on('keyup', function (e) {
+            if (e.which === 17 || e.which === 16) {
+                e.preventDefault();
+
+                if (dlAll.length && inCustom) {
+                    if (e.which === 16) inMerge = true;
+                    downloadAll();
+                }
+            }
         });
     }
 
@@ -223,7 +265,14 @@ jQuery(function ($) {
 
         inProgress = false;
 
-        if (inAuto && dlAll.length) $(configs.link + '[href="' + dlAll[0] + '"]').trigger('contextmenu');
+        if (inAuto) {
+            if (dlAll.length) {
+                $(configs.link + '[href="' + dlAll[0] + '"]').trigger('contextmenu');
+            } else {
+                inAuto = false;
+                inCustom = false;
+            }
+        }
     }
 
     function genZip() {
@@ -276,7 +325,22 @@ jQuery(function ($) {
         noty('<strong class="centered">' + dlFinal + '/' + dlTotal + '</strong>', 'warning');
 
         if (dlFinal < dlCurrent) return;
-        dlFinal < dlTotal ? addZip() : genZip();
+
+        if (dlFinal < dlTotal) {
+            addZip();
+        } else {
+            if (inMerge) {
+                if (dlAll.length) {
+                    inProgress = false;
+                    $(configs.link + '[href="' + dlAll[0] + '"]').trigger('contextmenu');
+                } else {
+                    inMerge = false;
+                    genZip();
+                }
+            } else {
+                genZip();
+            }
+        }
     }
 
     function addZip() {
@@ -740,7 +804,9 @@ jQuery(function ($) {
         dlAll = [],
 
         inProgress = false,
-        inAuto = false;
+        inAuto = false,
+        inCustom = false,
+        inMerge = false;
 
     GM_registerMenuCommand('Download All Chapters', downloadAll, 'y');
     $(document).on('keydown', function (e) {
