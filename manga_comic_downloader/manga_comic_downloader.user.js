@@ -312,7 +312,7 @@ jQuery(function ($) {
             responseType: 'arraybuffer',
             onload: function (response) {
                 dlFinal++;
-                success(response, filename);
+                (response.response.byteLength < 10000 || response.statusText !== 'OK') ? error(response, filename): success(response, filename);
             },
             onerror: function (err) {
                 dlFinal++;
@@ -356,10 +356,9 @@ jQuery(function ($) {
 
                 next();
             }, function (err, filename) {
-                dlZip.file(filename + '_error.gif', 'R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=', {
-                    base64: true
-                });
-                noty(url, 'error');
+                dlZip.file(filename + '_error.txt', err.finalUrl);
+
+                noty(err.statusText, 'error');
                 $(configs.link + '[href="' + configs.href + '"]').css('color', 'red');
 
                 next();
