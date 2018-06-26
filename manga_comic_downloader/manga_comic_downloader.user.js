@@ -2,8 +2,8 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.3.1
-// @icon         http://i.imgur.com/ICearPQ.png
+// @version      1.4.0
+// @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
 // @include      /^https?:\/\/truyentranhtam\.com\/[^\/]+\/$/
@@ -161,16 +161,36 @@ jQuery(function ($) {
         if (status !== 'warning' && status !== 'success') autoHide();
     }
 
+    function linkError() {
+        $(configs.link + '[href="' + configs.href + '"]').css({
+            color: 'red',
+            textShadow: '0 0 1px red, 0 0 1px red, 0 0 1px red'
+        }).data('hasDownloadError', true);
+    }
+
+    function linkSuccess() {
+        var $currLink = $(configs.link + '[href="' + configs.href + '"]');
+        if (!$currLink.data('hasDownloadError')) $currLink.css({
+            color: 'green',
+            textShadow: '0 0 1px green, 0 0 1px green, 0 0 1px green'
+        });
+    }
+
+    function cancelProgress() {
+        linkError();
+        $win.off('beforeunload');
+    }
+
     function notyError() {
         noty('Lỗi! Không tải được <strong>' + chapName + '</strong>', 'error');
-        $(configs.link + '[href="' + configs.href + '"]').css('color', 'red');
         inProgress = false;
+        cancelProgress();
     }
 
     function notyImages() {
         noty('Lỗi! <strong>' + chapName + '</strong> không có dữ liệu', 'error');
-        $(configs.link + '[href="' + configs.href + '"]').css('color', 'red');
         inProgress = false;
+        cancelProgress();
     }
 
     function notySuccess(source) {
@@ -183,9 +203,15 @@ jQuery(function ($) {
         addZip();
 
         noty('Bắt đầu tải <strong>' + chapName + '</strong>', 'warning');
+
+        $win.on('beforeunload', function () {
+            return 'Progress is running...';
+        });
     }
 
     function notyWait() {
+        document.title = '[…] ' + tit;
+
         noty('<strong>' + chapName + '</strong> đang lấy dữ liệu...', 'warning');
 
         dlAll = dlAll.filter(function (e) {
@@ -195,7 +221,9 @@ jQuery(function ($) {
         $(configs.link + '[href="' + configs.href + '"]').css({
             color: 'orange',
             fontWeight: 'bold',
-            textDecoration: 'underline'
+            fontStyle: 'italic',
+            textDecoration: 'underline',
+            textShadow: '0 0 1px orange, 0 0 1px orange, 0 0 1px orange'
         });
     }
 
@@ -205,24 +233,27 @@ jQuery(function ($) {
         $(configs.link).each(function (i, el) {
             dlAll[i] = $(el).attr('href');
         });
+        if (configs.reverse) dlAll.reverse();
 
-        $(document).on('click', configs.link, function (e) {
-            if (e.altKey || e.ctrlKey || e.shiftKey) e.preventDefault();
+        $doc.on('click', configs.link, function (e) {
+            if (!e.ctrlKey && !e.shiftKey) return;
+
+            e.preventDefault();
             var _link = $(this).attr('href');
 
-            if (e.altKey) {
+            if (e.ctrlKey && e.shiftKey) {
                 dlAll = dlAll.filter(function (e) {
                     return e !== _link;
                 });
 
                 $(configs.link + '[href="' + _link + '"]').css({
                     color: 'gray',
+                    fontWeight: 'bold',
                     fontStyle: 'italic',
-                    textDecoration: 'line-through'
+                    textDecoration: 'line-through',
+                    textShadow: '0 0 1px gray, 0 0 1px gray, 0 0 1px gray'
                 });
-            }
-
-            if (e.shiftKey || e.ctrlKey) {
+            } else {
                 if (!inCustom) {
                     dlAll = [];
                     inCustom = true;
@@ -231,9 +262,9 @@ jQuery(function ($) {
                 dlAll.push(_link);
 
                 $(configs.link + '[href="' + _link + '"]').css({
-                    color: 'orange',
-                    fontStyle: 'italic',
-                    textDecoration: 'overline'
+                    color: 'violet',
+                    textDecoration: 'overline',
+                    textShadow: '0 0 1px violet, 0 0 1px violet, 0 0 1px violet'
                 });
             }
         }).on('keyup', function (e) {
@@ -253,6 +284,11 @@ jQuery(function ($) {
 
         inAuto = true;
         $(configs.link + '[href="' + dlAll[0] + '"]').trigger('contextmenu');
+    }
+
+    function downloadAllOne() {
+        inMerge = true;
+        downloadAll();
     }
 
     function endZip() {
@@ -285,15 +321,16 @@ jQuery(function ($) {
             dlPrevZip = blob;
 
             noty('<a href="' + URL.createObjectURL(dlPrevZip) + '" download="' + zipName + '"><strong>Click vào đây</strong></a> nếu trình duyệt không tự tải xuống', 'success');
-            $(configs.link + '[href="' + configs.href + '"]').css('color', 'green');
+            linkSuccess();
 
+            $win.off('beforeunload');
             saveAs(blob, zipName);
 
             document.title = '[⇓] ' + tit;
             endZip();
         }, function () {
             noty('Lỗi tạo file nén của <strong>' + chapName + '</strong>', 'error');
-            $(configs.link + '[href="' + configs.href + '"]').css('color', 'red');
+            cancelProgress();
 
             document.title = '[x] ' + tit;
             endZip();
@@ -332,7 +369,9 @@ jQuery(function ($) {
             if (inMerge) {
                 if (dlAll.length) {
                     inProgress = false;
-                    $(configs.link + '[href="' + configs.href + '"]').css('color', 'green');
+
+                    linkSuccess();
+
                     $(configs.link + '[href="' + dlAll[0] + '"]').trigger('contextmenu');
                 } else {
                     inMerge = false;
@@ -359,7 +398,7 @@ jQuery(function ($) {
                 dlZip.file(filename + '_error.txt', err.finalUrl);
 
                 noty(err.statusText, 'error');
-                $(configs.link + '[href="' + configs.href + '"]').css('color', 'red');
+                linkError();
 
                 next();
             });
@@ -784,16 +823,24 @@ jQuery(function ($) {
         });
     }
 
-    var configs = {
+
+    var configsDefault = {
+            reverse: true,
             link: '',
             name: '',
-            contents: ''
+            contents: '',
+            filter: false,
+            init: getSource
         },
+        configs,
+
         chapName,
         $noty = [],
         notyTimeout,
         domainName = location.host,
         tit = document.title,
+        $win = $(window),
+        $doc = $(document),
 
         dlZip = new JSZip(),
         dlPrevZip = false,
@@ -808,11 +855,13 @@ jQuery(function ($) {
         inCustom = false,
         inMerge = false;
 
-    GM_registerMenuCommand('Download All Chapters', downloadAll, 'y');
-    $(document).on('keydown', function (e) {
+    GM_registerMenuCommand('Download All Chapters', downloadAll);
+    GM_registerMenuCommand('Download All To One File', downloadAllOne);
+
+    $doc.on('keydown', function (e) {
         if (e.which === 89 && e.altKey) { // Alt+Y
             e.preventDefault();
-            downloadAll();
+            e.shiftKey ? downloadAllOne() : downloadAll();
         }
     });
 
@@ -825,19 +874,18 @@ jQuery(function ($) {
             name: function (_this) {
                 return $('.breadcrumb li:last').text().trim() + ' ' + $(_this).find('span, strong, h2').text().trim();
             },
-            contents: ''
+            init: getTruyenTranh8
         };
-        getTruyenTranh8();
         break;
     case 'iutruyentranh.com':
         configs = {
-            link: '#chaplist a',
-            contents: ''
+            link: '#chaplist a'
         };
         getIuTruyenTranh();
         break;
     case 'truyentranh.net':
         configs = {
+            reverse: false,
             link: '.content a',
             name: function (_this) {
                 return _this.title;
@@ -851,9 +899,8 @@ jQuery(function ($) {
             name: function (_this) {
                 return $('#site-title').text().trim() + ' ' + $(_this).text().trim();
             },
-            contents: ''
+            init: getComicVn
         };
-        getComicVn();
         break;
     case 'hamtruyen.com':
         configs = {
@@ -870,9 +917,8 @@ jQuery(function ($) {
             name: function (_this) {
                 return $('h1').text().trim() + ' ' + $(_this).text().trim();
             },
-            contents: ''
+            init: getNtruyen
         };
-        getNtruyen();
         break;
     case 'www.a3manga.com':
         configs = {
@@ -884,16 +930,14 @@ jQuery(function ($) {
     case 'truyentranhtuan.com':
         configs = {
             link: '.chapter-name a',
-            contents: ''
+            init: getTruyenTranhTuan
         };
-        getTruyenTranhTuan();
         break;
     case 'mangak.info':
         configs = {
             link: '.chapter-list a',
-            contents: ''
+            init: getMangaK
         };
-        getMangaK();
         break;
     case 'truyentranhmoi.net':
         configs = {
@@ -906,9 +950,8 @@ jQuery(function ($) {
         var observer = new MutationObserver(function () {
             configs = {
                 link: '#book_chapters .val a',
-                contents: ''
+                init: getDamMeTruyen
             };
-            getDamMeTruyen();
             observer.disconnect();
         });
         observer.observe(document.getElementById('book_chapters'), {
@@ -918,9 +961,8 @@ jQuery(function ($) {
     case 'manga.goccay.vn':
         configs = {
             link: '.entry-content table a',
-            contents: ''
+            init: getGocCay
         };
-        getGocCay();
         break;
     case 'truyentranhlh.com':
         configs = {
@@ -944,9 +986,8 @@ jQuery(function ($) {
             name: function (_this) {
                 return $.trim($('.name_sp').text()) + ' ' + $(_this).text().trim();
             },
-            contents: ''
+            init: getTruyenHay24h
         };
-        getTruyenHay24h();
         break;
     case 'uptruyen.com':
         configs = {
@@ -959,17 +1000,16 @@ jQuery(function ($) {
         break;
     case 'thichtruyentranh.com':
         configs = {
-            link: '.ul_listchap a',
-            contents: ''
+            reverse: false,
+            link: '#listChapterBlock .ul_listchap a',
+            init: getThichTruyenTranh
         };
-        getThichTruyenTranh();
         break;
     case 'truyen1.net':
         configs = {
             link: '#MainContent_CenterContent_detailStoryControl_listChapter a',
-            contents: ''
+            init: getTruyen1
         };
-        getTruyen1();
         break;
     case 'bigtruyen.info':
         configs = {
@@ -1047,9 +1087,8 @@ jQuery(function ($) {
     case 'ttmanga.com':
         configs = {
             link: '#list-chapter a',
-            contents: ''
+            init: getTtManga
         };
-        getTtManga();
         break;
     case 'truyen.vnsharing.site':
         configs = {
@@ -1064,12 +1103,11 @@ jQuery(function ($) {
         };
         break;
     default:
-        configs = {
-            contents: ''
-        };
+        configs = {};
         break;
     }
 
-    if (configs.contents !== '') getSource();
+    configs = $.extend(configsDefault, configs);
+    configs.init();
 
 });
