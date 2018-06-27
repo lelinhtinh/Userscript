@@ -2,7 +2,8 @@
   "env": {
     "browser": true,
     "jquery": true,
-    "greasemonkey": true
+    "greasemonkey": true,
+    "es6": true
   },
   "globals": {
     "saveAs": false,
