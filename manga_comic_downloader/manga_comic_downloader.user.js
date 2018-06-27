@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.4.0
+// @version      1.4.1
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
@@ -110,6 +110,37 @@ jQuery(function ($) {
                 'text/html');
 
         return decodeURIComponent(dom.body.textContent);
+    }
+
+    function getImageType(arrayBuffer) {
+        var ext = '',
+            dv = new DataView(arrayBuffer, 0, 5),
+            nume1 = dv.getUint8(0, true),
+            nume2 = dv.getUint8(1, true),
+            hex = nume1.toString(16) + nume2.toString(16);
+
+        switch (hex) {
+        case '8950':
+            ext = '.png';
+            break;
+        case '4749':
+            ext = '.gif';
+            break;
+        case 'ffd8':
+            ext = '.jpg';
+            break;
+        case '424d':
+            ext = '.bmp';
+            break;
+        case '5249':
+            ext = '.webp';
+            break;
+        default:
+            ext = null;
+            break;
+        }
+
+        return ext;
     }
 
     function noty(txt, status) {
@@ -338,18 +369,22 @@ jQuery(function ($) {
     }
 
     function dlImg(url, success, error) {
-        var filename = url.replace(/.*\//g, '');
-        filename = filename.replace(/(\?|#).*$/, '');
-        filename = filename.replace(/^.*\./, '');
-        filename = ('0000' + dlCurrent).slice(-4) + '.' + filename;
+        var filename = ('0000' + dlCurrent).slice(-4);
 
         GM.xmlHttpRequest({
             method: 'GET',
             url: url,
             responseType: 'arraybuffer',
             onload: function (response) {
+                var imgext = getImageType(response.response);
                 dlFinal++;
-                (response.response.byteLength < 10000 || response.statusText !== 'OK') ? error(response, filename): success(response, filename);
+
+                if (!imgext || response.response.byteLength < 10000 || response.statusText !== 'OK') {
+                    error(response, filename);
+                } else {
+                    filename = filename + '.' + imgext;
+                    success(response, filename);
+                }
             },
             onerror: function (err) {
                 dlFinal++;
@@ -371,7 +406,6 @@ jQuery(function ($) {
                     inProgress = false;
 
                     linkSuccess();
-
                     $(configs.link + '[href="' + dlAll[0] + '"]').trigger('contextmenu');
                 } else {
                     inMerge = false;
@@ -388,14 +422,12 @@ jQuery(function ($) {
         if (max > dlTotal) max = dlTotal;
 
         for (dlCurrent; dlCurrent < max; dlCurrent++) {
-            var url = dlImages[dlCurrent];
-
-            dlImg(url, function (response, filename) {
+            dlImg(dlImages[dlCurrent], function (response, filename) {
                 dlZip.file(filename, response.response);
 
                 next();
             }, function (err, filename) {
-                dlZip.file(filename + '_error.txt', err.finalUrl);
+                dlZip.file(filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
 
                 noty(err.statusText, 'error');
                 linkError();
