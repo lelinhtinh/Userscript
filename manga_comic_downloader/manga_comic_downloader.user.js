@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.4.1
+// @version      1.5.0
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
@@ -121,19 +121,19 @@ jQuery(function ($) {
 
         switch (hex) {
         case '8950':
-            ext = '.png';
+            ext = 'png';
             break;
         case '4749':
-            ext = '.gif';
+            ext = 'gif';
             break;
         case 'ffd8':
-            ext = '.jpg';
+            ext = 'jpg';
             break;
         case '424d':
-            ext = '.bmp';
+            ext = 'bmp';
             break;
         case '5249':
-            ext = '.webp';
+            ext = 'webp';
             break;
         default:
             ext = null;
@@ -228,8 +228,7 @@ jQuery(function ($) {
         if (threading < 1) threading = 1;
         if (threading > 32) threading = 32;
 
-        dlImages = inMerge ? dlImages.concat(source) : source;
-
+        dlImages = source;
         dlTotal = dlImages.length;
         addZip();
 
@@ -322,9 +321,15 @@ jQuery(function ($) {
         downloadAll();
     }
 
+    function genFileName() {
+        return chapName.replace(/\s+/g, '_').replace(/\./g, '-');
+    }
+
     function endZip() {
-        dlZip = new JSZip();
-        dlPrevZip = false;
+        if (!inMerge) {
+            dlZip = new JSZip();
+            dlPrevZip = false;
+        }
         dlCurrent = 0;
         dlFinal = 0;
         dlTotal = 0;
@@ -346,7 +351,7 @@ jQuery(function ($) {
         dlZip.generateAsync({
             type: 'blob'
         }).then(function (blob) {
-            var zipName = chapName.replace(/\s+/g, '_').replace(/\./g, '-') + '.' + outputExt;
+            var zipName = genFileName() + '.' + outputExt;
 
             if (dlPrevZip) URL.revokeObjectURL(dlPrevZip);
             dlPrevZip = blob;
@@ -403,10 +408,8 @@ jQuery(function ($) {
         } else {
             if (inMerge) {
                 if (dlAll.length) {
-                    inProgress = false;
-
                     linkSuccess();
-                    $(configs.link + '[href="' + dlAll[0] + '"]').trigger('contextmenu');
+                    endZip();
                 } else {
                     inMerge = false;
                     genZip();
@@ -418,16 +421,19 @@ jQuery(function ($) {
     }
 
     function addZip() {
-        var max = dlCurrent + threading;
+        var max = dlCurrent + threading,
+            path;
+
         if (max > dlTotal) max = dlTotal;
+        if (inMerge) path = genFileName() + '/';
 
         for (dlCurrent; dlCurrent < max; dlCurrent++) {
             dlImg(dlImages[dlCurrent], function (response, filename) {
-                dlZip.file(filename, response.response);
+                dlZip.file(path + filename, response.response);
 
                 next();
             }, function (err, filename) {
-                dlZip.file(filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
+                dlZip.file(path + filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
 
                 noty(err.statusText, 'error');
                 linkError();
