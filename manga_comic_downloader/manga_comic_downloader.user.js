@@ -5,7 +5,7 @@
 // @version      1.5.0
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
-// @license      GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
+// @license      MIT; https://baivong.mit-license.org/license.txt
 // @include      /^https?:\/\/truyentranhtam\.com\/[^\/]+\/$/
 // @include      /^https?:\/\/truyentranhtam\.com\/\/?manga\/\d+\-[^\/]+\/[^\/]+\/$/
 // @exclude      /^https?:\/\/truyentranhtam\.com\/(vechai|truyen_tranh_tuan|danh_sach_truyen|truyen_xem_nhieu|trai|gai|quanly)\/$/
