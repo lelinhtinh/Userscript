@@ -422,7 +422,7 @@ jQuery(function ($) {
 
     function addZip() {
         var max = dlCurrent + threading,
-            path;
+            path = '';
 
         if (max > dlTotal) max = dlTotal;
         if (inMerge) path = genFileName() + '/';
