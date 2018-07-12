@@ -15,7 +15,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 ### Nâng cao
 
 - **Bỏ qua chương**: Hold phím `Ctrl+Shift` và Click lên liên kết, sau đó khi tải toàn bộ, những chương này sẽ bị bỏ qua.
-- **Tải nhiều chương**: Hold phím `Ctrl` và Click lên liên kết, khi thả phím `Ctrl` ra việc tải sẽ bắt đầu, chỉ những chương vừa chọn và theo thứ tự đã Click. Khi dùng chức năng này bạn sẽ không thể tải toàn bộ.
+- **Tải nhiều chương**: Hold phím `Ctrl` và Click lên liên kết, khi thả phím `Ctrl` ra việc tải sẽ bắt đầu, chỉ những chương vừa chọn và theo thứ tự đã Click.
 - **Gộp nhiều chương**: Tương tự **Tải nhiều chương**, thay phím `Ctrl` bằng `Shift`. Những chương đã chọn sẽ được gộp vào chung một file khi tải.
 - **Gộp toàn bộ**: Nhấn tổ hợp phím `Shift+Alt+Y` hoặc chọn **Download All To One File** từ Scripts commands để tải toàn bộ vào một file duy nhất.
 
@@ -28,31 +28,31 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 ### Danh sách host hỗ trợ
 
 1. <http://truyentranhtam.com/>
-1. <http://iutruyentranh.com/>
-1. <http://truyentranh.net/>
-1. <http://comicvn.net/>
-1. <https://hamtruyen.com/>
-1. <https://ntruyen.info/>
-1. <https://www.a3manga.com/>
-1. <http://truyentranhtuan.com/>
-1. <http://mangak.info/>
-1. <https://truyentranhmoi.net/>
-1. <http://dammetruyen.com/>
-1. <http://manga.goccay.vn/>
-1. <https://truyentranhlh.com/>
-1. <http://hocvientruyentranh.com/>
-1. <http://truyenhay24h.com/>
-1. <http://uptruyen.com/manga>
-1. <http://thichtruyentranh.com/>
-1. <http://truyen1.net/>
-1. <https://bigtruyen.info/>
-1. <http://hentailx.com/>
-1. <https://hentaivn.net/>
-1. <https://otakusan.net/Manga>
-1. <https://ngonphongcomics.com/>
-1. <http://www.nettruyen.com/>
-1. <http://www.hamtruyentranh.net/>
-1. <http://gocthugian.com.vn/truyen>
-1. <http://ttmanga.com/>
-1. <http://truyen.vnsharing.site/>
-1. <http://blogtruyen.com/>
+2. <http://iutruyentranh.com/>
+3. <http://truyentranh.net/>
+4. <http://comicvn.net/>
+5. <https://hamtruyen.com/>
+6. <https://ntruyen.info/>
+7. <https://www.a3manga.com/>
+8. <http://truyentranhtuan.com/>
+9. <http://mangak.info/>
+10. <https://truyentranhmoi.net/>
+11. <http://dammetruyen.com/>
+12. <http://manga.goccay.vn/>
+13. <https://truyentranhlh.com/>
+14. <http://hocvientruyentranh.com/>
+15. <http://truyenhay24h.com/>
+16. <http://uptruyen.com/manga>
+17. <http://thichtruyentranh.com/>
+18. <http://truyen1.net/>
+19. <https://bigtruyen.info/>
+20. <http://hentailx.com/>
+21. <https://hentaivn.net/>
+22. <https://otakusan.net/Manga>
+23. <https://ngonphongcomics.com/>
+24. <http://www.nettruyen.com/>
+25. <http://www.hamtruyentranh.net/>
+26. <http://gocthugian.com.vn/truyen>
+27. <http://ttmanga.com/>
+28. <http://truyen.vnsharing.site/>
+29. <http://blogtruyen.com/>

@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.5.0
+// @version      1.5.1
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -79,7 +79,7 @@ jQuery(function ($) {
      * Multithreading
      * @type {Number} [1 -> 32]
      */
-    var threading = 16;
+    var threading = 8;
 
     /**
      * Image list will be ignored
@@ -257,13 +257,18 @@ jQuery(function ($) {
         });
     }
 
-    function notyReady() {
-        noty('Script đã <strong>sẵn sàng</strong> làm việc', 'info');
-
+    function dlAllGen() {
+        dlAll = [];
         $(configs.link).each(function (i, el) {
             dlAll[i] = $(el).attr('href');
         });
         if (configs.reverse) dlAll.reverse();
+    }
+
+    function notyReady() {
+        noty('Script đã <strong>sẵn sàng</strong> làm việc', 'info');
+
+        dlAllGen();
 
         $doc.on('click', configs.link, function (e) {
             if (!e.ctrlKey && !e.shiftKey) return;
@@ -310,7 +315,9 @@ jQuery(function ($) {
     }
 
     function downloadAll() {
-        if (!dlAll.length || inAuto) return;
+        if (inProgress || inAuto) return;
+        if (!inCustom && !dlAll.length) dlAllGen();
+        if (!dlAll.length) return;
 
         inAuto = true;
         $(configs.link + '[href="' + dlAll[0] + '"]').trigger('contextmenu');
