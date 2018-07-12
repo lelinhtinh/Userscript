@@ -466,7 +466,7 @@ jQuery(function ($) {
         return url;
     }
 
-    function saveToClipboard(images) {
+    function checkImages(images) {
         var source = [];
 
         if (!images.length) {
@@ -501,7 +501,7 @@ jQuery(function ($) {
             images[i] = $img.data('src') || $img.data('original');
         });
 
-        saveToClipboard(images);
+        checkImages(images);
     }
 
     function getContents($source) {
@@ -580,7 +580,7 @@ jQuery(function ($) {
                 lstImages = [];
 
             eval(eval(packer));
-            saveToClipboard(lstImages);
+            checkImages(lstImages);
         });
     }
 
@@ -590,7 +590,7 @@ jQuery(function ($) {
                 lstImages = [];
 
             eval(eval(packer));
-            saveToClipboard(lstImages);
+            checkImages(lstImages);
         });
     }
 
@@ -611,7 +611,7 @@ jQuery(function ($) {
                         while (matches = regex.exec(input)) {
                             output.push(decodeURIComponent(matches[1]));
                         }
-                        saveToClipboard(output);
+                        checkImages(output);
                     }
                 };
 
@@ -663,7 +663,7 @@ jQuery(function ($) {
                         while (matches = regex.exec(input)) {
                             output.push(decodeURIComponent(matches[1]));
                         }
-                        saveToClipboard(output);
+                        checkImages(output);
                     });
                 } else {
                     configs.contents = '#containerListPage';
@@ -681,7 +681,7 @@ jQuery(function ($) {
             } else {
                 $data = $entry.text().match(/slides_page_url_path\s=\s([^\]]+)/)[1];
                 $data = JSON.parse($data + ']');
-                saveToClipboard($data);
+                checkImages($data);
             }
         });
     }
@@ -694,7 +694,7 @@ jQuery(function ($) {
             } else {
                 $data = $entry.text().replace(/^[\n\s]*var\scontent\s?=\s?/, '').replace(/,\];[\n\s]*$/, ']');
                 $data = JSON.parse($data);
-                saveToClipboard($data);
+                checkImages($data);
             }
         });
     }
@@ -711,7 +711,7 @@ jQuery(function ($) {
             notyWait();
 
             $.get('/truyen/gen_html_chapter/' + $('[name="book_id"]').val() + '/' + this.href.match(/\/chap-(.+)\.html$/)[1]).done(function (data) {
-                saveToClipboard(data.match(/https?:\/\/[^"']+/gi));
+                checkImages(data.match(/https?:\/\/[^"']+/gi));
             }).fail(function () {
                 notyError();
             });
@@ -773,7 +773,7 @@ jQuery(function ($) {
                     images[i] = v.textContent.replace(/\.(jpe?g|png)\w*$/, '.$1');
                 });
 
-                saveToClipboard(images);
+                checkImages(images);
             }).fail(function () {
                 notyError();
             });
@@ -787,7 +787,7 @@ jQuery(function ($) {
             if (!$data.length) {
                 notyImages();
             } else {
-                saveToClipboard($data);
+                checkImages($data);
             }
         });
     }
@@ -833,7 +833,7 @@ jQuery(function ($) {
                 if (!data.length) {
                     notyImages();
                 } else {
-                    saveToClipboard(data);
+                    checkImages(data);
                 }
             }).fail(function () {
                 notyError();
@@ -856,7 +856,7 @@ jQuery(function ($) {
                 while (matches = regex.exec(data)) {
                     output.push(decodeURIComponent(matches[1]));
                 }
-                saveToClipboard(output);
+                checkImages(output);
             }
         });
     }
