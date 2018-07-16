@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.5.1
+// @version      1.5.2
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -22,7 +22,7 @@
 // @exclude      /^https?:\/\/mangak\.info\/(moi\-dang|ongoing|top\-view|hot|full|action|adult|adventure|anh\-dep|anime|bender|bishounen|comedy|comic|cooking|cosplay|demons|doujinshi|drama|ecchi|fanmade|fantasy|gender|gender\-bender|harem|historical|horror|huyen\-huyen|josei|live\-action|magic|manhua|manhwa|martial\-arts|mature|mecha|mystery|one\-shot|oneshot|psychological|romance|school\-life|sci\-fi|seinen|shoujo|shoujo\-ai|shoujoai|shounen|shounen\-ai|slice\-of\-life|smut|sports|supernatural|tragedy|trap|vampire|webtoons|yuri|zombie)\/$/
 // @include      /^https?:\/\/(1\.)?truyentranhmoi\.net\/[^\/\.]+\/?$/
 // @exclude      /^https?:\/\/(1\.)?truyentranhmoi\.net\/(tac-gia|the-loai|truyen-moi-cap-nhat|truyen-tranh-hay|truyen-tranh-hoan-thanh)\/?/
-// @include      /^https?:\/\/dammetruyen\.com\/book\/[^\/]+\/?$/
+// @include      /^https?:\/\/dammetruyen\.com\/[^\/\.]+.html\/?$/
 // @include      /^https?:\/\/manga.goccay\.vn/\d{4}/\d{2}/[^\/\.]+.html$/
 // @include      /^https?:\/\/truyentranhlh\.com\/truyen\-[^\/\.]+\.html$/
 // @include      /^https?:\/\/hocvientruyentranh\.com\/manga\/\d+\/[^\/\.\?]+$/
@@ -706,27 +706,6 @@ jQuery(function ($) {
         });
     }
 
-    function getDamMeTruyen() {
-        $(configs.link).on('contextmenu', function (e) {
-            e.preventDefault();
-            if (!oneProgress()) return;
-
-            var $this = $(this);
-
-            configs.href = $this.attr('href');
-            chapName = $this.text();
-            notyWait();
-
-            $.get('/truyen/gen_html_chapter/' + $('[name="book_id"]').val() + '/' + this.href.match(/\/chap-(.+)\.html$/)[1]).done(function (data) {
-                checkImages(data.match(/https?:\/\/[^"']+/gi));
-            }).fail(function () {
-                notyError();
-            });
-        });
-
-        notyReady();
-    }
-
     function getGocCay() {
         $(configs.link).on('contextmenu', function (e) {
             e.preventDefault();
@@ -992,16 +971,13 @@ jQuery(function ($) {
         };
         break;
     case 'dammetruyen.com':
-        var observer = new MutationObserver(function () {
-            configs = {
-                link: '#book_chapters .val a',
-                init: getDamMeTruyen
-            };
-            observer.disconnect();
-        });
-        observer.observe(document.getElementById('book_chapters'), {
-            childList: true
-        });
+        configs = {
+            link: '#chapter-list-flag a',
+            name: function (_this) {
+                return $('h1').text().trim() + ' ' + $(_this).text().trim();
+            },
+            contents: '#content_chap'
+        };
         break;
     case 'manga.goccay.vn':
         configs = {
