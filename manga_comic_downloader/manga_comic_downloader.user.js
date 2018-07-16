@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.7.0
+// @version      1.7.1
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -746,7 +746,7 @@ jQuery(function ($) {
     function getTruyenHay24h() {
         getSource(function ($data) {
             $data = $data.find('#dvContentChap').siblings('script').text();
-            $data = $data.match(/GI2017\(([^)]+)\);/)[1];
+            $data = $data.match(/GI2017\(([^;]+);/)[1];
             $data = $data.split(/[,']+/);
 
             $.post('/TH24Service.asmx/GetChapterImages', {
