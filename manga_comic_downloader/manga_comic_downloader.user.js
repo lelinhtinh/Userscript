@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.5.2
+// @version      1.6.0
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -45,6 +45,7 @@
 // @include      /^https?:\/\/ttmanga\.com\/Manga\/[\w\-]+\-\d+$/
 // @include      /^https?:\/\/truyen\.vnsharing\.site\/index\/read\/\d+\/\d+\/[^\/]+\/?$/
 // @include      /^https?:\/\/blogtruyen\.com\/\d+\/[^\/]+\/?$/
+// @include      /^https?:\/\/truyensieuhay\.com\/[^\/\.]+.html\/?$/
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @require      https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
 // @require      https://unpkg.com/file-saver@1.3.8/FileSaver.min.js
@@ -847,6 +848,34 @@ jQuery(function ($) {
         });
     }
 
+    function getTruyenSieuHay() {
+        getSource(function ($data) {
+            var sID = $data.find('#content_chap').find('script:not([type])').text();
+            sID = sID.trim().slice(16, -3);
+            $.ajax({
+                type: 'POST',
+                url: '/Service.asmx/getContentChap',
+                data: '{ sID: "' + sID + '",chuc:"k" }',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    var regex = /img\s+src='(http[^']+)'/gi,
+                        matches, output = [];
+
+                    data = data.d;
+                    // eslint-disable-next-line no-cond-assign
+                    while (matches = regex.exec(data)) {
+                        output.push(decodeURIComponent(matches[1]));
+                    }
+                    checkImages(output);
+                },
+                error: function () {
+                    notyImages();
+                }
+            });
+        });
+    }
+
 
     var configsDefault = {
             reverse: true,
@@ -1121,6 +1150,15 @@ jQuery(function ($) {
         configs = {
             link: '#list-chapters .title a',
             contents: '#content'
+        };
+        break;
+    case 'truyensieuhay.com':
+        configs = {
+            link: '#chapter-list-flag a',
+            name: function (_this) {
+                return $('h1').text().trim() + ' ' + $(_this).text().trim();
+            },
+            init: getTruyenSieuHay
         };
         break;
     default:
