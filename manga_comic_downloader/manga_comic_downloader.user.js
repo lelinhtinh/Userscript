@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.6.0
+// @version      1.7.0
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -46,6 +46,7 @@
 // @include      /^https?:\/\/truyen\.vnsharing\.site\/index\/read\/\d+\/\d+\/[^\/]+\/?$/
 // @include      /^https?:\/\/blogtruyen\.com\/\d+\/[^\/]+\/?$/
 // @include      /^https?:\/\/truyensieuhay\.com\/[^\/\.]+.html\/?$/
+// @include      /^https?:\/\/truyenchon\.com\/truyen\/[^\/]+\/?$/
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @require      https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
 // @require      https://unpkg.com/file-saver@1.3.8/FileSaver.min.js
@@ -1159,6 +1160,15 @@ jQuery(function ($) {
                 return $('h1').text().trim() + ' ' + $(_this).text().trim();
             },
             init: getTruyenSieuHay
+        };
+        break;
+    case 'truyenchon.com':
+        configs = {
+            link: '#nt_listchapter a',
+            name: function (_this) {
+                return $('h1').text().trim() + ' ' + $(_this).text().trim();
+            },
+            contents: '.reading-detail'
         };
         break;
     default:
