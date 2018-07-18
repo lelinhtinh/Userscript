@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.7.1
+// @version      1.7.2
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -103,15 +103,6 @@ jQuery(function ($) {
 
     function isEmpty(el) {
         return !$.trim(el.html());
-    }
-
-    function decodeUrl(url) {
-        var parser = new DOMParser,
-            dom = parser.parseFromString(
-                '<!doctype html><body>' + url,
-                'text/html');
-
-        return decodeURIComponent(dom.body.textContent);
     }
 
     function getImageType(arrayBuffer) {
@@ -456,7 +447,18 @@ jQuery(function ($) {
         return (ignoreList.indexOf(url) !== -1);
     }
 
+    function decodeUrl(url) {
+        var parser = new DOMParser,
+            dom = parser.parseFromString(
+                '<!doctype html><body>' + url,
+                'text/html');
+
+        return decodeURIComponent(dom.body.textContent);
+    }
+
     function imageFilter(url) {
+        if (url.indexOf('.fbcdn.net') !== -1) return url;
+
         url = decodeUrl(url);
         url = url.trim();
         url = url.replace(/^.+(&|\?)url=/, '');
@@ -469,7 +471,6 @@ jQuery(function ($) {
             url += '?imgmax=16383';
         }
         if (url.indexOf('i.imgur.com') !== -1) url = url.replace(/(\/)(\w{5}|\w{7})(s|b|t|m|l|h)(\.(jpe?g|png|gif))$/, '$1$2$4');
-        url = url.replace(/^https:\/\//, 'http://');
         url = encodeURI(url);
 
         return url;
