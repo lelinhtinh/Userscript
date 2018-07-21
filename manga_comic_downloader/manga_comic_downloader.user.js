@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.7.3
+// @version      1.8.0
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -47,12 +47,14 @@
 // @include      /^https?:\/\/blogtruyen\.com\/\d+\/[^\/]+\/?$/
 // @include      /^https?:\/\/truyensieuhay\.com\/[^\/\.]+.html\/?$/
 // @include      /^https?:\/\/truyenchon\.com\/truyen\/[^\/]+\/?$/
+// @include      /^https?:\/\/truyentranhaz\.net\/truyen\-[^\/\.]+\.html\/?$/
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @require      https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
 // @require      https://unpkg.com/file-saver@1.3.8/FileSaver.min.js
 // @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect      *
+// @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-start
 // @grant        GM_addStyle
 // @grant        GM_xmlhttpRequest
@@ -81,7 +83,7 @@ jQuery(function ($) {
      * Multithreading
      * @type {Number} [1 -> 32]
      */
-    var threading = 8;
+    var threading = 16;
 
     /**
      * Image list will be ignored
@@ -1170,6 +1172,16 @@ jQuery(function ($) {
                 return $('h1').text().trim() + ' ' + $(_this).text().trim();
             },
             contents: '.reading-detail'
+        };
+        break;
+    case 'truyentranhaz.net':
+        configs = {
+            link: '#tab-chapper a',
+            name: function (_this) {
+                return $('h1').text().trim() + ' ' + $(_this).text().trim();
+            },
+            contents: '.chapter-content:not([id])',
+            filter: true
         };
         break;
     default:
