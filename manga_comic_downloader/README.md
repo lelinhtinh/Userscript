@@ -40,7 +40,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 11. <http://dammetruyen.com/>
 12. <http://manga.goccay.vn/>
 13. <https://truyentranhlh.com/>
-14. <http://hocvientruyentranh.com/>
+14. <http://hocvientruyentranh.com/>, <http://hocvientruyentranh.net/>
 15. <http://truyenhay24h.com/>
 16. <http://uptruyen.com/manga>
 17. <http://thichtruyentranh.com/>
@@ -58,4 +58,4 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 29. <https://blogtruyen.com/>
 30. <http://truyensieuhay.com>
 31. <http://truyenchon.com/>
-32. <https://truyentranhaz.net>
+32. <https://truyentranhaz.net/>
