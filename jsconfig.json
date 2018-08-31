@@ -1,7 +1,8 @@
 {
   "typeAcquisition": {
     "include": [
-      "jquery"
+      "jquery",
+      "greasemonkey"
     ]
   }
 }
