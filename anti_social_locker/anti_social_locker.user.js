@@ -2,7 +2,7 @@
 // @name         anti social locker
 // @namespace    http://baivong.github.io/
 // @description  Anti social locker plugin required user like or share before viewing content. If script doesn't work, please refresh the page to rebuild the cache and try again.
-// @version      1.1.1
+// @version      1.1.2
 // @icon         http://i.imgur.com/nOuUrIW.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -18,7 +18,7 @@
 
 (function (global) {
     'use strict';
-    
+
     function setCookie(cname, cvalue, exdays, path) {
         var domain = '',
             d = new Date();
@@ -65,7 +65,7 @@
             if (!document.querySelectorAll('.onp-sl-content').length && !document.querySelectorAll('[data-lock-id]').length && !document.querySelectorAll('[data-locker-id]').length) return;
             addstyle('.onp-sl-content,[data-lock-id],[data-locker-id]{display:block!important}.onp-sl,.onp-sl-transparence-mode,.onp-sl-overlap-box,[id^="content-locker"]{display:none!important}.onp-sl-blur-area{filter:none!important}');
         })();
-        
+
         // Social Share & Locker Pro Wordpress Plugin (http://codecanyon.net/item/social-share-locker-pro-wordpress-plugin/8137709)
         (function () {
             if (document.querySelector('.ism-locker') === null) return;
@@ -81,34 +81,35 @@
                 str,
                 cid;
 
-            if ($events && $events.esll_button_action) {
-                $('script:not([src])').each(function () {
-                    var txt = this.textContent;
+            if (!$events || !$events.esll_button_action) return;
 
-                    if (txt.indexOf('esll_data') !== -1 && txt.indexOf('esll_button_action') !== -1) {
-                        str = txt;
-                        return false;
-                    }
-                });
+            $('script:not([src])').each(function () {
+                var txt = this.textContent;
 
-                if (str) cid = str.match(/var\scid\s?=\s?(\d+);/);
+                if (txt.indexOf('esll_data') !== -1 && txt.indexOf('esll_button_action') !== -1) {
+                    str = txt;
+                    return false;
+                }
+            });
+
+            if (str) cid = str.match(/var\scid\s?=\s?(\d+);/);
+
+            if (cid) {
+                cid = cid[1];
+            } else {
+                cid = str.match(/\['(google|linkedin)(-share)?',\s?(\d+)\]/);
 
                 if (cid) {
-                    cid = cid[1];
+                    cid = cid[3];
                 } else {
-                    cid = str.match(/\['(google|linkedin)(-share)?',\s?(\d+)\]/);
-
-                    if (cid) {
-                        cid = cid[3];
-                    } else {
-                        cid = '0';
-                    }
+                    cid = '0';
                 }
-                if (cid !== '0') {
-                    $doc.trigger('esll_button_action', ['facebook-share', cid]);
-                } else {
-                    $doc.trigger('esll_button_action');
-                }
+            }
+            
+            if (cid !== '0') {
+                $doc.trigger('esll_button_action', ['facebook-share', cid]);
+            } else {
+                $doc.trigger('esll_button_action');
             }
         })(jQuery);
 
@@ -119,22 +120,21 @@
                 $lockContents = $('.arsocialshare_locker_main_wrapper'),
                 removeClass = 'ars_locked_full ars_locked_transparency ars_locked_blurring';
 
-            if ($pageId.length && $lockId.length && $lockContents.length) {
-                $lockContents.each(function () {
-                    var $this = $(this),
-                        $hidden = $('#' + $this.data('hidden-el'));
+            if (!$pageId.length || !$lockId.length || !$lockContents.length) return;
 
-                    $hidden.removeClass(removeClass).show();
-                    $this.replaceWith($hidden);
-                });
-            }
+            $lockContents.each(function () {
+                var $this = $(this),
+                    $hidden = $('#' + $this.data('hidden-el'));
+
+                $hidden.removeClass(removeClass).show();
+                $this.replaceWith($hidden);
+            });
         })(jQuery);
 
         // Viral Lock - Like, Google+1 or Tweet to Unlock (http://codecanyon.net/item/viral-lock-like-google1-or-tweet-to-unlock/1486602)
         // Viral Lock PHP - Like, Google+1 or Tweet to Unlock (http://codecanyon.net/item/viral-lock-php-like-google1-or-tweet-to-unlock/1632879)
         // Viral Coupon - Like, Tweet or G+ to get a Discount (http://codecanyon.net/item/viral-coupon-like-tweet-or-g-to-get-a-discount/2233568)
         (function ($) {
-            if (!('virallocker_use' in global)) return;
             var $locked = $('.virallock-box, .virallocker-box, .virallocker-box-checkout'),
                 host = global.location.host,
                 str = '',
@@ -146,6 +146,8 @@
                     global.location.reload();
                 },
                 viralCookie;
+            
+            if (!$locked.length) return;
 
             $('script:not([src])').each(function () {
                 var txt = this.textContent;
@@ -155,6 +157,7 @@
                     return false;
                 }
             });
+
             if (str === '') return;
 
             if (viralLock.test(str)) {
