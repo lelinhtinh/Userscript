@@ -2,13 +2,14 @@
 // @name         anti social locker
 // @namespace    http://baivong.github.io/
 // @description  Anti social locker plugin required user like or share before viewing content. If script doesn't work, please refresh the page to rebuild the cache and try again.
-// @version      1.0.3
+// @version      1.1.0
 // @icon         http://i.imgur.com/nOuUrIW.png
 // @author       Zzbaivong
 // @oujs:author  baivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        http://*/*
 // @match        https://*/*
+// @require      https://code.jquery.com/jquery-3.3.1.slim.min.js
 // @noframes
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-start
