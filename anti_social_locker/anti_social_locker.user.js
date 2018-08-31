@@ -2,7 +2,7 @@
 // @name         anti social locker
 // @namespace    http://baivong.github.io/
 // @description  Anti social locker plugin required user like or share before viewing content. If script doesn't work, please refresh the page to rebuild the cache and try again.
-// @version      1.1.0
+// @version      1.1.1
 // @icon         http://i.imgur.com/nOuUrIW.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -65,6 +65,12 @@
             if (!document.querySelectorAll('.onp-sl-content').length && !document.querySelectorAll('[data-lock-id]').length && !document.querySelectorAll('[data-locker-id]').length) return;
             addstyle('.onp-sl-content,[data-lock-id],[data-locker-id]{display:block!important}.onp-sl,.onp-sl-transparence-mode,.onp-sl-overlap-box,[id^="content-locker"]{display:none!important}.onp-sl-blur-area{filter:none!important}');
         })();
+        
+        // Social Share & Locker Pro Wordpress Plugin (http://codecanyon.net/item/social-share-locker-pro-wordpress-plugin/8137709)
+        (function () {
+            if (document.querySelector('.ism-locker') === null) return;
+            addstyle('[id^="indeed_locker_"]{display:none!important}[id^="indeed_locker_content_"]{filter:none!important;opacity:1!important;display:block!important}');
+        })();
 
         if (!('jQuery' in global)) return;
 
@@ -120,34 +126,6 @@
 
                     $hidden.removeClass(removeClass).show();
                     $this.replaceWith($hidden);
-                });
-            }
-        })(jQuery);
-
-        // Social Share & Locker Pro Wordpress Plugin (http://codecanyon.net/item/social-share-locker-pro-wordpress-plugin/8137709)
-        (function ($) {
-            if (!('ism_general_locker' in global)) return;
-            var $locker = $('.ism-before-row');
-
-            if ($locker.length) {
-                $locker.each(function () {
-                    var $this = $(this),
-                        $lockerAlert,
-                        $lockerContent;
-
-                    (function reUnlock() {
-                        $lockerAlert = $('#' + $this.data('lockerid'));
-                        $lockerContent = $('#' + $this.data('id'));
-                        if (!$lockerAlert.length && !$lockerContent.is('[style]')) return;
-
-                        $lockerContent.removeAttr('style');
-                        $lockerContent.parent('.ismLockerWrap').removeAttr('style');
-                        $lockerAlert.remove();
-
-                        setTimeout(function () {
-                            reUnlock();
-                        }, 500);
-                    })();
                 });
             }
         })(jQuery);
