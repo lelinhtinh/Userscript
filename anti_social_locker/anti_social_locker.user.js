@@ -23,6 +23,7 @@
 
         // Panda Lockers (https://codecanyon.net/item/optin-panda-for-wordpress/10224279)
         // Social Locker for Wordpress (https://codecanyon.net/item/social-locker-for-wordpress/3667715)
+        // Social Locker for jQuery (https://codecanyon.net/item/social-locker-for-jquery/3408941)
         (function () {
             if (!document.querySelectorAll('.onp-sl-content').length && !document.querySelectorAll('[data-lock-id]').length && !document.querySelectorAll('[data-locker-id]').length) return;
             if (document.getElementById('anti_social_locker') !== null) return;
@@ -40,16 +41,9 @@
 
         if (!('jQuery' in global)) return;
 
-        var unlocked = 'Unlocked by Anti Social Locker',
-            counter = 0,
-            debug = false,
-            showCounter = function () {
-                if (debug) global.console.log(counter, 'Social Locker have been disabled!');
-            },
-            setCookie = function (cname, cvalue, exdays, path) {
+        var setCookie = function (cname, cvalue, exdays, path) {
                 var domain = '',
                     d = new Date();
-
                 if (exdays) {
                     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
                     exdays = '; expires=' + d.toUTCString();
@@ -70,19 +64,6 @@
                 }
                 return null;
             };
-
-        // Social Locker for jQuery (https://codecanyon.net/item/social-locker-for-jquery/3408941)
-        (function ($) {
-            if ($.fn.sociallocker) jQuery.fn.sociallocker = function () {
-                var $lock = $(this.selector);
-                $lock.show().attr('data-lock-id', unlocked);
-
-                counter += $lock.length;
-                showCounter();
-
-                return this;
-            };
-        })(jQuery);
 
         // Easy Social Locker (https://codecanyon.net/item/easy-social-locker/6190651)
         (function ($) {
@@ -119,9 +100,6 @@
                 } else {
                     $doc.trigger('esll_button_action');
                 }
-
-                counter += $('.esll-big, .esll-small').length;
-                showCounter();
             }
         })(jQuery);
 
@@ -137,12 +115,9 @@
                     var $this = $(this),
                         $hidden = $('#' + $this.data('hidden-el'));
 
-                    $hidden.attr('data-lock-id', unlocked).removeClass(removeClass).show();
+                    $hidden.removeClass(removeClass).show();
                     $this.replaceWith($hidden);
                 });
-
-                counter += $lockContents.length;
-                showCounter();
             }
         })(jQuery);
 
@@ -162,7 +137,7 @@
                         $lockerContent = $('#' + $this.data('id'));
                         if (!$lockerAlert.length && !$lockerContent.is('[style]')) return;
 
-                        $lockerContent.attr('data-lock-id', unlocked).removeAttr('style');
+                        $lockerContent.removeAttr('style');
                         $lockerContent.parent('.ismLockerWrap').removeAttr('style');
                         $lockerAlert.remove();
 
@@ -171,9 +146,6 @@
                         }, 500);
                     })();
                 });
-
-                counter += $locker.length;
-                showCounter();
             }
         })(jQuery);
 
@@ -190,8 +162,6 @@
                 viralPHP = /"virallocker",\s?myID:\s?"(myid\d+)"\}/m,
                 viralCoupon = /var\sdata\s?=\s?{\s?action:\s?"submit",\s?myID:\s?"(\d+)"\};/m,
                 afterUnlock = function () {
-                    counter += $locked.length;
-                    showCounter();
                     global.location.reload();
                 },
                 viralCookie;
@@ -239,9 +209,6 @@
                 if ('virallocker_plusone' in global) virallocker_plusone({
                     state: 'on'
                 });
-
-                counter += $locked.length;
-                showCounter();
 
             }
         })(jQuery);
