@@ -18,6 +18,43 @@
 
 (function (global) {
     'use strict';
+    
+    function setCookie(cname, cvalue, exdays, path) {
+        var domain = '',
+            d = new Date();
+        if (exdays) {
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            exdays = '; expires=' + d.toUTCString();
+        }
+        if (!path) path = '/';
+        document.cookie = cname + '=' + cvalue + '; path=' + path + exdays + domain + ';';
+    }
+
+    function getCookie(name) {
+        var cname = name + '=',
+            cpos = document.cookie.indexOf(cname),
+            cstart,
+            cend;
+        if (cpos !== -1) {
+            cstart = cpos + cname.length;
+            cend = document.cookie.indexOf(';', cstart);
+            if (cend === -1) cend = document.cookie.length;
+            return decodeURIComponent(document.cookie.substring(cstart, cend));
+        }
+        return null;
+    }
+
+    function addstyle(aCss) {
+        if (document.getElementById('anti_social_locker_style') !== null) return;
+        var head = document.head;
+        if (!head) return;
+        var style = document.createElement('style');
+        style.id = 'anti_social_locker_style';
+        style.setAttribute('type', 'text/css');
+        style.textContent = aCss;
+        head.appendChild(style);
+        return style;
+    }
 
     function antiSocialLocker() {
 
@@ -26,44 +63,10 @@
         // Social Locker for jQuery (https://codecanyon.net/item/social-locker-for-jquery/3408941)
         (function () {
             if (!document.querySelectorAll('.onp-sl-content').length && !document.querySelectorAll('[data-lock-id]').length && !document.querySelectorAll('[data-locker-id]').length) return;
-            if (document.getElementById('anti_social_locker') !== null) return;
-
-            var css = '.onp-sl-content,[data-lock-id],[data-locker-id]{display:block!important}.onp-sl,.onp-sl-transparence-mode,.onp-sl-overlap-box,[id^="content-locker"]{display:none!important}.onp-sl-blur-area{filter:none!important}',
-                head = document.head || document.getElementsByTagName('head')[0],
-                style = document.createElement('style');
-
-            style.id = 'anti_social_locker';
-            style.appendChild(document.createTextNode(css));
-
-            head.appendChild(style);
+            addstyle('.onp-sl-content,[data-lock-id],[data-locker-id]{display:block!important}.onp-sl,.onp-sl-transparence-mode,.onp-sl-overlap-box,[id^="content-locker"]{display:none!important}.onp-sl-blur-area{filter:none!important}');
         })();
 
-
         if (!('jQuery' in global)) return;
-
-        var setCookie = function (cname, cvalue, exdays, path) {
-                var domain = '',
-                    d = new Date();
-                if (exdays) {
-                    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-                    exdays = '; expires=' + d.toUTCString();
-                }
-                if (!path) path = '/';
-                document.cookie = cname + '=' + cvalue + '; path=' + path + exdays + domain + ';';
-            },
-            getCookie = function (name) {
-                var cname = name + '=',
-                    cpos = document.cookie.indexOf(cname),
-                    cstart,
-                    cend;
-                if (cpos !== -1) {
-                    cstart = cpos + cname.length;
-                    cend = document.cookie.indexOf(';', cstart);
-                    if (cend === -1) cend = document.cookie.length;
-                    return decodeURIComponent(document.cookie.substring(cstart, cend));
-                }
-                return null;
-            };
 
         // Easy Social Locker (https://codecanyon.net/item/easy-social-locker/6190651)
         (function ($) {
