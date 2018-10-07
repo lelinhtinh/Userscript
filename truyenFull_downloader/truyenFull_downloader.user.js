@@ -2,20 +2,20 @@
 // @name         TruyenFull downloader
 // @namespace    https://baivong.github.io/
 // @description  Tải truyện từ truyenfull.vn định dạng epub
-// @version      4.5.0
+// @version      4.5.1
 // @icon         https://i.imgur.com/FQY8btq.png
 // @author       Zzbaivong
 // @oujs:author  baivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
-// @include      http://truyenfull.vn/*
-// @exclude      http://truyenfull.vn/
-// @exclude      http://truyenfull.vn/*/chuong-*
-// @exclude      http://truyenfull.vn/danh-sach/*
-// @exclude      http://truyenfull.vn/the-loai/*
-// @exclude      http://truyenfull.vn/tac-gia/*
-// @exclude      http://truyenfull.vn/contact/
-// @exclude      http://truyenfull.vn/tos/
-// @exclude      http://truyenfull.vn/sitemap.xml
+// @include      https://truyenfull.vn/*
+// @exclude      https://truyenfull.vn/
+// @exclude      https://truyenfull.vn/*/chuong-*
+// @exclude      https://truyenfull.vn/danh-sach/*
+// @exclude      https://truyenfull.vn/the-loai/*
+// @exclude      https://truyenfull.vn/tac-gia/*
+// @exclude      https://truyenfull.vn/contact/
+// @exclude      https://truyenfull.vn/tos/
+// @exclude      https://truyenfull.vn/sitemap.xml
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @require      https://unpkg.com/jepub@1.2.3/dist/jepub.min.js
 // @require      https://unpkg.com/file-saver@1.3.8/FileSaver.min.js
@@ -38,7 +38,7 @@
      * Thời gian giãn cách giữa 2 lần tải
      * @type {Number}
      */
-    var downloadDelay = 100;
+    var downloadDelay = 0;
 
 
     function cleanHtml(str) {
@@ -47,12 +47,27 @@
         return '<div>' + str + '</div>';
     }
 
-    function downloadError(mess, err) {
+    function downloadError(mess, err, server) {
         downloadStatus('danger');
         titleError.push(chapTitle);
         if (errorAlert) errorAlert = confirm('Lỗi! ' + mess + '\nBạn có muốn tiếp tục nhận cảnh báo?');
 
         if (err) console.error(mess);
+
+        if (server) {
+            if (downloadDelay > 700) {
+                saveEbook();
+                return;
+            }
+
+            downloadStatus('warning');
+            downloadDelay += 100;
+            setTimeout(function () {
+                getContent();
+            }, downloadDelay);
+            return;
+        }
+
         return '<p class="no-indent"><a href="' + referrer + chapId + '">' + mess + '</a></p>';
     }
 
@@ -78,7 +93,7 @@
                 href: window.URL.createObjectURL(epubZipContent),
                 download: ebookFilename
             }).text('Hoàn thành').off('click');
-            if (!$download.hasClass('btn-danger')) downloadStatus('success');
+            if (status !== 'danger') downloadStatus('success');
 
             saveAs(epubZipContent, ebookFilename);
         }).catch(function (err) {
@@ -119,7 +134,7 @@
                 if ($chapter.text().trim() === '') {
                     chapContent = downloadError('Nội dung không có');
                 } else {
-                    if (!$download.hasClass('btn-danger')) downloadStatus('warning');
+                    if (status !== 'danger') downloadStatus('warning');
                     chapContent = cleanHtml($chapter.html());
                 }
             }
@@ -141,8 +156,7 @@
                 }, downloadDelay);
             }
         }).fail(function (err) {
-            downloadError('Kết nối không ổn định', err);
-            saveEbook();
+            downloadError('Kết nối không ổn định', err, true);
         });
     }
 
@@ -155,7 +169,9 @@
             href: '#download',
             text: 'Tải xuống'
         }),
-        downloadStatus = function (status) {
+        status,
+        downloadStatus = function (label) {
+            status = label;
             $download.removeClass('btn-primary btn-success btn-info btn-warning btn-danger').addClass('btn-' + status);
         },
 
