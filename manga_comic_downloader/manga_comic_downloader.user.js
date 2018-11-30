@@ -2,52 +2,52 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.8.6
+// @version      1.9.0
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
-// @include      /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh869\.com)\/[^\/]+\/$/
-// @include      /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh869\.com)\/\/?manga\/\d+\-[^\/]+\/[^\/]+\/$/
-// @exclude      /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh869\.com)\/(vechai|truyen_tranh_tuan|danh_sach_truyen|truyen_xem_nhieu|trai|gai|quanly|TinhTrang|LoaiTruyen|TheLoai|DoTuoi|u|lich)\/$/
-// @include      /^https?:\/\/iutruyentranh\.com\/truyen\/\d+\-[\w\-]+\/?$/
-// @include      /^https?:\/\/truyentranh\.net\/[^\/]+\/?$/
-// @include      /^https?:\/\/comicvn\.net\/truyen\-tranh(\-online)?\/[^\/]+\-\d+\/?$/
-// @include      /^https?:\/\/hamtruyen\.com\/[^\/\.]+\.html\/?$/
-// @exclude      /^https?:\/\/hamtruyen\.com\/(dangky|quenmatkhau)\/$/
-// @include      /^https?:\/\/ntruyen\.info\/truyen\/[^\/\.]+\/?$/
-// @include      /^https?:\/\/www\.a3manga\.com\/truyen\-tranh\/[^\/]+\/?$/
-// @include      /^https?:\/\/truyentranhtuan\.com\/([^\/](?!\-chuong\-\d+))+\/?$/
-// @include      /^https?:\/\/mangak\.info\/([^\/](?!\-chap\-\d+))+\/$/
-// @include      /^https?:\/\/mangak\.info\/(moi\-cap\-nhat\/)?(page\/\d+\/)?$/
-// @exclude      /^https?:\/\/mangak\.info\/(moi\-dang|ongoing|top\-view|hot|full|action|adult|adventure|anh\-dep|anime|bender|bishounen|comedy|comic|cooking|cosplay|demons|doujinshi|drama|ecchi|fanmade|fantasy|gender|gender\-bender|harem|historical|horror|huyen\-huyen|josei|live\-action|magic|manhua|manhwa|martial\-arts|mature|mecha|mystery|one\-shot|oneshot|psychological|romance|school\-life|sci\-fi|seinen|shoujo|shoujo\-ai|shoujoai|shounen|shounen\-ai|slice\-of\-life|smut|sports|supernatural|tragedy|trap|vampire|webtoons|yuri|zombie)\/$/
-// @include      /^https?:\/\/(1\.)?truyentranhmoi\.net\/[^\/\.]+\/?$/
+// @include      /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh869\.com)\/[^\/]+\/((\?|#).+)?$/
+// @include      /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh869\.com)\/\/?manga\/\d+\-[^\/]+\/[^\/]+\/((\?|#).+)?$/
+// @exclude      /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh869\.com)\/(vechai|truyen_tranh_tuan|danh_sach_truyen|truyen_xem_nhieu|trai|gai|quanly|TinhTrang|LoaiTruyen|TheLoai|DoTuoi|u|lich)\/((\?|#).+)?$/
+// @include      /^https?:\/\/iutruyentranh\.com\/truyen\/\d+\-[\w\-]+\/?((\?|#).+)?$/
+// @include      /^https?:\/\/truyentranh\.net\/[^\/]+\/?((\?|#).+)?$/
+// @include      /^https?:\/\/comicvn\.net\/truyen\-tranh(\-online)?\/[^\/]+\-\d+\/?((\?|#).+)?$/
+// @include      /^https?:\/\/hamtruyen\.com\/[^\/\.]+\.html\/?((\?|#).+)?$/
+// @exclude      /^https?:\/\/hamtruyen\.com\/(dangky|quenmatkhau)\/((\?|#).+)?$/
+// @include      /^https?:\/\/ntruyen\.info\/truyen\/[^\/\.]+\/?((\?|#).+)?$/
+// @include      /^https?:\/\/www\.a3manga\.com\/truyen\-tranh\/[^\/]+\/?((\?|#).+)?$/
+// @include      /^https?:\/\/truyentranhtuan\.com\/([^\/](?!\-chuong\-\d+))+\/?((\?|#).+)?$/
+// @include      /^https?:\/\/mangak\.info\/([^\/](?!\-chap\-\d+))+\/((\?|#).+)?$/
+// @include      /^https?:\/\/mangak\.info\/(moi\-cap\-nhat\/)?(page\/\d+\/)?((\?|#).+)?$/
+// @exclude      /^https?:\/\/mangak\.info\/(moi\-dang|ongoing|top\-view|hot|full|action|adult|adventure|anh\-dep|anime|bender|bishounen|comedy|comic|cooking|cosplay|demons|doujinshi|drama|ecchi|fanmade|fantasy|gender|gender\-bender|harem|historical|horror|huyen\-huyen|josei|live\-action|magic|manhua|manhwa|martial\-arts|mature|mecha|mystery|one\-shot|oneshot|psychological|romance|school\-life|sci\-fi|seinen|shoujo|shoujo\-ai|shoujoai|shounen|shounen\-ai|slice\-of\-life|smut|sports|supernatural|tragedy|trap|vampire|webtoons|yuri|zombie)\/((\?|#).+)?$/
+// @include      /^https?:\/\/(1\.)?truyentranhmoi\.net\/[^\/\.]+\/?((\?|#).+)?$/
 // @exclude      /^https?:\/\/(1\.)?truyentranhmoi\.net\/(tac-gia|the-loai|truyen-moi-cap-nhat|truyen-tranh-hay|truyen-tranh-hoan-thanh)\/?/
-// @include      /^https?:\/\/dammetruyen\.com\/[^\/\.]+.html\/?$/
-// @include      /^https?:\/\/manga.goccay\.vn/\d{4}/\d{2}/[^\/\.]+.html$/
-// @include      /^https?:\/\/truyentranhlh\.(com|net)\/truyen\-[^\/\.]+\.html$/
-// @include      /^https?:\/\/hocvientruyentranh\.(com|net)\/manga\/\d+\/[^\/\.\?]+$/
-// @include      /^https?:\/\/truyenhay24h\.com\/[^\/\.]+\.html$/
-// @exclude      /^https?:\/\/truyenhay24h\.com\/(lien\-he|Dang\-ky|forgetPass)\.html$/
-// @include      /^https?:\/\/uptruyen\.com\/manga\/\d+/([^\/]+\/)?([^\/\.]+)?.html$/
-// @include      /^https?:\/\/thichtruyentranh\.com/([^\/]+)/\d+(\/trang\.\d+)?.html$/
-// @include      /^https?:\/\/truyen1\.net\/TruyenTranh\/[^\/]+\/?$/
-// @include      /^https?:\/\/bigtruyen\.info\/[^\/]+\/$/
-// @exclude      /^https?:\/\/bigtruyen\.info\/(danh-sach-truyen|truyen-hot|)\/$/
-// @include      /^https?:\/\/(www\.)?hentailx\.com\/[^\.]+\.html$/
-// @exclude      /^https?:\/\/(www\.)?hentailx\.com\/dang-ky-thanh-vien\.html$/
-// @include      /^https?:\/\/hentaivn\.net\/\d+\-[^\.]+\.html$/
-// @include      /^https?:\/\/otakusan\.net\/MangaDetail\/\d+\/[^\/\.]+\/?$/
-// @include      /^https?:\/\/ngonphongcomics\.com\/[^\/]+\/?$/
-// @exclude      /^https?:\/\/ngonphongcomics\.com\/(danh-sach-truyen|the-loai|nhom-dich|tac-gia)\/?$/
-// @include      /^https?:\/\/(www\.)?nettruyen.com\/truyen\-tranh/[^\/]+\/?$/
-// @include      /^https?:\/\/(www\.)?hamtruyentranh.net\/truyen\/[\w\-]+\.html$/
-// @include      /^https?:\/\/gocthugian\.com\.vn\/truyen\/(t|v)\d+\/$/
-// @include      /^https?:\/\/ttmanga\.com\/Manga\/[\w\-]+\-\d+$/
-// @include      /^https?:\/\/truyen\.vnsharing\.site\/index\/read\/\d+\/\d+\/[^\/]+\/?$/
-// @include      /^https?:\/\/blogtruyen\.com\/\d+\/[^\/]+\/?$/
-// @include      /^https?:\/\/truyensieuhay\.com\/[^\/\.]+.html\/?$/
-// @include      /^https?:\/\/truyenchon\.com\/truyen\/[^\/]+\/?$/
-// @include      /^https?:\/\/truyentranhaz\.net\/truyen\-[^\/\.]+\.html\/?$/
+// @include      /^https?:\/\/dammetruyen\.com\/[^\/\.]+.html\/?((\?|#).+)?$/
+// @include      /^https?:\/\/manga.goccay\.vn/\d{4}/\d{2}/[^\/\.]+.html((\?|#).+)?$/
+// @include      /^https?:\/\/truyentranhlh\.(com|net)\/truyen\-[^\/\.]+\.html((\?|#).+)?$/
+// @include      /^https?:\/\/hocvientruyentranh\.(com|net)\/manga\/\d+\/[^\/\.\?]+((\?|#).+)?$/
+// @include      /^https?:\/\/truyenhay24h\.com\/[^\/\.]+\.html((\?|#).+)?$/
+// @exclude      /^https?:\/\/truyenhay24h\.com\/(lien\-he|Dang\-ky|forgetPass)\.html((\?|#).+)?$/
+// @include      /^https?:\/\/uptruyen\.com\/manga\/\d+/([^\/]+\/)?([^\/\.]+)?.html((\?|#).+)?$/
+// @include      /^https?:\/\/thichtruyentranh\.com/([^\/]+)/\d+(\/trang\.\d+)?.html((\?|#).+)?$/
+// @include      /^https?:\/\/truyen1\.net\/TruyenTranh\/[^\/]+\/?((\?|#).+)?$/
+// @include      /^https?:\/\/bigtruyen\.info\/[^\/]+\/((\?|#).+)?$/
+// @exclude      /^https?:\/\/bigtruyen\.info\/(danh-sach-truyen|truyen-hot|)\/((\?|#).+)?$/
+// @include      /^https?:\/\/(www\.)?hentailx\.com\/[^\.]+\.html((\?|#).+)?$/
+// @exclude      /^https?:\/\/(www\.)?hentailx\.com\/dang-ky-thanh-vien\.html((\?|#).+)?$/
+// @include      /^https?:\/\/hentaivn\.net\/\d+\-[^\.]+\.html((\?|#).+)?$/
+// @include      /^https?:\/\/otakusan\.net\/MangaDetail\/\d+\/[^\/\.]+\/?((\?|#).+)?$/
+// @include      /^https?:\/\/ngonphongcomics\.com\/[^\/]+\/?((\?|#).+)?$/
+// @exclude      /^https?:\/\/ngonphongcomics\.com\/(danh-sach-truyen|the-loai|nhom-dich|tac-gia)\/?((\?|#).+)?$/
+// @include      /^https?:\/\/(www\.)?nettruyen.com\/truyen\-tranh/[^\/]+\/?((\?|#).+)?$/
+// @include      /^https?:\/\/(www\.)?hamtruyentranh.net\/truyen\/[\w\-]+\.html((\?|#).+)?$/
+// @include      /^https?:\/\/gocthugian\.com\.vn\/truyen\/(t|v)\d+\/((\?|#).+)?$/
+// @include      /^https?:\/\/ttmanga\.com\/Manga\/[\w\-]+\-\d+((\?|#).+)?$/
+// @include      /^https?:\/\/truyen\.vnsharing\.site\/index\/read\/\d+\/\d+\/[^\/]+\/?((\?|#).+)?$/
+// @include      /^https?:\/\/blogtruyen\.com\/\d+\/[^\/]+\/?((\?|#).+)?$/
+// @include      /^https?:\/\/truyensieuhay\.com\/[^\/\.]+.html\/?((\?|#).+)?$/
+// @include      /^https?:\/\/truyenchon\.com\/truyen\/[^\/]+\/?((\?|#).+)?$/
+// @include      /^https?:\/\/truyentranhaz\.net\/truyen\-[^\/\.]+\.html\/?((\?|#).+)?$/
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @require      https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
 // @require      https://unpkg.com/file-saver@1.3.8/FileSaver.min.js
@@ -449,6 +449,13 @@ jQuery(function ($) {
         return (ignoreList.indexOf(url) !== -1);
     }
 
+    function redirectSSL(url) {
+        if (url.search(/(i\.imgur\.com|\.blogspot\.com|\.fbcdn\.net|storage\.fshare\.vn)/i) !== -1 && url.indexOf('http://') === 0)
+            url = url.replace(/^http:\/\//, 'https://');
+
+        return url;
+    }
+
     function decodeUrl(url) {
         var parser = new DOMParser,
             dom = parser.parseFromString(
@@ -474,6 +481,8 @@ jQuery(function ($) {
         }
         if (url.indexOf('i.imgur.com') !== -1) url = url.replace(/(\/)(\w{5}|\w{7})(s|b|t|m|l|h)(\.(jpe?g|png|gif))$/, '$1$2$4');
         url = encodeURI(url);
+        if (url.search(/https?:\/\//) !== 0) url = 'http://' + url;
+        url = redirectSSL(url);
 
         return url;
     }
