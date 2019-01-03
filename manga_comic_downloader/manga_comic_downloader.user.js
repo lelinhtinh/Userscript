@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.9.0
+// @version      1.9.1
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -10,7 +10,7 @@
 // @include      /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh869\.com)\/\/?manga\/\d+\-[^\/]+\/[^\/]+\/((\?|#).+)?$/
 // @exclude      /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh869\.com)\/(vechai|truyen_tranh_tuan|danh_sach_truyen|truyen_xem_nhieu|trai|gai|quanly|TinhTrang|LoaiTruyen|TheLoai|DoTuoi|u|lich)\/((\?|#).+)?$/
 // @include      /^https?:\/\/iutruyentranh\.com\/truyen\/\d+\-[\w\-]+\/?((\?|#).+)?$/
-// @include      /^https?:\/\/truyentranh\.net\/[^\/]+\/?((\?|#).+)?$/
+// @include      /^https?:\/\/(www\.)?truyentranh\.net\/[^\/]+\/?((\?|#).+)?$/
 // @include      /^https?:\/\/comicvn\.net\/truyen\-tranh(\-online)?\/[^\/]+\-\d+\/?((\?|#).+)?$/
 // @include      /^https?:\/\/hamtruyen\.com\/[^\/\.]+\.html\/?((\?|#).+)?$/
 // @exclude      /^https?:\/\/hamtruyen\.com\/(dangky|quenmatkhau)\/((\?|#).+)?$/
@@ -553,20 +553,26 @@ jQuery(function ($) {
         chapName = $.trim(chapName);
         notyWait();
 
-        $.get(configs.href).done(function (responseText) {
-            responseText = responseText.replace(/<img [^>]*src\s?=['"]([^'"]+)[^>]*>/gi, function (match, capture) {
-                return '<img data-src="' + capture + '" />';
-            });
-            responseText = responseText.replace(/^[^<]*/, '');
+        GM.xmlHttpRequest({
+            method: 'GET',
+            url: configs.href,
+            onload: function (response) {
+                var responseText = response.responseText;
+                responseText = responseText.replace(/<img [^>]*src\s?=['"]([^'"]+)[^>]*>/gi, function (match, capture) {
+                    return '<img data-src="' + capture + '" />';
+                });
+                responseText = responseText.replace(/^[^<]*/, '');
 
-            var $data = $(responseText);
-            if (typeof callback === 'function') {
-                callback($data);
-            } else {
-                getContents($data);
+                var $data = $(responseText);
+                if (typeof callback === 'function') {
+                    callback($data);
+                } else {
+                    getContents($data);
+                }
+            },
+            onerror: function () {
+                notyError();
             }
-        }).fail(function () {
-            notyError();
         });
     }
 
@@ -952,6 +958,7 @@ jQuery(function ($) {
         getIuTruyenTranh();
         break;
     case 'truyentranh.net':
+    case 'www.truyentranh.net':
         configs = {
             reverse: false,
             link: '.content a',
