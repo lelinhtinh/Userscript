@@ -558,7 +558,7 @@ jQuery(function ($) {
             url: configs.href,
             onload: function (response) {
                 var responseText = response.responseText;
-                responseText = responseText.replace(/<img [^>]*src\s?=['"]([^'"]+)[^>]*>/gi, function (match, capture) {
+                responseText = responseText.replace(/<img [^>]*src\s?=['"]?([^'"\s]+)[^>]*>/gi, function (match, capture) {
                     return '<img data-src="' + capture + '" />';
                 });
                 responseText = responseText.replace(/^[^<]*/, '');
