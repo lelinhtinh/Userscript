@@ -998,7 +998,7 @@ jQuery(function ($) {
     case 'www.a3manga.com':
         configs = {
             link: '.table-striped a',
-            contents: '.view-chapter',
+            contents: '#view-chapter',
             filter: true
         };
         break;
