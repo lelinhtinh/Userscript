@@ -48,6 +48,7 @@
 // @include      /^https?:\/\/truyensieuhay\.com\/[^\/\.]+.html\/?((\?|#).+)?$/
 // @include      /^https?:\/\/truyenchon\.com\/truyen\/[^\/]+\/?((\?|#).+)?$/
 // @include      /^https?:\/\/truyentranhaz\.net\/truyen\-[^\/\.]+\.html\/?((\?|#).+)?$/
+// @include      /^https?:\/\/truyenqq\.com\/truyen\-tranh\/[^\/\.]+\.html((\?|#).+)?$/
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @require      https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
 // @require      https://unpkg.com/file-saver@2.0.1/dist/FileSaver.min.js
@@ -1202,6 +1203,15 @@ jQuery(function ($) {
             },
             contents: '.chapter-content:not([id])',
             filter: true
+        };
+        break;
+    case 'truyenqq.com':
+        configs = {
+            link: '#info_scroll a',
+            name: function (_this) {
+                return $('h1').text().trim() + ' ' + $(_this).text().trim();
+            },
+            contents: '.detail-chap'
         };
         break;
     default:
