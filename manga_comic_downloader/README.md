@@ -59,3 +59,4 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 30. <http://truyensieuhay.com/>
 31. <http://truyenchon.com/>
 32. <https://truyentranhaz.net/>
+32. <https://truyenqq.com/>
