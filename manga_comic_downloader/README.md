@@ -59,4 +59,12 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 30. <http://truyensieuhay.com/>
 31. <http://truyenchon.com/>
 32. <https://truyentranhaz.net/>
-32. <https://truyenqq.com/>
+33. <https://truyenqq.com/>
+
+### Video từng bước cài đặt
+
+Nhấp vào ảnh để xem video hướng dẫn
+
+### Điện thoại Android
+
+[![Hướng dẫn tải truyện tranh bằng điện thoại](https://img.youtube.com/vi/3bdvW3FCpak/0.jpg)](https://www.youtube.com/watch?v=3bdvW3FCpak)
