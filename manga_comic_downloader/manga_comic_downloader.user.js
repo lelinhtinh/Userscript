@@ -479,7 +479,7 @@ jQuery(function ($) {
             url = url.replace(/\/(((s|w|h)\d+|(w|h)\d+-(w|h)\d+))?-?(c|d|g)?\/(?=[^/]+$)/, '/');
             url += '?imgmax=16383';
         }
-        if (url.indexOf('i.imgur.com') !== -1) url = url.replace(/(\/)(\w{5}|\w{7})(s|b|t|m|l|h)(\.(jpe?g|png|gif))$/, '$1$2$4');
+        if (url.indexOf('imgur.com') !== -1) url = url.replace(/(\/)(\w{5}|\w{7})(s|b|t|m|l|h)(\.(jpe?g|png|gif))$/, '$1$2$4');
         url = encodeURI(url);
         if (url.search(/https?:\/\//) !== 0) url = 'http://' + url;
         url = redirectSSL(url);
