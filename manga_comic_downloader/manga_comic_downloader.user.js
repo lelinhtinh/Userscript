@@ -50,7 +50,7 @@
 // @include      /^https?:\/\/truyentranhaz\.net\/truyen\-[^\/\.]+\.html\/?((\?|#).+)?$/
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @require      https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
-// @require      https://unpkg.com/file-saver@1.3.8/FileSaver.min.js
+// @require      https://unpkg.com/file-saver@2.0.1/dist/FileSaver.min.js
 // @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect      *
