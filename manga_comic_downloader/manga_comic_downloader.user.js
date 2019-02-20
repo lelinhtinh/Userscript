@@ -2,13 +2,13 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.10.0
+// @version      1.10.1
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
-// @include      /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh869\.com)\/[^\/]+\/((\?|#).+)?$/
-// @include      /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh869\.com)\/\/?manga\/\d+\-[^\/]+\/[^\/]+\/((\?|#).+)?$/
-// @exclude      /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh869\.com)\/(vechai|truyen_tranh_tuan|danh_sach_truyen|truyen_xem_nhieu|trai|gai|quanly|TinhTrang|LoaiTruyen|TheLoai|DoTuoi|u|lich)\/((\?|#).+)?$/
+// @include      /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh8\.com|truyentranh869\.com)\/[^\/]+\/((\?|#).+)?$/
+// @include      /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh8\.com|truyentranh869\.com)\/\/?manga\/\d+\-[^\/]+\/[^\/]+\/((\?|#).+)?$/
+// @exclude      /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh8\.com|truyentranh869\.com)\/(vechai|truyen_tranh_tuan|danh_sach_truyen|truyen_xem_nhieu|trai|gai|quanly|TinhTrang|LoaiTruyen|TheLoai|DoTuoi|u|lich)\/((\?|#).+)?$/
 // @include      /^https?:\/\/iutruyentranh\.com\/truyen\/\d+\-[\w\-]+\/?((\?|#).+)?$/
 // @include      /^https?:\/\/(www\.)?truyentranh\.net\/[^\/]+\/?((\?|#).+)?$/
 // @include      /^https?:\/\/comicvn\.net\/truyen\-tranh(\-online)?\/[^\/]+\-\d+\/?((\?|#).+)?$/
@@ -25,7 +25,7 @@
 // @include      /^https?:\/\/dammetruyen\.com\/[^\/\.]+.html\/?((\?|#).+)?$/
 // @include      /^https?:\/\/manga.goccay\.vn/\d{4}/\d{2}/[^\/\.]+.html((\?|#).+)?$/
 // @include      /^https?:\/\/truyentranhlh\.(com|net)\/truyen\-[^\/\.]+\.html((\?|#).+)?$/
-// @include      /^https?:\/\/hocvientruyentranh\.(com|net)\/manga\/\d+\/[^\/\.\?]+((\?|#).+)?$/
+// @include      /^https?:\/\/hocvientruyentranh\.(com|net)\/(manga|truyen)\/\d+\/[^\/\.\?]+((\?|#).+)?$/
 // @include      /^https?:\/\/truyenhay24h\.com\/[^\/\.]+\.html((\?|#).+)?$/
 // @exclude      /^https?:\/\/truyenhay24h\.com\/(lien\-he|Dang\-ky|forgetPass)\.html((\?|#).+)?$/
 // @include      /^https?:\/\/uptruyen\.com\/manga\/\d+/([^\/]+\/)?([^\/\.]+)?.html((\?|#).+)?$/
