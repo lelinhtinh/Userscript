@@ -2,16 +2,16 @@
 // @name         Javascript-css beautify
 // @namespace    http://devs.forumvi.com
 // @description  Beautify and syntax highlighting for source code javascript, json, css.
-// @version      3.1.0
+// @version      3.1.1
 // @icon         http://i.imgur.com/kz8nqz1.png
 // @author       Zzbaivong
 // @oujs:author  baivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        http://*/*
 // @match        https://*/*
-// @resource     js_beautify https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify.min.js
-// @resource     css_beautify https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.7.5/beautify-css.min.js
-// @resource     hljs https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js
+// @resource     js_beautify https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.9.0/beautify.min.js
+// @resource     css_beautify https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.9.0/beautify-css.min.js
+// @resource     hljs https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js
 // @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
