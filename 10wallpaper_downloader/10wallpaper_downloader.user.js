@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         10wallpaper downloader
 // @namespace    http://baivong.github.io/
-// @version      2.1.3
+// @version      2.1.4
 // @description  1-Click download on 10wallpaper. You should select the resolution before downloading.
 // @icon         http://i.imgur.com/08zfJez.png
 // @author       Zzbaivong
@@ -63,6 +63,10 @@
                 },
                 onload: function (response) {
                     var blob = response.response;
+                    if (blob.type.indexOf('image/') !== 0) {
+                        info.innerHTML = '<span style="color:red">' + res + ' resolution is not available</span>';
+                        return;
+                    }
 
                     info.innerHTML = infoContent;
                     link.setAttribute('href', URL.createObjectURL(blob));
@@ -71,6 +75,7 @@
                     saveAs(blob, imgName);
                 },
                 onerror: function (err) {
+                    info.innerHTML = '<span style="color:red">' + err.message + '</span>';
                     console.error(err);
                 }
             });
