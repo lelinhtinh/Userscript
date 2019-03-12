@@ -2,7 +2,7 @@
 // @name         TruyenFull downloader
 // @namespace    https://baivong.github.io/
 // @description  Tải truyện từ truyenfull.vn định dạng epub
-// @version      4.5.2
+// @version      4.5.3
 // @icon         https://i.imgur.com/FQY8btq.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -187,7 +187,7 @@
 
         ebookTitle = $('h1').text().trim(),
         ebookAuthor = $('.info a[itemprop="author"]').text().trim(),
-        ebookCover = $('.books img').attr('src'),
+        // ebookCover = $('.books img').attr('src'),
         ebookDesc = $('.desc-text').html(),
         ebookType = [],
         beginEnd = '',
@@ -259,13 +259,7 @@
                         saveEbook();
                     });
 
-                    fetch(ebookCover).then(function (response) {
-                        if (response.ok) return response.arrayBuffer();
-                        downloadError('Không tải được ảnh bìa');
-                    }).then(function (buffer) {
-                        jepub.cover(buffer);
-                        getContent();
-                    });
+                    getContent();
                 }
             }).fail(function (jqXHR, textStatus) {
                 downloadError(textStatus);
