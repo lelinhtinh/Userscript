@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wallpaperscraft downloader
 // @namespace    http://baivong.github.io/
-// @version      2.1.4
+// @version      2.1.5
 // @description  1-Click download on Wallpaperscraft. You should select the resolution before downloading.
 // @icon         http://i.imgur.com/NA96TWE.png
 // @author       Zzbaivong
@@ -62,11 +62,12 @@
                     info.innerHTML = percent + ' %';
                 },
                 onload: function (response) {
-                    var blob = response.response;
-                    if (blob.type.indexOf('image/') !== 0) {
+                    if (response.status !== 200) {
                         info.innerHTML = '<span style="color:red">' + res + ' resolution is not available</span>';
                         return;
                     }
+
+                    var blob = response.response;
 
                     info.innerHTML = infoContent;
                     link.setAttribute('href', URL.createObjectURL(blob));
