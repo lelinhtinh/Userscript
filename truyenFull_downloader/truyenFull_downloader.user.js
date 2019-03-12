@@ -221,6 +221,7 @@
     }).uuid(referrer);
 
     $download.insertAfter('.info');
+    $download.wrap('<div class="panel-group books"></div>');
     $download.one('click contextmenu', function (e) {
         e.preventDefault();
         document.title = '[...] Vui lòng chờ trong giây lát';
