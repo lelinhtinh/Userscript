@@ -2,12 +2,12 @@
 // @name         ChiaSeNhac Helper
 // @namespace    https://lelinhtinh.github.io
 // @description  Download lossless music directly, bypass sharing dialog.
-// @version      1.0.0
+// @version      1.0.1
 // @icon         https://i.imgur.com/HLqWP3g.png
 // @author       lelinhtinh
 // @oujs:author  baivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
-// @match        https://chiasenhac.vn/mp3/*
+// @match        https://chiasenhac.vn/*
 // @noframes
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
