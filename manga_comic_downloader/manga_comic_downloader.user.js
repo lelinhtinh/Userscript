@@ -383,6 +383,10 @@ jQuery(function ($) {
             method: 'GET',
             url: url,
             responseType: 'arraybuffer',
+            headers: {
+                referer:  location.origin,
+                origin:   location.origin
+            },
             onload: function (response) {
                 var imgext = getImageType(response.response);
                 dlFinal++;
