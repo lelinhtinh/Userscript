@@ -2,7 +2,7 @@
 // @name         nHentai Downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on nHentai.net
-// @version      1.6.4
+// @version      1.6.5
 // @icon         http://i.imgur.com/FAsQ4vZ.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -16,7 +16,7 @@
 // @noframes
 // @connect      self
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
-// @run-at       document-idle
+// @run-at       document-start
 // @grant        GM.xmlHttpRequest
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
