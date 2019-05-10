@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.10.3
+// @version      1.10.4
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -376,16 +376,30 @@ jQuery(function ($) {
         });
     }
 
+    function hostRef(hostname) {
+        var filters = {
+            'i.blogtruyen.com': 'blogtruyen.com',
+            'i.imgur.com': 'imgur.com',
+            'storage.fshare.vn': 'fshare.vn'
+        };
+        return filters[hostname] ? filters[hostname] : hostname;
+    }
+
     function dlImg(url, success, error) {
-        var filename = ('0000' + dlCurrent).slice(-4);
+        var filename = ('0000' + dlCurrent).slice(-4),
+
+            urlObj = new URL(url),
+            urlPro = urlObj.protocol,
+            urlHost = urlObj.hostname,
+            urlRef = urlPro + '//' + hostRef(urlHost);
 
         GM.xmlHttpRequest({
             method: 'GET',
             url: url,
             responseType: 'arraybuffer',
             headers: {
-                referer:  location.origin,
-                origin:   location.origin
+                referer: urlRef,
+                origin: urlRef
             },
             onload: function (response) {
                 var imgext = getImageType(response.response);
@@ -563,7 +577,10 @@ jQuery(function ($) {
             url: configs.href,
             onload: function (response) {
                 var responseText = response.responseText;
-                responseText = responseText.replace(/<img [^>]*src\s?=['"]?([^'"\s]+)[^>]*>/gi, function (match, capture) {
+                responseText = responseText.replace(/<img [^>]*src\s*=\s*(('|")(.*?)('|")|([^\s>]+)\s?)[^>]*>/gim, function (_match, c1, c2, c3, c4, c5) {
+                    var capture = c3;
+                    if (!capture) capture = c5;
+                    if (!capture) return null;
                     return '<img data-src="' + capture + '" />';
                 });
                 responseText = responseText.replace(/^[^<]*/, '');
