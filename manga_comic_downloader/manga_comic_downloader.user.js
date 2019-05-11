@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.10.5
+// @version      1.10.6
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -99,6 +99,16 @@ jQuery(function ($) {
         '/Content/Img/d79886b3-3699-47b2-bbf4-af6149c2e8fb.jpg'
     ];
 
+    /**
+     * HTTP referer
+     * @param {Object} hostname
+     */
+    var referer = {
+        'i.blogtruyen.com': 'blogtruyen.com',
+        'i.imgur.com': 'imgur.com',
+        'storage.fshare.vn': 'fshare.vn',
+        'truyen.cloud': 'www.nettruyen.com'
+    };
 
     /* === DO NOT CHANGE === */
 
@@ -376,30 +386,22 @@ jQuery(function ($) {
         });
     }
 
-    function hostRef(hostname) {
-        var filters = {
-            'i.blogtruyen.com': 'blogtruyen.com',
-            'i.imgur.com': 'imgur.com',
-            'storage.fshare.vn': 'fshare.vn'
-        };
-        return filters[hostname] ? filters[hostname] : hostname;
-    }
-
     function dlImg(url, success, error) {
         var filename = ('0000' + dlCurrent).slice(-4),
 
             urlObj = new URL(url),
             urlPro = urlObj.protocol,
             urlHost = urlObj.hostname,
-            urlRef = urlPro + '//' + hostRef(urlHost);
+            urlRef = referer[urlHost] ? referer[urlHost] : urlHost,
+            urlOri = urlPro + '//' + urlRef;
 
         GM.xmlHttpRequest({
             method: 'GET',
             url: url,
             responseType: 'arraybuffer',
             headers: {
-                referer: urlRef,
-                origin: urlRef
+                referer: urlOri,
+                origin: urlOri
             },
             onload: function (response) {
                 var imgext = getImageType(response.response);
@@ -493,12 +495,15 @@ jQuery(function ($) {
         url = url.replace(/(https?:\/\/)lh(\d)(\.bp\.blogspot\.com)/, '$1$2$3');
         url = url.replace(/(https?:\/\/)lh\d\.(googleusercontent|ggpht)\.com/, '$14.bp.blogspot.com');
         url = url.replace(/\?.+$/, '');
-        if (url.indexOf('blogspot.com') !== -1) {
+        if (url.indexOf('imgur.com') !== -1) {
+            url = url.replace(/(\/)(\w{5}|\w{7})(s|b|t|m|l|h)(\.(jpe?g|png|gif))$/, '$1$2$4');
+        } else if (url.indexOf('blogspot.com') !== -1) {
             url = url.replace(/\/([^/]+-)?(Ic42)(-[^/]+)?\//, '/$2/');
             url = url.replace(/\/(((s|w|h)\d+|(w|h)\d+-(w|h)\d+))?-?(c|d|g)?\/(?=[^/]+$)/, '/');
             url += '?imgmax=16383';
+        } else {
+            url = url.replace(/(\?|&).+/, '');
         }
-        if (url.indexOf('imgur.com') !== -1) url = url.replace(/(\/)(\w{5}|\w{7})(s|b|t|m|l|h)(\.(jpe?g|png|gif))$/, '$1$2$4');
         url = encodeURI(url);
         if (url.search(/https?:\/\//) !== 0) url = 'http://' + url;
         url = redirectSSL(url);
@@ -515,13 +520,13 @@ jQuery(function ($) {
             $.each(images, function (i, v) {
                 if (imageIgnore(v) || typeof v === 'undefined') return;
 
-                if ((v.indexOf(location.origin) === 0 || v.indexOf('/') === 0) && !/^(\.(jpg|png|gif)|webp|jpeg)$/.test(v.slice(-4))) {
+                if ((v.indexOf(location.origin) === 0 || (v.indexOf('/') === 0 && v.indexOf('//') !== 0)) && !/^(\.(jpg|png|gif)|webp|jpeg)$/.test(v.slice(-4))) {
                     return;
                 } else if (v.indexOf('http') === -1) {
                     v = location.origin + '/' + v;
-                } else if (v.indexOf('/') === 0) {
+                } else if (v.indexOf('/') === 0 && v.indexOf('//') !== 0) {
                     v = location.origin + v;
-                } else if (v.indexOf('http') === 0) {
+                } else if (v.indexOf('http') === 0 || v.indexOf('//') === 0) {
                     v = imageFilter(v);
                 } else {
                     return;
