@@ -2,7 +2,7 @@
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyencv.com định dạng epub
-// @version      4.6.0
+// @version      4.6.1
 // @icon         http://i.imgur.com/o5cmtkU.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -12,7 +12,7 @@
 // @require      https://code.jquery.com/jquery-3.4.1.min.js
 // @require      https://unpkg.com/jszip@3.2.1/dist/jszip.min.js
 // @require      https://unpkg.com/ejs@2.6.1/ejs.min.js
-// @require      https://unpkg.com/jepub@2.1.0/dist/jepub.min.js
+// @require      https://unpkg.com/jepub@2.1.1/dist/jepub.min.js
 // @require      https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
 // @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
