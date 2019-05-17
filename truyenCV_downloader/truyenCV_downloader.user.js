@@ -2,21 +2,25 @@
 // @name         TruyenCV downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyencv.com định dạng epub
-// @version      4.4.3
+// @version      4.6.0
 // @icon         http://i.imgur.com/o5cmtkU.png
 // @author       Zzbaivong
 // @oujs:author  baivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        http://truyencv.com/*/
 // @match        https://truyencv.com/*/
-// @require      https://code.jquery.com/jquery-3.3.1.min.js
-// @require      https://unpkg.com/jepub@1.2.5/dist/jepub.min.js
-// @require      https://unpkg.com/file-saver@2.0.1/dist/FileSaver.min.js
+// @require      https://code.jquery.com/jquery-3.4.1.min.js
+// @require      https://unpkg.com/jszip@3.2.1/dist/jszip.min.js
+// @require      https://unpkg.com/ejs@2.6.1/ejs.min.js
+// @require      https://unpkg.com/jepub@2.1.0/dist/jepub.min.js
+// @require      https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
+// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect      self
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
-// @grant        none
+// @grant        GM_xmlhttpRequest
+// @grant        GM.xmlHttpRequest
 // ==/UserScript==
 (function ($, window, document) {
     'use strict';
@@ -60,20 +64,7 @@
         return '<p class="no-indent"><a href="' + referrer + chapId + '">' + mess + '</a></p>';
     }
 
-    function saveEbook() {
-        if (endDownload) return;
-        endDownload = true;
-        $download.html('Đang nén EPUB');
-
-        if (titleError.length) {
-            titleError = '<p class="no-indent"><strong>Các chương lỗi: </strong>' + titleError.join(', ') + '</p>';
-        } else {
-            titleError = '';
-        }
-        beginEnd = '<p class="no-indent">Nội dung từ <strong>' + begin + '</strong> đến <strong>' + end + '</strong></p>';
-
-        jepub.notes(beginEnd + titleError + '<br /><br />' + credits);
-
+    function genEbook() {
         jepub.generate().then(function (epubZipContent) {
             document.title = '[⇓] ' + ebookTitle;
             $win.off('beforeunload');
@@ -88,6 +79,35 @@
         }).catch(function (err) {
             downloadStatus('danger');
             console.error(err);
+        });
+    }
+
+    function saveEbook() {
+        if (endDownload) return;
+        endDownload = true;
+        $download.html('Đang nén EPUB');
+
+        if (titleError.length) {
+            titleError = '<p class="no-indent"><strong>Các chương lỗi: </strong>' + titleError.join(', ') + '</p>';
+        } else {
+            titleError = '';
+        }
+        beginEnd = '<p class="no-indent">Nội dung từ <strong>' + begin + '</strong> đến <strong>' + end + '</strong></p>';
+
+        jepub.notes(beginEnd + titleError + '<br /><br />' + credits);
+
+        GM.xmlHttpRequest({
+            method: 'GET',
+            url: ebookCover,
+            responseType: 'arraybuffer',
+            onload: function (response) {
+                jepub.cover(response.response);
+                genEbook();
+            },
+            onerror: function (err) {
+                console.error(err);
+                genEbook();
+            }
         });
     }
 
@@ -185,7 +205,7 @@
 
         ebookTitle = '',
         ebookAuthor = '',
-        // ebookCover = '',
+        ebookCover = '',
         ebookDesc = '',
         ebookType = [],
         beginEnd = '',
@@ -208,7 +228,7 @@
 
     ebookTitle = $infoBlock.find('h1').text().trim();
     ebookAuthor = $infoBlock.find('.author').text().trim();
-    // ebookCover = $infoBlock.find('.img-responsive').attr('src');
+    ebookCover = $infoBlock.find('.img-responsive').attr('src');
     ebookDesc = $('.brief').html();
 
     var $ebookType = $infoBlock.find('.categories a');
@@ -217,7 +237,8 @@
             ebookType.push($(this).text().trim());
         });
 
-    jepub = new jEpub({
+    jepub = new jEpub();
+    jepub.init({
         title: ebookTitle,
         author: ebookAuthor,
         publisher: host,

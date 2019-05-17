@@ -2,7 +2,7 @@
 // @name         TruyenFull downloader
 // @namespace    https://baivong.github.io/
 // @description  Tải truyện từ truyenfull.vn định dạng epub
-// @version      4.5.4
+// @version      4.6.0
 // @icon         https://i.imgur.com/FQY8btq.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -16,14 +16,18 @@
 // @exclude      https://truyenfull.vn/contact/
 // @exclude      https://truyenfull.vn/tos/
 // @exclude      https://truyenfull.vn/sitemap.xml
-// @require      https://code.jquery.com/jquery-3.3.1.min.js
-// @require      https://unpkg.com/jepub@1.2.5/dist/jepub.min.js
-// @require      https://unpkg.com/file-saver@2.0.1/dist/FileSaver.min.js
+// @require      https://code.jquery.com/jquery-3.4.1.min.js
+// @require      https://unpkg.com/jszip@3.2.1/dist/jszip.min.js
+// @require      https://unpkg.com/ejs@2.6.1/ejs.min.js
+// @require      https://unpkg.com/jepub@2.1.0/dist/jepub.min.js
+// @require      https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
+// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
-// @connect      self
+// @connect      truyenfull.vn
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
-// @grant        none
+// @grant        GM_xmlhttpRequest
+// @grant        GM.xmlHttpRequest
 // ==/UserScript==
 
 (function ($, window, document) {
@@ -32,7 +36,7 @@
     /**
      * Nhận cảnh báo khi có chương bị lỗi
      */
-    var errorAlert = true;
+    var errorAlert = false;
 
     /**
      * Thời gian giãn cách giữa 2 lần tải
@@ -71,20 +75,7 @@
         return '<p class="no-indent"><a href="' + referrer + chapId + '">' + mess + '</a></p>';
     }
 
-    function saveEbook() {
-        if (endDownload) return;
-        endDownload = true;
-        $download.html('Đang nén EPUB');
-
-        if (titleError.length) {
-            titleError = '<p class="no-indent"><strong>Các chương lỗi: </strong>' + titleError.join(', ') + '</p>';
-        } else {
-            titleError = '';
-        }
-        beginEnd = '<p class="no-indent">Nội dung từ <strong>' + begin + '</strong> đến <strong>' + end + '</strong></p>';
-
-        jepub.notes(beginEnd + titleError + '<br /><br />' + credits);
-
+    function genEbook() {
         jepub.generate().then(function (epubZipContent) {
             document.title = '[⇓] ' + ebookTitle;
             $win.off('beforeunload');
@@ -99,6 +90,35 @@
         }).catch(function (err) {
             downloadStatus('danger');
             console.error(err);
+        });
+    }
+
+    function saveEbook() {
+        if (endDownload) return;
+        endDownload = true;
+        $download.html('Đang nén EPUB');
+
+        if (titleError.length) {
+            titleError = '<p class="no-indent"><strong>Các chương lỗi: </strong>' + titleError.join(', ') + '</p>';
+        } else {
+            titleError = '';
+        }
+        beginEnd = '<p class="no-indent">Nội dung từ <strong>' + begin + '</strong> đến <strong>' + end + '</strong></p>';
+
+        jepub.notes(beginEnd + titleError + '<br /><br />' + credits);
+
+        GM.xmlHttpRequest({
+            method: 'GET',
+            url: ebookCover,
+            responseType: 'arraybuffer',
+            onload: function (response) {
+                jepub.cover(response.response);
+                genEbook();
+            },
+            onerror: function (err) {
+                console.error(err);
+                genEbook();
+            }
         });
     }
 
@@ -187,7 +207,7 @@
 
         ebookTitle = $('h1').text().trim(),
         ebookAuthor = $('.info a[itemprop="author"]').text().trim(),
-        // ebookCover = $('.books img').attr('src'),
+        ebookCover = $('.books img').attr('src'),
         ebookDesc = $('.desc-text').html(),
         ebookType = [],
         beginEnd = '',
@@ -212,7 +232,8 @@
             ebookType.push($(this).text().trim());
         });
 
-    jepub = new jEpub({
+    jepub = new jEpub();
+    jepub.init({
         title: ebookTitle,
         author: ebookAuthor,
         publisher: host,
