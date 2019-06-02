@@ -121,9 +121,11 @@
 
             if (count === 0) begin = chapTitle;
             end = chapTitle;
-            ++count;
 
-            downloadProgress(count);
+            $download.html('<i class="iconfont icon-more"></i> Đang tải: ' + Math.floor((count / chapListSize) * 100) + '%');
+
+            ++count;
+            document.title = '[' + count + '] ' + pageName;
 
             if ($next.hasClass('disabled')) {
                 saveEbook();
@@ -142,17 +144,15 @@
 
         $download = $('.more-buttons').find('a[href$="/epub/"]'),
         downloadStatus = function (status) {
-            $download.removeClass('btn-primary btn-success btn-info btn-warning btn-danger').addClass('btn-' + status);
-        },
-        downloadProgress = function (progress) {
-            document.title = '[' + count + '] ' + pageName;
-            $download.html('<i class="iconfont icon-more"></i> Đã tải:<span class="pl-2">' + progress + '</span>');
+            $download.removeClass('btn-primary btn-success btn-info btn-warning btn-danger text-light text-dark')
+                .addClass('btn-' + status + ' text-' + (status === 'warning' ? 'dark' : 'light'));
         },
         downloadId = function (url) {
             return url.trim().replace(/^.*\//, '');
         },
 
         $novelInfo = $('.novel-info'),
+        chapListSize = $('.info .numbers li').eq(1).text().replace(/[^\d]/g, ''),
         chapId = '',
         chapTitle = '',
         count = 0,
