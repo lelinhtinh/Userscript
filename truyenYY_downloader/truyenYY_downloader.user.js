@@ -2,7 +2,7 @@
 // @name         TruyenYY downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyenyy.com định dạng epub
-// @version      4.6.1
+// @version      4.6.2
 // @icon         https://i.imgur.com/1HkQv2b.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -17,7 +17,7 @@
 // @noframes
 // @connect      vnvl.net
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
-// @run-at       document-idle
+// @run-at       document-end
 // @grant        GM_xmlhttpRequest
 // @grant        GM.xmlHttpRequest
 // ==/UserScript==
