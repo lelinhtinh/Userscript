@@ -488,6 +488,7 @@ jQuery(function ($) {
 
     function imageFilter(url) {
         if (url.indexOf('.fbcdn.net') !== -1) return url;
+        if (url.indexOf('mangaqq.net') !== -1 || url.indexOf('mangaqq.com') !== -1) return url;
 
         url = decodeUrl(url);
         url = url.trim();
