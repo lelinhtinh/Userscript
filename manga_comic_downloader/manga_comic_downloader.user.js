@@ -406,7 +406,7 @@ jQuery(function ($) {
                 var imgext = getImageType(response.response);
                 dlFinal++;
 
-                if (!imgext || response.response.byteLength < 10000 || (response.statusText !== 'OK' && response.statusText !== '')) {
+                if (!imgext || response.response.byteLength < 3000 || (response.statusText !== 'OK' && response.statusText !== '')) {
                     error(response, filename);
                 } else {
                     filename = filename + '.' + imgext;
