@@ -2,7 +2,7 @@
 // @name         TruyenYY downloader
 // @namespace    http://devs.forumvi.com/
 // @description  Tải truyện từ truyenyy.com định dạng epub
-// @version      4.6.1
+// @version      4.7.0
 // @icon         https://i.imgur.com/1HkQv2b.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -17,7 +17,7 @@
 // @noframes
 // @connect      vnvl.net
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
-// @run-at       document-idle
+// @run-at       document-end
 // @grant        GM_xmlhttpRequest
 // @grant        GM.xmlHttpRequest
 // ==/UserScript==
@@ -30,8 +30,25 @@
      */
     var errorAlert = true;
 
-    function cleanText(str) {
-        return str.replace(/[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]+/gm, ''); // eslint-disable-line
+    /**
+     * Những đoạn ghi chú nguồn truyện
+     * Toàn bộ nội dung ghi chú, có phân biệt hoa thường
+     * Ngăn cách các đoạn bằng dấu |
+     */
+    var citeSources = 'Text được lấy tại truyenyy[.c]om|truyện được lấy tại t.r.u.y.ệ.n.y-y|Đọc Truyện Online mới nhất ở truyen/y/y/com|Truyện được copy tại TruyệnYY.com|nguồn t r u y ệ n y_y|Bạn đang xem truyện được sao chép tại: t.r.u.y.e.n.y.y chấm c.o.m|Nguồn tại http://truyenyy[.c]om|xem tại tr.u.y.ệ.n.yy|Bạn đang đọc chuyện tại Truyện.YY';
+
+
+    citeSources = citeSources.split('|');
+
+    function cleanHtml(str) {
+        citeSources.forEach(function (source) {
+            if (str.indexOf(source) !== -1) {
+                str = str.replace(source, '');
+                return false;
+            }
+        });
+        str = str.replace(/[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]+/gm, ''); // eslint-disable-line
+        return str;
     }
 
     function downloadError(mess, err) {
@@ -96,34 +113,51 @@
 
         $.get(pathname + chapId).done(function (response) {
             var $data = $(response),
-                $chapter = $data.find('#id_chap_content .inner p'),
-                chapContent = [],
-                $next = $data.find('.buttons .btn-primary'),
-                $vip = $data.find('#btn_buy');
+                $chapter = $data.find('#id_chap_content'),
+                $notContent = $chapter.find('iframe, script, style, a'),
+                $referrer = $chapter.find('[style]').filter(function () {
+                    return (this.style.fontSize === '1px' || this.style.fontSize === '0px' || this.style.color === 'white');
+                }),
+                chapContent,
+                $next = $data.find('.buttons .btn-primary');
 
             if (endDownload) return;
 
             chapTitle = $data.find('h1.chapter-title').text().trim();
             if (chapTitle === '') chapTitle = 'Chương ' + chapId.match(/\d+/)[0];
 
-            if ($vip.length) {
-                chapContent = downloadError('Chương VIP');
-            } else if (!$chapter.length) {
+            if (!$chapter.length) {
                 chapContent = downloadError('Không có nội dung');
             } else {
-                if (!$download.hasClass('btn-danger')) downloadStatus('warning');
-                $chapter.each(function () {
-                    chapContent.push(cleanText(this.textContent.trim()));
-                });
+                if ($chapter.find('#btn_buy').length) {
+                    chapContent = downloadError('Chương VIP');
+                } else {
+                    var $img = $chapter.find('img');
+                    if ($img.length) $img.replaceWith(function () {
+                        return '<br /><a href="' + this.src + '">Click để xem ảnh</a><br />';
+                    });
+
+                    if ($notContent.length) $notContent.remove();
+                    if ($referrer.length) $referrer.remove();
+
+                    if ($chapter.text().trim() === '') {
+                        chapContent = downloadError('Nội dung không có');
+                    } else {
+                        if (!$download.hasClass('btn-danger')) downloadStatus('warning');
+                        chapContent = cleanHtml($chapter.find('.inner').html());
+                    }
+                }
             }
 
             jepub.add(chapTitle, chapContent);
 
             if (count === 0) begin = chapTitle;
             end = chapTitle;
-            ++count;
 
-            downloadProgress(count);
+            $download.html('<i class="iconfont icon-more"></i> Đang tải: ' + Math.floor((count / chapListSize) * 100) + '%');
+
+            ++count;
+            document.title = '[' + count + '] ' + pageName;
 
             if ($next.hasClass('disabled')) {
                 saveEbook();
@@ -142,17 +176,15 @@
 
         $download = $('.more-buttons').find('a[href$="/epub/"]'),
         downloadStatus = function (status) {
-            $download.removeClass('btn-primary btn-success btn-info btn-warning btn-danger').addClass('btn-' + status);
-        },
-        downloadProgress = function (progress) {
-            document.title = '[' + count + '] ' + pageName;
-            $download.html('<i class="iconfont icon-more"></i> Đã tải:<span class="pl-2">' + progress + '</span>');
+            $download.removeClass('btn-primary btn-success btn-info btn-warning btn-danger text-light text-dark')
+                .addClass('btn-' + status + ' text-' + (status === 'warning' ? 'dark' : 'light'));
         },
         downloadId = function (url) {
             return url.trim().replace(/^.*\//, '');
         },
 
         $novelInfo = $('.novel-info'),
+        chapListSize = $('.info .numbers li').eq(1).text().replace(/[^\d]/g, ''),
         chapId = '',
         chapTitle = '',
         count = 0,

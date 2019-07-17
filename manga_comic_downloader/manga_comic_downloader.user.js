@@ -105,10 +105,8 @@ jQuery(function ($) {
      * @param {Object} hostname
      */
     var referer = {
-        'i.blogtruyen.com': 'blogtruyen.com',
-        'i.imgur.com': 'imgur.com',
-        'storage.fshare.vn': 'fshare.vn',
-        'truyen.cloud': 'www.nettruyen.com'
+        'i.blogtruyen.com': 'https://blogtruyen.com',
+        'truyen.cloud': 'http://www.nettruyen.com'
     };
 
     /* === DO NOT CHANGE === */
@@ -391,24 +389,25 @@ jQuery(function ($) {
         var filename = ('0000' + dlCurrent).slice(-4),
 
             urlObj = new URL(url),
-            urlPro = urlObj.protocol,
             urlHost = urlObj.hostname,
-            urlRef = referer[urlHost] ? referer[urlHost] : urlHost,
-            urlOri = urlPro + '//' + urlRef;
+            headers = {};
+
+        if (referer[urlHost]) {
+            headers.referer = referer[urlHost];
+            headers.origin = referer[urlHost];
+        }
+        if (url.indexOf('otakusan.net') !== -1) headers['page-lang'] = 'vn-lang';
 
         GM.xmlHttpRequest({
             method: 'GET',
             url: url,
             responseType: 'arraybuffer',
-            headers: {
-                referer: urlOri,
-                origin: urlOri
-            },
+            headers: headers,
             onload: function (response) {
                 var imgext = getImageType(response.response);
                 dlFinal++;
 
-                if (!imgext || response.response.byteLength < 10000 || (response.statusText !== 'OK' && response.statusText !== '')) {
+                if (!imgext || response.response.byteLength < 3000 || (response.statusText !== 'OK' && response.statusText !== '')) {
                     error(response, filename);
                 } else {
                     filename = filename + '.' + imgext;
@@ -489,6 +488,7 @@ jQuery(function ($) {
 
     function imageFilter(url) {
         if (url.indexOf('.fbcdn.net') !== -1) return url;
+        if (url.indexOf('mangaqq.net') !== -1 || url.indexOf('mangaqq.com') !== -1) return url;
 
         url = decodeUrl(url);
         url = url.trim();
