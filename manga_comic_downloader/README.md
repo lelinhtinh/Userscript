@@ -27,10 +27,10 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 
 ### Danh sách host hỗ trợ
 
-1. <http://truyentranhtam.com/>, <http://truyentranh8.org/>
+1. <http://truyentranh8.com/>, <http://truyentranh8.net/>, <http://truyentranh8.org/>, <http://truyentranhtam.com/>, <http://truyentranh869.com/>
 2. <http://iutruyentranh.com/>
 3. <http://truyentranh.net/>
-4. <http://comicvn.net/>
+4. <http://comicvn.net/>, <https://beeng.net/>
 5. <https://hamtruyen.com/>
 6. <https://ntruyen.info/>
 7. <https://www.a3manga.com/>

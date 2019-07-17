@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.10.6
+// @version      1.10.7
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -11,7 +11,7 @@
 // @exclude      /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh8\.com|truyentranh869\.com)\/(vechai|truyen_tranh_tuan|danh_sach_truyen|truyen_xem_nhieu|trai|gai|quanly|TinhTrang|LoaiTruyen|TheLoai|DoTuoi|u|lich)\/((\?|#).+)?$/
 // @include      /^https?:\/\/iutruyentranh\.com\/truyen\/\d+\-[\w\-]+\/?((\?|#).+)?$/
 // @include      /^https?:\/\/(www\.)?truyentranh\.net\/[^\/]+\/?((\?|#).+)?$/
-// @include      /^https?:\/\/comicvn\.net\/truyen\-tranh(\-online)?\/[^\/]+\-\d+\/?((\?|#).+)?$/
+// @include      /^https?:\/\/(comicvn|beeng)\.net\/truyen\-tranh(\-online)?\/[^\/]+\-\d+\/?((\?|#).+)?$/
 // @include      /^https?:\/\/hamtruyen\.com\/[^\/\.]+\.html\/?((\?|#).+)?$/
 // @exclude      /^https?:\/\/hamtruyen\.com\/(dangky|quenmatkhau)\/((\?|#).+)?$/
 // @include      /^https?:\/\/ntruyen\.info\/truyen\/[^\/\.]+\/?((\?|#).+)?$/
@@ -96,7 +96,8 @@ jQuery(function ($) {
         '/public/images/loading.gif',
         'http://truyentranhlh.net/wp-content/uploads/2015/10/lhmanga.png',
         '/Content/Img/1eeef5d2-b936-496d-ba41-df1b21d0166a.jpg',
-        '/Content/Img/d79886b3-3699-47b2-bbf4-af6149c2e8fb.jpg'
+        '/Content/Img/d79886b3-3699-47b2-bbf4-af6149c2e8fb.jpg',
+        'http://st.beeng.net/files/uploads/images/21/c8/21c8d2c3599c485e31f270675bc57e4c.jpeg'
     ];
 
     /**
@@ -996,6 +997,7 @@ jQuery(function ($) {
         };
         break;
     case 'comicvn.net':
+    case 'beeng.net':
         configs = {
             link: '.manga-chapter a',
             name: function (_this) {
