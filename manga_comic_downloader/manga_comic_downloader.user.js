@@ -33,8 +33,8 @@
 // @include      /^https?:\/\/truyen1\.net\/TruyenTranh\/[^\/]+\/?((\?|#).+)?$/
 // @include      /^https?:\/\/bigtruyen\.info\/[^\/]+\/((\?|#).+)?$/
 // @exclude      /^https?:\/\/bigtruyen\.info\/(danh-sach-truyen|truyen-hot|)\/((\?|#).+)?$/
-// @include      /^https?:\/\/(www\.)?hentailx\.com\/[^\.]+\.html((\?|#).+)?$/
-// @exclude      /^https?:\/\/(www\.)?hentailx\.com\/dang-ky-thanh-vien\.html((\?|#).+)?$/
+// @include      /^https?:\/\/(www\.)?hentailxx?\.com\/[^\.]+\.html((\?|#).+)?$/
+// @exclude      /^https?:\/\/(www\.)?hentailxx?\.com\/dang-ky-thanh-vien\.html((\?|#).+)?$/
 // @include      /^https?:\/\/hentaivn\.net\/\d+\-[^\.]+\.html((\?|#).+)?$/
 // @include      /^https?:\/\/otakusan\.net\/MangaDetail\/\d+\/[^\/\.]+\/?((\?|#).+)?$/
 // @include      /^https?:\/\/ngonphongcomics\.com\/[^\/]+\/?((\?|#).+)?$/
@@ -106,7 +106,11 @@ jQuery(function ($) {
      */
     var referer = {
         'i.blogtruyen.com': 'https://blogtruyen.com',
-        'truyen.cloud': 'http://www.nettruyen.com'
+        'truyen.cloud': 'http://www.nettruyen.com',
+        'upload2.upanhmoi.net': 'https://upanhmoi.net',
+        'upload3.upanhmoi.net': 'https://upanhmoi.net',
+        'img1.upanhmoi.net': 'https://upanhmoi.net',
+        'img2.upanhmoi.net': 'https://upanhmoi.net'
     };
 
     /* === DO NOT CHANGE === */
@@ -489,6 +493,7 @@ jQuery(function ($) {
     function imageFilter(url) {
         if (url.indexOf('.fbcdn.net') !== -1) return url;
         if (url.indexOf('mangaqq.net') !== -1 || url.indexOf('mangaqq.com') !== -1) return url;
+        if (url.indexOf('.upanhmoi.net') !== -1) return url;
 
         url = decodeUrl(url);
         url = url.trim();
@@ -1121,6 +1126,8 @@ jQuery(function ($) {
         };
         break;
     case 'hentailx.com':
+    case 'hentailxx.com':
+    case 'www.hentailxx.com':
         configs = {
             link: '.item_chap .chap-link',
             name: function (_this) {
@@ -1134,7 +1141,7 @@ jQuery(function ($) {
         configs = {
             link: '.listing a',
             name: function (_this) {
-                return $('.page-info h2:first').text().trim().split(' - ')[0] + ' ' + $(_this).text().trim();
+                return $('.page-info h1').text().trim().split(' - ')[0] + ' ' + $(_this).text().trim();
             },
             contents: '#image'
         };
