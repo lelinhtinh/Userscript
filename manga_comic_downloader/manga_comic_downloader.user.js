@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.10.8
+// @version      1.11.0
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -49,6 +49,7 @@
 // @include      /^https?:\/\/truyenchon\.com\/truyen\/[^\/]+\/?((\?|#).+)?$/
 // @include      /^https?:\/\/truyentranhaz\.net\/truyen\-[^\/\.]+\.html\/?((\?|#).+)?$/
 // @include      /^https?:\/\/truyenqq\.com\/truyen\-tranh\/[^\/\.]+\.html((\?|#).+)?$/
+// @include      /^https?:\/\/sachvui\.com\/ebook\/[^\/\.]+\.\d+\.html\/?((\?|#).+)?$/
 // @require      https://code.jquery.com/jquery-3.4.1.min.js
 // @require      https://unpkg.com/jszip@3.2.1/dist/jszip.min.js
 // @require      https://unpkg.com/file-saver@2.0.1/dist/FileSaver.min.js
@@ -1247,6 +1248,15 @@ jQuery(function ($) {
                 return $('h1').text().trim() + ' ' + $(_this).text().trim();
             },
             contents: '.detail-chap'
+        };
+        break;
+    case 'sachvui.com':
+        configs = {
+            link: '#list-chapter a[href^="https://sachvui.com/doc-sach/"]',
+            name: function (_this) {
+                return $('h1.ebook_title').text().trim() + ' ' + $(_this).text().trim();
+            },
+            contents: '.noi_dung_online'
         };
         break;
     default:
