@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.11.0
+// @version      1.11.1
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -99,6 +99,17 @@ jQuery(function ($) {
         '/Content/Img/1eeef5d2-b936-496d-ba41-df1b21d0166a.jpg',
         '/Content/Img/d79886b3-3699-47b2-bbf4-af6149c2e8fb.jpg',
         'http://st.beeng.net/files/uploads/images/21/c8/21c8d2c3599c485e31f270675bc57e4c.jpeg'
+    ];
+
+    /**
+     * Keep the original url
+     * @type {Array} key
+     */
+    var keepOriginal = [
+        '.fbcdn.net',
+        'mangaqq.net',
+        'mangaqq.com',
+        '.upanhmoi.net'
     ];
 
     /**
@@ -492,9 +503,10 @@ jQuery(function ($) {
     }
 
     function imageFilter(url) {
-        if (url.indexOf('.fbcdn.net') !== -1) return url;
-        if (url.indexOf('mangaqq.net') !== -1 || url.indexOf('mangaqq.com') !== -1) return url;
-        if (url.indexOf('.upanhmoi.net') !== -1) return url;
+        var keep = keepOriginal.some(function (key) {
+            return url.indexOf(key) !== -1;
+        });
+        if (keep) return url;
 
         url = decodeUrl(url);
         url = url.trim();
@@ -1252,6 +1264,7 @@ jQuery(function ($) {
         break;
     case 'sachvui.com':
         configs = {
+            reverse: false,
             link: '#list-chapter a[href^="https://sachvui.com/doc-sach/"]',
             name: function (_this) {
                 return $('h1.ebook_title').text().trim() + ' ' + $(_this).text().trim();
