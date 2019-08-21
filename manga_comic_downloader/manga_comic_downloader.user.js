@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.11.2
+// @version      1.11.3
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -667,48 +667,6 @@ jQuery(function ($) {
         });
     }
 
-    function getComicVn() {
-        getSource(function ($data) {
-            var $iframe = $data.filter('iframe'),
-                getSourceComicVn = function ($data) {
-                    var $entry = $data.find('#txtarea');
-
-                    if (!$entry.length) {
-                        notyImages();
-                    } else {
-                        var input = $entry.val(),
-                            regex = /src="([^"']+)"/gi,
-                            matches, output = [];
-
-                        // eslint-disable-next-line no-cond-assign
-                        while (matches = regex.exec(input)) {
-                            output.push(decodeURIComponent(matches[1]));
-                        }
-                        checkImages(output);
-                    }
-                };
-
-            if ($iframe.length) {
-                GM.xmlHttpRequest({
-                    method: 'GET',
-                    url: $iframe.attr('src'),
-                    onload: function (response) {
-                        response = response.responseText.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function (match, capture) {
-                            return '<img data-src="' + capture + '" />';
-                        });
-
-                        getSourceComicVn($(response));
-                    },
-                    onerror: function () {
-                        notyError();
-                    }
-                });
-            } else {
-                getSourceComicVn($data);
-            }
-        });
-    }
-
     function getNtruyen() {
         getSource(function ($data) {
             var $entry = $data.find('#containerListPage');
@@ -1021,7 +979,7 @@ jQuery(function ($) {
             name: function (_this) {
                 return $('#site-title').text().trim() + ' ' + $(_this).text().trim();
             },
-            init: getComicVn
+            contents: '#image-load'
         };
         break;
     case 'hamtruyen.com':
