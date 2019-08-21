@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.11.1
+// @version      1.11.2
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -49,7 +49,7 @@
 // @include      /^https?:\/\/truyenchon\.com\/truyen\/[^\/]+\/?((\?|#).+)?$/
 // @include      /^https?:\/\/truyentranhaz\.net\/truyen\-[^\/\.]+\.html\/?((\?|#).+)?$/
 // @include      /^https?:\/\/truyenqq\.com\/truyen\-tranh\/[^\/\.]+\.html((\?|#).+)?$/
-// @include      /^https?:\/\/sachvui\.com\/ebook\/[^\/\.]+\.\d+\.html\/?((\?|#).+)?$/
+// @include      /^https?:\/\/sachvui\.com\/ebook\/[^\/\.]+\.\d+\.html\/?\d*((\?|#).+)?$/
 // @require      https://code.jquery.com/jquery-3.4.1.min.js
 // @require      https://unpkg.com/jszip@3.2.1/dist/jszip.min.js
 // @require      https://unpkg.com/file-saver@2.0.1/dist/FileSaver.min.js
