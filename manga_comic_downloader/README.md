@@ -25,7 +25,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 - Vì script yêu cầu quyền truy cập nội dung trên mọi trang web *(`@connect *`)* nên **Tampermonkey** sẽ có hiện cảnh báo. Chọn **Always allow all domains** để bỏ qua.
 - Trên **Firefox Mobile** chỉ có thể sử dụng **Greasemonkey**, có thể không hoạt động trên một số Host có phiên bản mobile riêng. Hold vào một vùng trống để hiện Scripts commands.
 
-### Danh sách host hỗ trợ
+## Danh sách host hỗ trợ
 
 1. <http://truyentranh8.com/>, <http://truyentranh8.net/>, <http://truyentranh8.org/>, <http://truyentranhtam.com/>, <http://truyentranh869.com/>
 2. <http://iutruyentranh.com/>
@@ -46,7 +46,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 17. <http://thichtruyentranh.com/>
 18. <http://truyen1.net/>
 19. <https://bigtruyen.info/>
-20. <http://hentailx.com/>
+20. <http://hentailx.com/>, <http://hentailxx.com/>
 21. <https://hentaivn.net/>
 22. <https://otakusan.net/Manga>
 23. <https://ngonphongcomics.com/>
@@ -60,8 +60,9 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 31. <http://truyenchon.com/>
 32. <https://truyentranhaz.net/>
 33. <https://truyenqq.com/>
+34. <https://sachvui.com/the-loai/truyen-tranh.html>
 
-### Video từng bước cài đặt
+## Video từng bước cài đặt
 
 Nhấp vào ảnh để xem video hướng dẫn
 
