@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.11.4
+// @version      1.12.0
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -856,6 +856,14 @@ jQuery(function ($) {
         notyReady();
     }
 
+    function getOtakuSan() {
+        getSource(function ($data) {
+            var data = $data.find('#inpit-c').val();
+            data = JSON.parse(data);
+            checkImages(data);
+        });
+    }
+
     function getTtManga() {
         getSource(function ($data) {
             var data = $data.find('#divImage').siblings('script').first().text();
@@ -1124,9 +1132,9 @@ jQuery(function ($) {
         configs = {
             link: '.read-chapter a',
             name: function (_this) {
-                return $('.header').text().trim().split(' - ')[1] + ' ' + $(_this).text().trim();
+                return $('h1.header').text().trim() + ' ' + $(_this).text().trim();
             },
-            contents: '#chapter-container'
+            init: getOtakuSan
         };
         break;
     case 'ngonphongcomics.com':
