@@ -602,7 +602,7 @@ jQuery(function ($) {
             url: configs.href,
             onload: function (response) {
                 var responseText = response.responseText;
-                responseText = responseText.replace(/<img[\s\S]*?src[\s\n]*?=[\s\n]*?(('|")[\s\n]*?(.*?)[\s\n]*?('|")|([^\s>]+)\s?)[\s\n]*?[^>]*>/gi, function (_match, c1, c2, c3, c4, c5) {
+                responseText = responseText.replace(/<img[^>]*[\s\n]+src[\s\n]*?=[\s\n]*?(('|")[\s\n]*?([^>'"]*?)[\s\n]*?('|")|([^\s>]+)\s?)[\s\n]*?[^>]*>/gi, function (_match, c1, c2, c3, c4, c5) {
                     var capture = c3;
                     if (!capture) capture = c5;
                     if (!capture) return null;
