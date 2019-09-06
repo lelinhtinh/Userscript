@@ -106,6 +106,7 @@ jQuery(function ($) {
      * @type {Array} key
      */
     var keepOriginal = [
+        'proxy.truyen.cloud',
         '.fbcdn.net',
         'mangaqq.net',
         'mangaqq.com',
@@ -120,6 +121,7 @@ jQuery(function ($) {
     var referer = {
         'i.blogtruyen.com': 'https://blogtruyen.com',
         'truyen.cloud': 'http://www.nettruyen.com',
+        'proxy.truyen.cloud': 'http://www.nettruyen.com',
         'upload2.upanhmoi.net': 'https://upanhmoi.net',
         'upload3.upanhmoi.net': 'https://upanhmoi.net',
         'img1.upanhmoi.net': 'https://upanhmoi.net',
