@@ -2,7 +2,7 @@
 // @name         nHentai Downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on nHentai.net
-// @version      1.6.5
+// @version      1.6.6
 // @icon         http://i.imgur.com/FAsQ4vZ.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -180,15 +180,25 @@ jQuery(function ($) {
         total = 0,
         images = [],
         $images = $('#thumbnail-container img'),
-        $download = $('#download-torrent, #download'),
+        $_download = $('#download-torrent, #download'),
+        $download,
         doc = document,
         tit = doc.title,
         $win = $(window),
         comicId = location.pathname.match(/\d+/)[0];
 
-    if (!$images.length || !$download.length) return;
+    if (!$images.length || !$_download.length) return;
 
     window.URL = window.URL || window.webkitURL;
+
+    $download = $_download.clone();
+    $download.removeAttr('id');
+    $download.removeClass('btn-disabled');
+    $download.find('.top').html('No login required<br>No sign up required<i></i>');
+    $download.append(' as ' + outputExt.toUpperCase());
+
+    $download.insertAfter($_download);
+    $download.before('\n');
 
     $download.css('backgroundColor', 'cornflowerblue')
         .one('click', function (e) {
