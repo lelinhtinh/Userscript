@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.12.1
+// @version      1.12.2
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -112,7 +112,8 @@ jQuery(function ($) {
         'mangaqq.net',
         'mangaqq.com',
         '.upanhmoi.net',
-        'qqtaku.com'
+        'qqtaku.com',
+        'qqtaku.net'
     ];
 
     /**
