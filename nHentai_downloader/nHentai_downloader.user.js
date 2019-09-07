@@ -2,16 +2,16 @@
 // @name         nHentai Downloader
 // @namespace    http://devs.forumvi.com
 // @description  Download manga on nHentai.net
-// @version      1.6.6
+// @version      1.6.7
 // @icon         http://i.imgur.com/FAsQ4vZ.png
 // @author       Zzbaivong
 // @oujs:author  baivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        http://nhentai.net/g/*
 // @match        https://nhentai.net/g/*
-// @require      https://code.jquery.com/jquery-3.3.1.min.js
-// @require      https://unpkg.com/jszip@3.2.0/dist/jszip.min.js
-// @require      https://unpkg.com/file-saver@2.0.1/dist/FileSaver.min.js
+// @require      https://code.jquery.com/jquery-3.4.1.min.js
+// @require      https://unpkg.com/jszip@3.2.2/dist/jszip.min.js
+// @require      https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
 // @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect      self
@@ -96,7 +96,7 @@ jQuery(function ($) {
             prevZip = blob;
 
             $download.html('<i class="fa fa-check"></i> Complete')
-                .css('backgroundColor', 'green')
+                .css('backgroundColor', (hasErr ? 'red' : 'green'))
                 .attr({
                     href: window.URL.createObjectURL(prevZip),
                     download: zipName
@@ -160,9 +160,8 @@ jQuery(function ($) {
                 if (debug) console.log(filename, 'success');
                 next();
             }, function (err, filename) {
-                zip.file(filename + '_' + comicId + '_error.gif', 'R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=', {
-                    base64: true
-                });
+                hasErr = true;
+                zip.file(filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
                 $download.css('backgroundColor', '#FF7F7F');
 
                 if (debug) console.log(filename, 'error');
@@ -179,6 +178,7 @@ jQuery(function ($) {
         final = 0,
         total = 0,
         images = [],
+        hasErr = false,
         $images = $('#thumbnail-container img'),
         $_download = $('#download-torrent, #download'),
         $download,
@@ -194,6 +194,7 @@ jQuery(function ($) {
     $download = $_download.clone();
     $download.removeAttr('id');
     $download.removeClass('btn-disabled');
+    $download.attr('href', '#download');
     $download.find('.top').html('No login required<br>No sign up required<i></i>');
     $download.append(' as ' + outputExt.toUpperCase());
 
@@ -212,8 +213,7 @@ jQuery(function ($) {
                 return 'Progress is running...';
             });
 
-            $download.attr('href', '#download')
-                .html('<i class="fa fa-cog fa-spin"></i> Waiting...')
+            $download.html('<i class="fa fa-cog fa-spin"></i> Waiting...')
                 .css('backgroundColor', 'orange');
 
             $images.each(function (i, v) {
