@@ -153,9 +153,6 @@ jQuery(function ($) {
         case '8950':
             ext = 'png';
             break;
-        case '4749':
-            ext = 'gif';
-            break;
         case 'ffd8':
             ext = 'jpg';
             break;
@@ -524,7 +521,7 @@ jQuery(function ($) {
         url = url.replace(/(https?:\/\/)lh\d\.(googleusercontent|ggpht)\.com/, '$14.bp.blogspot.com');
         url = url.replace(/\?.+$/, '');
         if (url.indexOf('imgur.com') !== -1) {
-            url = url.replace(/(\/)(\w{5}|\w{7})(s|b|t|m|l|h)(\.(jpe?g|png|gif))$/, '$1$2$4');
+            url = url.replace(/(\/)(\w{5}|\w{7})(s|b|t|m|l|h)(\.(jpe?g|png|webp))$/, '$1$2$4');
         } else if (url.indexOf('blogspot.com') !== -1) {
             url = url.replace(/\/([^/]+-)?(Ic42)(-[^/]+)?\//, '/$2/');
             url = url.replace(/\/(((s|w|h)\d+|(w|h)\d+-(w|h)\d+))?-?(c|d|g)?\/(?=[^/]+$)/, '/');
@@ -548,7 +545,7 @@ jQuery(function ($) {
             $.each(images, function (i, v) {
                 if (imageIgnore(v) || typeof v === 'undefined') return;
 
-                if ((v.indexOf(location.origin) === 0 || (v.indexOf('/') === 0 && v.indexOf('//') !== 0)) && !/^(\.(jpg|png|gif)|webp|jpeg)$/.test(v.slice(-4))) {
+                if ((v.indexOf(location.origin) === 0 || (v.indexOf('/') === 0 && v.indexOf('//') !== 0)) && !/^(\.(jpg|png)|webp|jpeg)$/.test(v.slice(-4))) {
                     return;
                 } else if (v.indexOf('http') === -1) {
                     v = location.origin + '/' + v;
