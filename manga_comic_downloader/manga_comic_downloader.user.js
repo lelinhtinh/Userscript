@@ -113,7 +113,8 @@ jQuery(function ($) {
         'mangaqq.com',
         '.upanhmoi.net',
         'qqtaku.com',
-        'qqtaku.net'
+        'qqtaku.net',
+        'trangshop.net'
     ];
 
     /**
@@ -1154,7 +1155,7 @@ jQuery(function ($) {
         break;
     case 'www.nettruyen.com':
         configs = {
-            link: '#nt_listchapter a',
+            link: '#nt_listchapter .row a',
             name: function (_this) {
                 return $('.title-detail').text().trim() + ' ' + $(_this).text().trim();
             },
