@@ -153,6 +153,9 @@ jQuery(function ($) {
         case '8950':
             ext = 'png';
             break;
+        case '4749':
+            ext = 'gif';
+            break;
         case 'ffd8':
             ext = 'jpg';
             break;
@@ -428,6 +431,10 @@ jQuery(function ($) {
             onload: function (response) {
                 var imgext = getImageType(response.response);
                 dlFinal++;
+                if (imgext === 'gif') {
+                    next();
+                    return;
+                }
 
                 if (!imgext || response.response.byteLength < 3000 || (response.statusText !== 'OK' && response.statusText !== '')) {
                     error(response, filename);
