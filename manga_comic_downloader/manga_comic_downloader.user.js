@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.12.2
+// @version      1.12.3
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -568,7 +568,7 @@ jQuery(function ($) {
         var images = [];
         $contents.each(function (i, v) {
             var $img = $(v);
-            images[i] = $img.data('src') || $img.data('original');
+            images[i] = ($img.data('cdn') || $img.data('original') || $img.data('src'));
         });
 
         checkImages(images);
@@ -607,12 +607,7 @@ jQuery(function ($) {
             url: configs.href,
             onload: function (response) {
                 var responseText = response.responseText;
-                responseText = responseText.replace(/<img[^>]*[\s\n]+src[\s\n]*?=[\s\n]*?(('|")[\s\n]*?([^>'"]*?)[\s\n]*?('|")|([^\s>]+)\s?)[\s\n]*?[^>]*>/gi, function (_match, c1, c2, c3, c4, c5) {
-                    var capture = c3;
-                    if (!capture) capture = c5;
-                    if (!capture) return null;
-                    return '<img data-src="' + capture + '" />';
-                });
+                responseText = responseText.replace(/[\s\n]+src[\s\n]*=[\s\n]*/gi, ' data-src=');
                 responseText = responseText.replace(/^[^<]*/, '');
 
                 var $data = $(responseText);
