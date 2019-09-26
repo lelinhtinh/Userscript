@@ -2,7 +2,7 @@
 // @name         Facebook Adblocker
 // @namespace    https://lelinhtinh.github.io
 // @description  Block all ads in Facebook News Feed
-// @version      1.0.0
+// @version      1.1.0
 // @icon         https://i.imgur.com/F8ai0jB.png
 // @author       lelinhtinh
 // @oujs:author  baivong
@@ -36,7 +36,7 @@
     const removeAds = wrap => {
         if (DEBUG >= 2) console.log(wrap, 'wrapNode');
 
-        const subtiltes = wrap.querySelectorAll('[data-testid="testid-story-subtilte"] a');
+        const subtiltes = wrap.querySelectorAll('[data-testid*="story"]:not([role]) a');
         if (!subtiltes.length) return;
 
         Array.from(subtiltes).forEach(v => {
@@ -49,6 +49,9 @@
         });
     };
 
+    let observerStory;
+    let observerHead;
+
     const init = () => {
         if (DEBUG) console.log('Facebook Adblocker');
         countAds = 0;
@@ -57,19 +60,21 @@
         if (DEBUG >= 2) console.log(newsFeed, 'newsFeedNode');
         if (!newsFeed) return;
 
-        const observer = new MutationObserver(mutationsList => {
+        if (observerStory) observerStory.disconnect();
+        observerStory = new MutationObserver(mutationsList => {
             for (let mutation of mutationsList) {
                 removeAds(mutation.target);
             }
         });
-        observer.observe(newsFeed, config);
+        observerStory.observe(newsFeed, config);
 
         removeAds(document);
     };
 
     init();
 
-    const observer = new MutationObserver(init);
-    observer.observe(document.head, config);
+    if (observerHead) observerHead.disconnect();
+    observerHead = new MutationObserver(init);
+    observerHead.observe(document.head, config);
 
 }());
