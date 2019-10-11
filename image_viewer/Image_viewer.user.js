@@ -2,17 +2,19 @@
 // @name         Image viewer
 // @namespace    http://devs.forumvi.com/
 // @description  Use grid wallpaper to highlight transparent image. Support to view the large image by holding the right mouse and drag.
-// @version      2.1.0
+// @version      2.2.0
 // @icon         http://i.imgur.com/ItcjCPc.png
 // @author       Zzbaivong
 // @oujs:author  baivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
 // @match        http://*/*
 // @match        https://*/*
+// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-start
-// @grant        none
+// @grant        GM_addStyle
+// @inject-into  content
 // ==/UserScript==
 
 (function () {
@@ -73,17 +75,7 @@
 
     }
 
-    function addstyle(aCss) {
-        var head = doc.getElementsByTagName('head')[0];
-        if (!head) return null;
-        var style = doc.createElement('style');
-        style.setAttribute('type', 'text/css');
-        style.textContent = aCss;
-        head.appendChild(style);
-        return style;
-    }
-
-    addstyle('body{background-attachment: fixed !important; background-position: 0px 0px, 10px 10px !important; background-size: 20px 20px !important; background-image: linear-gradient(45deg, ' + color[0] + ' 25%, transparent 25%, transparent 75%, ' + color[0] + ' 75%, ' + color[0] + ' 100%),linear-gradient(45deg, ' + color[0] + ' 25%, ' + color[1] + ' 25%, ' + color[1] + ' 75%, ' + color[0] + ' 75%, ' + color[0] + ' 100%) !important;} body > img {background-color: transparent !important; background-image: none !important; display: block; margin: auto; position: absolute; left: 0; top: 0; right: 0; bottom: 0;} body > img:hover {background: rgba(0, 0, 0, 0.4) !important; outline: 3px solid #333;} body > img[style*="cursor: zoom-out;"], body > img.overflowing {position: relative !important;}');
+    GM_addStyle('body{background-attachment: fixed !important; background-position: 0px 0px, 10px 10px !important; background-size: 20px 20px !important; background-image: linear-gradient(45deg, ' + color[0] + ' 25%, transparent 25%, transparent 75%, ' + color[0] + ' 75%, ' + color[0] + ' 100%),linear-gradient(45deg, ' + color[0] + ' 25%, ' + color[1] + ' 25%, ' + color[1] + ' 75%, ' + color[0] + ' 75%, ' + color[0] + ' 100%) !important;} body > img {background-color: transparent !important; background-image: none !important; display: block; margin: auto; position: absolute; left: 0; top: 0; right: 0; bottom: 0;} body > img:hover {background: rgba(0, 0, 0, 0.4) !important; outline: 3px solid #333;} body > img[style*="cursor: zoom-out;"], body > img.overflowing {position: relative !important;}');
 
     scrollByDragging(doc.body);
     scrollByDragging(doc.documentElement);
