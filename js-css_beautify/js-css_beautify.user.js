@@ -2,7 +2,7 @@
 // @name         Javascript-css beautify
 // @namespace    http://devs.forumvi.com
 // @description  Beautify and syntax highlighting for source code javascript, json, css.
-// @version      3.2.0
+// @version      3.2.1
 // @icon         http://i.imgur.com/kz8nqz1.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -95,10 +95,15 @@
 
     var js_beautify = GM.getResourceUrl('js_beautify'),
         css_beautify = GM.getResourceUrl('css_beautify'),
-        hljs = GM.getResourceUrl('hljs'),
-        style = GM_getResourceText(STYLE);
+        hljs = GM.getResourceUrl('hljs');
 
-    GM_addStyle('*{margin:0;padding:0}html{line-height:1em;background:#1d1f21;color:#c5c8c6}pre{white-space:pre-wrap;word-wrap:break-word;word-break:break-all}' + style);
+    GM.getResourceUrl(STYLE).then(function (url) {
+        return fetch(url);
+    }).then(function (resp) {
+        return resp.text();
+    }).then(function (style) {
+        GM_addStyle('*{margin:0;padding:0}html{line-height:1em;background:#1d1f21;color:#c5c8c6}pre{white-space:pre-wrap;word-wrap:break-word;word-break:break-all}' + style);
+    });
 
     Promise.all([js_beautify, css_beautify, hljs]).then(function (urls) {
         worker.postMessage({

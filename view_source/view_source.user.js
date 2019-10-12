@@ -2,7 +2,7 @@
 // @name         viewsource
 // @namespace    devs.forumvi.com
 // @description  View and beautify page source. Shortcut: Alt+U.
-// @version      3.2.0
+// @version      3.2.1
 // @icon         http://i.imgur.com/6yZMOeH.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -23,7 +23,6 @@
 // @grant        GM.getResourceUrl
 // @grant        GM_getResourceURL
 // @grant        GM_addStyle
-// @grant        GM_getResourceText
 // @grant        GM.xmlHttpRequest
 // @grant        GM_xmlhttpRequest
 // @grant        GM.openInTab
@@ -134,10 +133,15 @@
     var js_beautify = GM.getResourceUrl('js_beautify'),
         css_beautify = GM.getResourceUrl('css_beautify'),
         html_beautify = GM.getResourceUrl('html_beautify'),
-        hljs = GM.getResourceUrl('hljs'),
-        style = GM_getResourceText(STYLE);
+        hljs = GM.getResourceUrl('hljs');
 
-    GM_addStyle('*{margin:0;padding:0}html{line-height:1em;background:#1d1f21;color:#c5c8c6}pre{white-space:pre-wrap;word-wrap:break-word;word-break:break-all}' + style);
+    GM.getResourceUrl(STYLE).then(function (url) {
+        return fetch(url);
+    }).then(function (resp) {
+        return resp.text();
+    }).then(function (style) {
+        GM_addStyle('*{margin:0;padding:0}html{line-height:1em;background:#1d1f21;color:#c5c8c6}pre{white-space:pre-wrap;word-wrap:break-word;word-break:break-all}' + style);
+    });
 
     GM.xmlHttpRequest({
         method: 'GET',
