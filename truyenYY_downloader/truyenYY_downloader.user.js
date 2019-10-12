@@ -173,8 +173,11 @@
 
     var pageName = document.title,
         $win = $(window),
-
-        $download = $('.more-buttons').find('a[href$="/epub/"]'),
+        $download = $('<a></a>', {
+            href: '#download',
+            class: 'btn btn-warning',
+            html: '<i class="iconfont icon-download"></i> Tải xuống'
+        }),
         downloadStatus = function (status) {
             $download.removeClass('btn-primary btn-success btn-info btn-warning btn-danger text-light text-dark')
                 .addClass('btn-' + status + ' text-' + (status === 'warning' ? 'dark' : 'light'));
@@ -227,7 +230,8 @@
         tags: ebookType
     }).uuid(referrer);
 
-    $download.addClass('btn btn-primary text-light');
+    $download.insertAfter('#react-root_novel-base-buttons');
+    $download.before('\r\n');
     $download.one('click contextmenu', function (e) {
         e.preventDefault();
         document.title = '[...] Vui lòng chờ trong giây lát';
