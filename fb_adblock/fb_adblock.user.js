@@ -2,12 +2,13 @@
 // @name         Facebook Adblocker
 // @namespace    https://lelinhtinh.github.io
 // @description  Block all ads in Facebook News Feed
-// @version      1.1.0
+// @version      1.1.1
 // @icon         https://i.imgur.com/F8ai0jB.png
 // @author       lelinhtinh
 // @oujs:author  baivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
-// @match        https://www.facebook.com/*
+// @match        https://facebook.com/*
+// @match        https://*.facebook.com/*
 // @noframes
 // @supportURL   https://github.com/lelinhtinh/Userscript/issues
 // @run-at       document-idle
