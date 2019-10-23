@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.12.6
+// @version      1.12.7
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -33,8 +33,7 @@
 // @include      /^https?:\/\/truyen1\.net\/TruyenTranh\/[^\/]+\/?((\?|#).+)?$/
 // @include      /^https?:\/\/bigtruyen\.info\/[^\/]+\/((\?|#).+)?$/
 // @exclude      /^https?:\/\/bigtruyen\.info\/(danh-sach-truyen|truyen-hot|)\/((\?|#).+)?$/
-// @include      /^https?:\/\/(www\.)?hentailxx?\.com\/[^\.]+\.html((\?|#).+)?$/
-// @exclude      /^https?:\/\/(www\.)?hentailxx?\.com\/dang-ky-thanh-vien\.html((\?|#).+)?$/
+// @include      /^https?:\/\/(www\.)?hentailxx?\.com\/story\/view\.php\?id=\d+((\&|#).+)?$/
 // @include      /^https?:\/\/hentaivn\.net\/\d+\-[^\.]+\.html((\?|#).+)?$/
 // @include      /^https?:\/\/otakusan\.net\/MangaDetail\/\d+\/[^\/\.]+\/?((\?|#).+)?$/
 // @include      /^https?:\/\/ngonphongcomics\.com\/[^\/]+\/?((\?|#).+)?$/
@@ -1119,12 +1118,11 @@ jQuery(function ($) {
     case 'hentailxx.com':
     case 'www.hentailxx.com':
         configs = {
-            link: '.item_chap .chap-link',
+            link: '#listChuong .col-5 a',
             name: function (_this) {
-                return $('.breadcrumb a:last').text() + ' ' + $(_this).text().trim();
+                return $('h1.title-detail').text() + ' ' + $(_this).text().trim();
             },
-            contents: '#content_chap',
-            filter: true
+            contents: '#content_chap'
         };
         break;
     case 'hentaivn.net':
