@@ -145,6 +145,7 @@ jQuery(function ($) {
 
     function getImageType(arrayBuffer) {
         var ext = '',
+            mime = '',
             dv = new DataView(arrayBuffer, 0, 5),
             nume1 = dv.getUint8(0, true),
             nume2 = dv.getUint8(1, true),
@@ -153,25 +154,34 @@ jQuery(function ($) {
         switch (hex) {
         case '8950':
             ext = 'png';
+            mime = 'image/png';
             break;
         case '4749':
             ext = 'gif';
+            mime = 'image/gif';
             break;
         case 'ffd8':
             ext = 'jpg';
+            mime = 'image/jpeg';
             break;
         case '424d':
             ext = 'bmp';
+            mime = 'image/bmp';
             break;
         case '5249':
             ext = 'webp';
+            mime = 'image/webp';
             break;
         default:
             ext = null;
+            mime = null;
             break;
         }
 
-        return ext;
+        return {
+            mime: mime,
+            ext: ext
+        };
     }
 
     function noty(txt, status) {
@@ -386,6 +396,8 @@ jQuery(function ($) {
     }
 
     function genZip() {
+        noty('Đang tạo file nén của <strong>' + chapName + '</strong>', 'warning');
+
         dlZip.generateAsync({
             type: 'blob'
         }).then(function (blob) {
@@ -430,7 +442,7 @@ jQuery(function ($) {
             responseType: 'arraybuffer',
             headers: headers,
             onload: function (response) {
-                var imgext = getImageType(response.response);
+                var imgext = getImageType(response.response).ext;
                 dlFinal++;
                 if (imgext === 'gif') {
                     next();
@@ -779,6 +791,154 @@ jQuery(function ($) {
         notyReady();
     }
 
+    function renderCanvasLH(cdn, key, ext) {
+        function renderImage(imageIndex) {
+            return new Promise(function (resolve, reject) {
+                var img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = function () {
+                    var cv = fragment.getElementById('cv-' + imageIndex);
+                    cv.removeAttribute('id');
+                    var ctx = cv.getContext('2d');
+                    cv.width = this.width;
+                    cv.height = this.height;
+                    var cvWidth = this.width;
+                    var cvHeight = this.height;
+                    var blockSize = 20;
+                    var blockColCount = Math.floor(cvWidth / blockSize);
+                    var blockRowCount = Math.floor(cvHeight / blockSize);
+                    var blockColOffset = cvWidth - blockColCount * blockSize;
+                    var blockRowOffset = cvHeight - blockRowCount * blockSize;
+                    var mapPush = [];
+                    var mapUnshift = [];
+                    var shuffleMap = [];
+                    var blockMap = [];
+                    for (var iCol = 0; iCol < blockColCount; iCol++) {
+                        for (var iRow = 0; iRow < blockRowCount; iRow++) {
+                            mapPush.push({
+                                x: iCol * blockSize,
+                                y: iRow * blockSize
+                            });
+                            mapUnshift.unshift({
+                                x: iCol * blockSize,
+                                y: iRow * blockSize
+                            });
+                        }
+                    }
+                    for (var i = 0; i < Math.floor(mapUnshift.length / 2); i++) {
+                        shuffleMap.push(mapUnshift[i]);
+                        shuffleMap.push(mapUnshift[mapUnshift.length - 1 - i]);
+                    }
+                    if (mapUnshift.length % 2 !== 0) {
+                        shuffleMap.push(mapUnshift[Math.floor(mapUnshift.length / 2) + 1]);
+                    }
+                    for (var j = 0; j < shuffleMap.length; j++) {
+                        var iArrBB = (j + 10) > (shuffleMap.length - 1) ? (j + 10) - shuffleMap.length : (j + 10);
+                        blockMap.push(shuffleMap[iArrBB]);
+                    }
+                    blockMap.forEach(function (block, index) {
+                        ctx.drawImage(img, block.x, block.y, blockSize, blockSize, mapPush[index].x, mapPush[index].y, blockSize, blockSize);
+                    });
+                    if (blockColOffset) {
+                        for (var m = 0; m <= blockRowCount; m++) {
+                            ctx.drawImage(img, blockColCount * blockSize, m * blockSize, blockColOffset, blockSize, blockColCount * blockSize, m * blockSize, blockColOffset, blockSize);
+                        }
+                    }
+                    if (blockRowOffset) {
+                        for (var n = 0; n < blockRowCount; n++) {
+                            ctx.drawImage(img, n * blockSize, blockRowCount * blockSize, blockSize, blockRowOffset, n * blockSize, blockRowCount * blockSize, blockSize, blockRowOffset);
+                        }
+                    }
+                    resolve(ctx);
+                    URL.revokeObjectURL(tempBlob[imageIndex]);
+                };
+                img.onerror = function (err) {
+                    reject(err);
+                };
+                GM.xmlHttpRequest({
+                    method: 'GET',
+                    url: cdn[0] + atob(key[imageIndex]) + '.' + atob(ext[imageIndex]),
+                    responseType: 'arraybuffer',
+                    onload: function (response) {
+                        var mime = getImageType(response.response).mime;
+                        var blob = new Blob([response.response], {
+                            type: mime
+                        });
+                        img.src = URL.createObjectURL(blob);
+                        tempBlob[imageIndex] = blob;
+
+                        dlFinal++;
+                        noty('<strong class="centered">' + dlFinal + '/' + dlTotal + '</strong>', 'warning');
+                    },
+                    onerror: function (err) {
+                        reject(err);
+                    }
+                });
+            });
+        }
+
+        var fragment = document.createDocumentFragment(),
+            progress = [],
+            tempBlob = [];
+
+        dlTotal = key.length - 1;
+
+        noty('Bắt đầu tải <strong>' + chapName + '</strong>', 'warning');
+
+        for (var i = 0; i < dlTotal; i++) {
+            var cv = document.createElement('canvas');
+            cv.id = 'cv-' + i;
+            cv.width = 0;
+            cv.height = 0;
+            fragment.append(cv);
+            progress.push(renderImage(i));
+        }
+
+        Promise.all(progress).then(function () {
+            var path = '';
+            if (inMerge) path = genFileName() + '/';
+
+            $(fragment).find('canvas').each(function (i, v) {
+                var filename = ('0000' + i).slice(-4) + '.webp';
+                dlZip.file(path + filename, v.toDataURL('image/webp').split(';base64,')[1], {
+                    base64: true
+                });
+            });
+
+            if (inMerge) {
+                if (dlAll.length) {
+                    linkSuccess();
+                    endZip();
+                } else {
+                    inMerge = false;
+                    genZip();
+                }
+            } else {
+                genZip();
+            }
+        });
+    }
+
+    function getTruyenTranhLH() {
+        getSource(function ($data) {
+            var $packer = $data.find('#chapter-images');
+            if (!$packer.length) {
+                configs.contents = '[class="chapter-content"]';
+                configs.filter = true;
+                getContents($data);
+                return;
+            }
+
+            eval($packer.next('script').text().split('var _0xc320')[0]);
+            // eslint-disable-next-line no-undef
+            renderCanvasLH(_0x5f54, _0x5213, _0x52f5);
+
+            $win.on('beforeunload', function () {
+                return 'Progress is running...';
+            });
+        });
+    }
+
     function getTruyenHay24h() {
         getSource(function ($data) {
             $data = $data.find('#dvContentChap').siblings('script').text();
@@ -1067,8 +1227,7 @@ jQuery(function ($) {
     case 'truyentranhlh.net':
         configs = {
             link: '#tab-chapper a',
-            contents: '.chapter-content',
-            filter: true
+            init: getTruyenTranhLH
         };
         break;
     case 'hocvientruyentranh.com':
