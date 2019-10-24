@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.12.7
+// @version      1.12.8
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -500,6 +500,12 @@ jQuery(function ($) {
         return (ignoreList.indexOf(url) !== -1);
     }
 
+    function protocolUrl(url) {
+        if (url.indexOf('//') === 0) url = location.protocol + url;
+        if (url.search(/https?:\/\//) !== 0) url = 'http://' + url;
+        return url;
+    }
+
     function redirectSSL(url) {
         if (url.search(/(i\.imgur\.com|\.blogspot\.com|\.fbcdn\.net|storage\.fshare\.vn)/i) !== -1 && url.indexOf('http://') === 0)
             url = url.replace(/^http:\/\//, 'https://');
@@ -520,7 +526,7 @@ jQuery(function ($) {
         var keep = keepOriginal.some(function (key) {
             return url.indexOf(key) !== -1;
         });
-        if (keep) return url;
+        if (keep) return protocolUrl(url);
 
         url = decodeUrl(url);
         url = url.trim();
@@ -538,7 +544,7 @@ jQuery(function ($) {
             url = url.replace(/(\?|&).+/, '');
         }
         url = encodeURI(url);
-        if (url.search(/https?:\/\//) !== 0) url = 'http://' + url;
+        url = protocolUrl(url);
         url = redirectSSL(url);
 
         return url;
@@ -556,10 +562,8 @@ jQuery(function ($) {
 
                 if ((v.indexOf(location.origin) === 0 || (v.indexOf('/') === 0 && v.indexOf('//') !== 0)) && !/^(\.(jpg|png)|webp|jpeg)$/.test(v.slice(-4))) {
                     return;
-                } else if (v.indexOf('http') === -1) {
-                    v = location.origin + '/' + v;
-                } else if (v.indexOf('/') === 0 && v.indexOf('//') !== 0) {
-                    v = location.origin + v;
+                } else if (v.indexOf('http') !== 0 && v.indexOf('//') !== 0) {
+                    v = location.origin + (v.indexOf('/') === 0 ? '' : '/') + v;
                 } else if (v.indexOf('http') === 0 || v.indexOf('//') === 0) {
                     v = imageFilter(v);
                 } else {
