@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.13.0
+// @version      1.13.1
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -144,6 +144,11 @@ jQuery(function ($) {
     }
 
     function getImageType(arrayBuffer) {
+        if (!arrayBuffer.byteLength) return {
+            mime: null,
+            ext: null
+        };
+
         var ext = '',
             mime = '',
             dv = new DataView(arrayBuffer, 0, 5),
