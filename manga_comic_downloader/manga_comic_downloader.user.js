@@ -2,7 +2,7 @@
 // @name         manga comic downloader
 // @namespace    https://baivong.github.io
 // @description  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version      1.12.8
+// @version      1.13.0
 // @icon         https://i.imgur.com/ICearPQ.png
 // @author       Zzbaivong
 // @license      MIT; https://baivong.mit-license.org/license.txt
@@ -84,7 +84,7 @@ jQuery(function ($) {
      * Multithreading
      * @type {Number} [1 -> 32]
      */
-    var threading = 16;
+    var threading = 8;
 
     /**
      * Image list will be ignored
@@ -792,27 +792,30 @@ jQuery(function ($) {
     }
 
     function renderCanvasLH(cdn, key, ext) {
-        function renderImage(imageIndex) {
+        function renderImage(imageIndex, filename) {
             return new Promise(function (resolve, reject) {
                 var img = new Image();
                 img.crossOrigin = 'anonymous';
                 img.onload = function () {
                     var cv = fragment.getElementById('cv-' + imageIndex);
-                    cv.removeAttribute('id');
                     var ctx = cv.getContext('2d');
+
                     cv.width = this.width;
                     cv.height = this.height;
                     var cvWidth = this.width;
                     var cvHeight = this.height;
+
                     var blockSize = 20;
                     var blockColCount = Math.floor(cvWidth / blockSize);
                     var blockRowCount = Math.floor(cvHeight / blockSize);
                     var blockColOffset = cvWidth - blockColCount * blockSize;
                     var blockRowOffset = cvHeight - blockRowCount * blockSize;
+
                     var mapPush = [];
                     var mapUnshift = [];
                     var shuffleMap = [];
                     var blockMap = [];
+
                     for (var iCol = 0; iCol < blockColCount; iCol++) {
                         for (var iRow = 0; iRow < blockRowCount; iRow++) {
                             mapPush.push({
@@ -825,6 +828,7 @@ jQuery(function ($) {
                             });
                         }
                     }
+
                     for (var i = 0; i < Math.floor(mapUnshift.length / 2); i++) {
                         shuffleMap.push(mapUnshift[i]);
                         shuffleMap.push(mapUnshift[mapUnshift.length - 1 - i]);
@@ -833,9 +837,10 @@ jQuery(function ($) {
                         shuffleMap.push(mapUnshift[Math.floor(mapUnshift.length / 2) + 1]);
                     }
                     for (var j = 0; j < shuffleMap.length; j++) {
-                        var iArrBB = (j + 10) > (shuffleMap.length - 1) ? (j + 10) - shuffleMap.length : (j + 10);
-                        blockMap.push(shuffleMap[iArrBB]);
+                        var iMap = (j + 10) > (shuffleMap.length - 1) ? (j + 10) - shuffleMap.length : (j + 10);
+                        blockMap.push(shuffleMap[iMap]);
                     }
+
                     blockMap.forEach(function (block, index) {
                         ctx.drawImage(img, block.x, block.y, blockSize, blockSize, mapPush[index].x, mapPush[index].y, blockSize, blockSize);
                     });
@@ -849,74 +854,94 @@ jQuery(function ($) {
                             ctx.drawImage(img, n * blockSize, blockRowCount * blockSize, blockSize, blockRowOffset, n * blockSize, blockRowCount * blockSize, blockSize, blockRowOffset);
                         }
                     }
-                    resolve(ctx);
+
                     URL.revokeObjectURL(tempBlob[imageIndex]);
+
+                    dlZip.file(filename + '.webp', cv.toDataURL('image/webp').split(';base64,')[1], {
+                        base64: true
+                    });
+                    dlFinal++;
+                    nextLH();
+
+                    resolve(ctx);
                 };
-                img.onerror = function (err) {
-                    reject(err);
-                };
+
                 GM.xmlHttpRequest({
                     method: 'GET',
                     url: cdn[0] + atob(key[imageIndex]) + '.' + atob(ext[imageIndex]),
                     responseType: 'arraybuffer',
                     onload: function (response) {
-                        var mime = getImageType(response.response).mime;
                         var blob = new Blob([response.response], {
-                            type: mime
+                            type: getImageType(response.response).mime
                         });
                         img.src = URL.createObjectURL(blob);
                         tempBlob[imageIndex] = blob;
-
-                        dlFinal++;
-                        noty('<strong class="centered">' + dlFinal + '/' + dlTotal + '</strong>', 'warning');
                     },
                     onerror: function (err) {
+                        dlZip.file(filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
+                        dlFinal++;
+                        nextLH();
+
                         reject(err);
                     }
                 });
             });
         }
 
-        var fragment = document.createDocumentFragment(),
-            progress = [],
-            tempBlob = [];
-
-        dlTotal = key.length - 1;
-
-        noty('Bắt đầu tải <strong>' + chapName + '</strong>', 'warning');
-
-        for (var i = 0; i < dlTotal; i++) {
-            var cv = document.createElement('canvas');
-            cv.id = 'cv-' + i;
-            cv.width = 0;
-            cv.height = 0;
-            fragment.append(cv);
-            progress.push(renderImage(i));
-        }
-
-        Promise.all(progress).then(function () {
+        function addZipLH() {
             var path = '';
             if (inMerge) path = genFileName() + '/';
 
-            $(fragment).find('canvas').each(function (i, v) {
-                var filename = ('0000' + i).slice(-4) + '.webp';
-                dlZip.file(path + filename, v.toDataURL('image/webp').split(';base64,')[1], {
-                    base64: true
-                });
-            });
+            var max = dlCurrent + threading;
+            if (max > dlTotal) max = dlTotal;
 
-            if (inMerge) {
-                if (dlAll.length) {
-                    linkSuccess();
-                    endZip();
-                } else {
-                    inMerge = false;
-                    genZip();
-                }
-            } else {
-                genZip();
+            for (dlCurrent; dlCurrent < max; dlCurrent++) {
+                var filename = ('0000' + dlCurrent).slice(-4);
+
+                var cv = document.createElement('canvas');
+                cv.id = 'cv-' + dlCurrent;
+                cv.width = 0;
+                cv.height = 0;
+                fragment.append(cv);
+
+                progressLH.push(renderImage(dlCurrent, (path + filename)));
             }
-        });
+        }
+
+        function nextLH() {
+            noty('<strong class="centered">' + dlFinal + '/' + dlTotal + '</strong>', 'warning');
+
+            if (dlFinal < dlCurrent) return;
+
+            if (dlFinal < dlTotal) {
+                addZipLH();
+            } else {
+                tempBlob = [];
+
+                Promise.all(progressLH).then(function () {
+                    if (inMerge) {
+                        if (dlAll.length) {
+                            linkSuccess();
+                            endZip();
+                        } else {
+                            inMerge = false;
+                            genZip();
+                        }
+                    } else {
+                        genZip();
+                    }
+                });
+            }
+        }
+
+        var fragment = new DocumentFragment(),
+            progressLH = [],
+            tempBlob = [];
+
+        dlTotal = key.length - 1;
+        addZipLH();
+
+        noty('Bắt đầu tải <strong>' + chapName + '</strong>', 'warning');
     }
 
     function getTruyenTranhLH() {
