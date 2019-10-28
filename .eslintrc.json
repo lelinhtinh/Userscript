@@ -14,7 +14,10 @@
   "rules": {
     "indent": [
       "error",
-      4
+      2,
+      {
+        "SwitchCase": 1
+      }
     ],
     "linebreak-style": [
       "error",
@@ -22,11 +25,18 @@
     ],
     "quotes": [
       "error",
-      "single"
+      "single",
+      {
+        "avoidEscape": true
+      }
     ],
     "semi": [
       "error",
       "always"
+    ],
+    "comma-dangle": [
+      "error",
+      "always-multiline"
     ],
     "no-console": 0
   }
