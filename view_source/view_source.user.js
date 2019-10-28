@@ -1,34 +1,35 @@
 // ==UserScript==
-// @name         viewsource
-// @name:vi      viewsource
-// @namespace    devs.forumvi.com
-// @description  View and beautify page source. Shortcut: Alt+U.
-// @version      3.2.2
-// @icon         http://i.imgur.com/6yZMOeH.png
-// @author       Zzbaivong
-// @oujs:author  baivong
-// @license      MIT; https://baivong.mit-license.org/license.txt
-// @match        http://*/*
-// @match        https://*/*
-// @resource     js_beautify https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.10.2/beautify.min.js
-// @resource     css_beautify https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.10.2/beautify-css.min.js
-// @resource     html_beautify https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.10.2/beautify-html.min.js
-// @resource     hljs https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js
-// @resource     dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/atom-one-dark.min.css
-// @resource     light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/atom-one-light.min.css
-// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
+// @name            viewsource
+// @name:vi         viewsource
+// @namespace       devs.forumvi.com
+// @description     View and beautify page source. Shortcut: Alt+U.
+// @description:vi  Định dạng và làm đẹp mã nguồn trang web. Phím tắt: Alt+U.
+// @version         3.2.3
+// @icon            http://i.imgur.com/6yZMOeH.png
+// @author          Zzbaivong
+// @oujs:author     baivong
+// @license         MIT; https://baivong.mit-license.org/license.txt
+// @match           http://*/*
+// @match           https://*/*
+// @resource        js_beautify https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.10.2/beautify.min.js
+// @resource        css_beautify https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.10.2/beautify-css.min.js
+// @resource        html_beautify https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.10.2/beautify-html.min.js
+// @resource        hljs https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js
+// @resource        dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/atom-one-dark.min.css
+// @resource        light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/atom-one-light.min.css
+// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
-// @connect      *
-// @supportURL   https://github.com/lelinhtinh/Userscript/issues
-// @run-at       document-idle
-// @grant        GM.getResourceUrl
-// @grant        GM_getResourceURL
-// @grant        GM_addStyle
-// @grant        GM.xmlHttpRequest
-// @grant        GM_xmlhttpRequest
-// @grant        GM.openInTab
-// @grant        GM_openInTab
-// @grant        GM_registerMenuCommand
+// @connect         *
+// @supportURL      https://github.com/lelinhtinh/Userscript/issues
+// @run-at          document-idle
+// @grant           GM.getResourceUrl
+// @grant           GM_getResourceURL
+// @grant           GM_addStyle
+// @grant           GM.xmlHttpRequest
+// @grant           GM_xmlhttpRequest
+// @grant           GM.openInTab
+// @grant           GM_openInTab
+// @grant           GM_registerMenuCommand
 // ==/UserScript==
 
 /* eslint-env worker, es6 */

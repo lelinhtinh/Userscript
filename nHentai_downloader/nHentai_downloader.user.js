@@ -1,25 +1,26 @@
 // ==UserScript==
-// @name         nHentai Downloader
-// @name:vi      nHentai Downloader
-// @namespace    http://devs.forumvi.com
-// @description  Download manga on nHentai.net
-// @version      1.6.8
-// @icon         http://i.imgur.com/FAsQ4vZ.png
-// @author       Zzbaivong
-// @oujs:author  baivong
-// @license      MIT; https://baivong.mit-license.org/license.txt
-// @match        http://nhentai.net/g/*
-// @match        https://nhentai.net/g/*
-// @require      https://code.jquery.com/jquery-3.4.1.min.js
-// @require      https://unpkg.com/jszip@3.2.2/dist/jszip.min.js
-// @require      https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
-// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
+// @name            nHentai Downloader
+// @name:vi         nHentai Downloader
+// @namespace       http://devs.forumvi.com
+// @description     Download manga on nHentai.
+// @description:vi  Tải truyện tranh tại NhệnTái.
+// @version         1.6.9
+// @icon            http://i.imgur.com/FAsQ4vZ.png
+// @author          Zzbaivong
+// @oujs:author     baivong
+// @license         MIT; https://baivong.mit-license.org/license.txt
+// @match           http://nhentai.net/g/*
+// @match           https://nhentai.net/g/*
+// @require         https://code.jquery.com/jquery-3.4.1.min.js
+// @require         https://unpkg.com/jszip@3.2.2/dist/jszip.min.js
+// @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
+// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
-// @connect      self
-// @supportURL   https://github.com/lelinhtinh/Userscript/issues
-// @run-at       document-start
-// @grant        GM.xmlHttpRequest
-// @grant        GM_xmlhttpRequest
+// @connect         self
+// @supportURL      https://github.com/lelinhtinh/Userscript/issues
+// @run-at          document-start
+// @grant           GM.xmlHttpRequest
+// @grant           GM_xmlhttpRequest
 // ==/UserScript==
 
 jQuery(function($) {

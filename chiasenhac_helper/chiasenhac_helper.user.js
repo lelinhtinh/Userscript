@@ -1,21 +1,22 @@
 // ==UserScript==
-// @name         ChiaSeNhac Helper
-// @name:vi      ChiaSeNhac Helper
-// @namespace    https://lelinhtinh.github.io
-// @description  Download lossless music directly, bypass sharing dialog.
-// @version      1.2.1
-// @icon         https://i.imgur.com/HLqWP3g.png
-// @author       lelinhtinh
-// @oujs:author  baivong
-// @license      MIT; https://baivong.mit-license.org/license.txt
-// @match        https://chiasenhac.vn/*
-// @match        https://*.chiasenhac.vn/*
-// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
+// @name            ChiaSeNhac Helper
+// @name:vi         ChiaSeNhac Helper
+// @namespace       https://lelinhtinh.github.io
+// @description     Download lossless music directly on ChiaSeNhac, bypass sharing dialog.
+// @description:vi  Tải nhạc lossless trực tiếp tại ChiaSeNhac, không cần đăng nhập hoặc chia sẻ lên MXH.
+// @version         1.2.2
+// @icon            https://i.imgur.com/HLqWP3g.png
+// @author          lelinhtinh
+// @oujs:author     baivong
+// @license         MIT; https://baivong.mit-license.org/license.txt
+// @match           https://chiasenhac.vn/*
+// @match           https://*.chiasenhac.vn/*
+// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
-// @supportURL   https://github.com/lelinhtinh/Userscript/issues
-// @run-at       document-idle
-// @grant        GM.xmlHttpRequest
-// @grant        GM_xmlhttpRequest
+// @supportURL      https://github.com/lelinhtinh/Userscript/issues
+// @run-at          document-idle
+// @grant           GM.xmlHttpRequest
+// @grant           GM_xmlhttpRequest
 // ==/UserScript==
 
 (function() {

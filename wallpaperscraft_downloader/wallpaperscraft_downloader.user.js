@@ -1,26 +1,27 @@
 // ==UserScript==
-// @name         Wallpaperscraft downloader
-// @name:vi      Wallpaperscraft downloader
-// @namespace    http://baivong.github.io/
-// @version      2.1.6
-// @description  1-Click download on Wallpaperscraft. You should select the resolution before downloading.
-// @icon         http://i.imgur.com/NA96TWE.png
-// @author       Zzbaivong
-// @oujs:author  baivong
-// @license      MIT; https://baivong.mit-license.org/license.txt
-// @include      https://wallpaperscraft.com/*
-// @exclude      https://wallpaperscraft.com/wallpaper/*
-// @exclude      https://wallpaperscraft.com/download/*
-// @require      https://unpkg.com/file-saver@2.0.1/dist/FileSaver.min.js
-// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
+// @name            Wallpaperscraft downloader
+// @name:vi         Wallpaperscraft downloader
+// @namespace       http://baivong.github.io/
+// @version         2.1.7
+// @description     1-Click download on WallpapersCraft. You should select the resolution before downloading.
+// @description:vi  Tải hình nền từ WallpapersCraft chỉ với 1-Click. Bạn có thể chọn độ phân giải ảnh trước khi tải.
+// @icon            http://i.imgur.com/NA96TWE.png
+// @author          Zzbaivong
+// @oujs:author     baivong
+// @license         MIT; https://baivong.mit-license.org/license.txt
+// @include         https://wallpaperscraft.com/*
+// @exclude         https://wallpaperscraft.com/wallpaper/*
+// @exclude         https://wallpaperscraft.com/download/*
+// @require         https://unpkg.com/file-saver@2.0.1/dist/FileSaver.min.js
+// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
-// @connect      self
-// @supportURL   https://github.com/lelinhtinh/Userscript/issues
-// @run-at       document-idle
-// @grant        GM.xmlHttpRequest
-// @grant        GM_xmlhttpRequest
-// @grant        GM.openInTab
-// @grant        GM_openInTab
+// @connect         self
+// @supportURL      https://github.com/lelinhtinh/Userscript/issues
+// @run-at          document-idle
+// @grant           GM.xmlHttpRequest
+// @grant           GM_xmlhttpRequest
+// @grant           GM.openInTab
+// @grant           GM_openInTab
 // ==/UserScript==
 
 (function() {

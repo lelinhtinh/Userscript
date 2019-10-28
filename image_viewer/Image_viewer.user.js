@@ -1,21 +1,22 @@
 // ==UserScript==
-// @name         Image viewer
-// @name:vi      Image viewer
-// @namespace    http://devs.forumvi.com/
-// @description  Use grid wallpaper to highlight transparent image. Support to view the large image by holding the right mouse and drag.
-// @version      2.2.1
-// @icon         http://i.imgur.com/ItcjCPc.png
-// @author       Zzbaivong
-// @oujs:author  baivong
-// @license      MIT; https://baivong.mit-license.org/license.txt
-// @match        http://*/*
-// @match        https://*/*
-// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
+// @name            Image viewer
+// @name:vi         Image viewer
+// @namespace       http://devs.forumvi.com/
+// @description     Use grid wallpaper to highlight transparent image. Support to view the large image by holding the right mouse and drag.
+// @description:vi  Sử dụng nền lưới để làm nổi bật ảnh trong suốt. Hỗ trợ xem ảnh lớn bằng cách giữ và kéo chuột phải.
+// @version         2.2.2
+// @icon            http://i.imgur.com/ItcjCPc.png
+// @author          Zzbaivong
+// @oujs:author     baivong
+// @license         MIT; https://baivong.mit-license.org/license.txt
+// @match           http://*/*
+// @match           https://*/*
+// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
-// @supportURL   https://github.com/lelinhtinh/Userscript/issues
-// @run-at       document-start
-// @grant        GM_addStyle
-// @inject-into  content
+// @supportURL      https://github.com/lelinhtinh/Userscript/issues
+// @run-at          document-start
+// @grant           GM_addStyle
+// @inject-into     content
 // ==/UserScript==
 
 (function() {

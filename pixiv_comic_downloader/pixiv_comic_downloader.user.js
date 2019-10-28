@@ -1,26 +1,27 @@
 // ==UserScript==
-// @name         Pixiv Comic Downloader
-// @name:vi      Pixiv Comic Downloader
-// @namespace    https://lelinhtinh.github.io
-// @description  Download manga on comic.pixiv.net
-// @version      0.0.2
-// @icon         https://i.imgur.com/ZmH0sdx.png
-// @author       lelinhtinh
-// @oujs:author  baivong
-// @license      MIT; https://baivong.mit-license.org/license.txt
-// @match        https://comic.pixiv.net/*
-// @require      https://unpkg.com/jszip@3.2.1/dist/jszip.min.js
-// @require      https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
-// @require      https://greasyfork.org/scripts/5679-wait-for-elements/code/Wait%20For%20Elements.js?version=250853
-// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
+// @name            Pixiv Comic Downloader
+// @name:vi         Pixiv Comic Downloader
+// @namespace       https://lelinhtinh.github.io
+// @description     Download manga on Pixiv.
+// @description:vi  Tải truyện tranh tại Pixiv.
+// @version         0.0.3
+// @icon            https://i.imgur.com/ZmH0sdx.png
+// @author          lelinhtinh
+// @oujs:author     baivong
+// @license         MIT; https://baivong.mit-license.org/license.txt
+// @match           https://comic.pixiv.net/*
+// @require         https://unpkg.com/jszip@3.2.1/dist/jszip.min.js
+// @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
+// @require         https://greasyfork.org/scripts/5679-wait-for-elements/code/Wait%20For%20Elements.js?version=250853
+// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
-// @connect      *
-// @supportURL   https://github.com/lelinhtinh/Userscript/issues
-// @run-at       document-idle
-// @grant        GM_addStyle
-// @grant        GM_xmlhttpRequest
-// @grant        GM.xmlHttpRequest
-// @grant        GM_registerMenuCommand
+// @connect         *
+// @supportURL      https://github.com/lelinhtinh/Userscript/issues
+// @run-at          document-idle
+// @grant           GM_addStyle
+// @grant           GM_xmlhttpRequest
+// @grant           GM.xmlHttpRequest
+// @grant           GM_registerMenuCommand
 // ==/UserScript==
 
 GM.xmlHttpRequest({

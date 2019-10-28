@@ -1,20 +1,21 @@
 // ==UserScript==
-// @name         Phim4400 Helper
-// @name:vi      Phim4400 Helper
-// @namespace    https://lelinhtinh.github.io
-// @description  Xem online và tải phim trực tiếp, bỏ qua quảng cáo.
-// @version      1.0.1
-// @icon         https://i.imgur.com/wRRkkqr.png
-// @author       lelinhtinh
-// @oujs:author  baivong
-// @license      MIT; https://baivong.mit-license.org/license.txt
-// @match        https://phim440.cf/*
-// @match        https://phim4400.cf/*
-// @match        https://phim4400.tv/*
+// @name            Phim4400 Helper
+// @name:vi         Phim4400 Helper
+// @namespace       https://lelinhtinh.github.io
+// @description     Xem online và tải phim trực tiếp tại Phim4400, bỏ qua quảng cáo.
+// @description:vi  Xem online và tải phim trực tiếp tại Phim4400, bỏ qua quảng cáo.
+// @version         1.0.2
+// @icon            https://i.imgur.com/wRRkkqr.png
+// @author          lelinhtinh
+// @oujs:author     baivong
+// @license         MIT; https://baivong.mit-license.org/license.txt
+// @match           https://phim440.cf/*
+// @match           https://phim4400.cf/*
+// @match           https://phim4400.tv/*
 // @noframes
-// @supportURL   https://github.com/lelinhtinh/Userscript/issues
-// @run-at       document-idle
-// @grant        none
+// @supportURL      https://github.com/lelinhtinh/Userscript/issues
+// @run-at          document-idle
+// @grant           none
 // ==/UserScript==
 
 /* global shortcut */

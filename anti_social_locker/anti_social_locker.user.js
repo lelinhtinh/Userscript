@@ -1,20 +1,21 @@
 // ==UserScript==
-// @name         anti social locker
-// @name:vi      anti social locker
-// @namespace    http://baivong.github.io/
-// @description  Anti social locker plugin required user like or share before viewing content. If script doesn't work, please refresh the page to rebuild the cache and try again.
-// @version      1.1.3
-// @icon         http://i.imgur.com/nOuUrIW.png
-// @author       Zzbaivong
-// @oujs:author  baivong
-// @license      MIT; https://baivong.mit-license.org/license.txt
-// @match        http://*/*
-// @match        https://*/*
-// @require      https://code.jquery.com/jquery-3.3.1.slim.min.js
+// @name            anti social locker
+// @name:vi         anti social locker
+// @namespace       http://baivong.github.io/
+// @description     Anti Social Locker plugin required user like or share before viewing content. If script doesn't work, please refresh the page to rebuild the cache and try again.
+// @description:vi  Loại bỏ bảng Social Locker mà bắt buộc người dùng nhấn thích hoặc chia sẻ trước khi xem nội dung. Nếu script không hoạt động, hãy thử tải lại trang web.
+// @version         1.1.4
+// @icon            http://i.imgur.com/nOuUrIW.png
+// @author          Zzbaivong
+// @oujs:author     baivong
+// @license         MIT; https://baivong.mit-license.org/license.txt
+// @match           http://*/*
+// @match           https://*/*
+// @require         https://code.jquery.com/jquery-3.3.1.slim.min.js
 // @noframes
-// @supportURL   https://github.com/lelinhtinh/Userscript/issues
-// @run-at       document-start
-// @grant        none
+// @supportURL      https://github.com/lelinhtinh/Userscript/issues
+// @run-at          document-start
+// @grant           none
 // ==/UserScript==
 
 (function(global) {

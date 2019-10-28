@@ -1,48 +1,49 @@
 // ==UserScript==
-// @name         Worldcosplay download
-// @name:vi      Worldcosplay download
-// @namespace    http://devs.forumvi.com/
-// @description  Download photo(s) on worldcosplay.net
-// @version      3.1.5
-// @icon         http://i.imgur.com/gJLjIzb.png
-// @author       Zzbaivong
-// @oujs:author  baivong
-// @license      MIT; https://baivong.mit-license.org/license.txt
-// @match        https://worldcosplay.net/*/photos*
-// @match        https://worldcosplay.net/*/favorites*
-// @match        https://worldcosplay.net/photo/*
-// @match        https://worldcosplay.net/tag/*
-// @match        https://worldcosplay.net/search/photos?*
-// @match        https://worldcosplay.net/collections/*
-// @match        https://worldcosplay.net/character/*
-// @match        https://worldcosplay.net/title/*
-// @match        https://worldcosplay.net/photos
-// @match        https://worldcosplay.net/popular
-// @match        https://worldcosplay.net/ranking/good*
-// @match        https://worldcosplay.net/member/*/characters/*
-// @match        https://worldcosplay.net/*/photo/*
-// @match        https://worldcosplay.net/*/tag/*
-// @match        https://worldcosplay.net/*/search/photos?*
-// @match        https://worldcosplay.net/*/collections/*
-// @match        https://worldcosplay.net/*/character/*
-// @match        https://worldcosplay.net/*/title/*
-// @match        https://worldcosplay.net/*/photos
-// @match        https://worldcosplay.net/*/popular
-// @match        https://worldcosplay.net/*/ranking/good*
-// @match        https://worldcosplay.net/*/member/*/characters/*
-// @require      https://code.jquery.com/jquery-3.3.1.slim.min.js
-// @require      https://unpkg.com/file-saver@2.0.1/dist/FileSaver.min.js
-// @require      https://greasyfork.org/scripts/6250-waitforkeyelements/code/waitForKeyElements.js?version=23756
-// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
+// @name            Worldcosplay download
+// @name:vi         Worldcosplay download
+// @namespace       http://devs.forumvi.com/
+// @description     Download photo(s) on WorldCosplay.
+// @description:vi  Tải ảnh từ WorldCosplay.
+// @version         3.1.6
+// @icon            http://i.imgur.com/gJLjIzb.png
+// @author          Zzbaivong
+// @oujs:author     baivong
+// @license         MIT; https://baivong.mit-license.org/license.txt
+// @match           https://worldcosplay.net/*/photos*
+// @match           https://worldcosplay.net/*/favorites*
+// @match           https://worldcosplay.net/photo/*
+// @match           https://worldcosplay.net/tag/*
+// @match           https://worldcosplay.net/search/photos?*
+// @match           https://worldcosplay.net/collections/*
+// @match           https://worldcosplay.net/character/*
+// @match           https://worldcosplay.net/title/*
+// @match           https://worldcosplay.net/photos
+// @match           https://worldcosplay.net/popular
+// @match           https://worldcosplay.net/ranking/good*
+// @match           https://worldcosplay.net/member/*/characters/*
+// @match           https://worldcosplay.net/*/photo/*
+// @match           https://worldcosplay.net/*/tag/*
+// @match           https://worldcosplay.net/*/search/photos?*
+// @match           https://worldcosplay.net/*/collections/*
+// @match           https://worldcosplay.net/*/character/*
+// @match           https://worldcosplay.net/*/title/*
+// @match           https://worldcosplay.net/*/photos
+// @match           https://worldcosplay.net/*/popular
+// @match           https://worldcosplay.net/*/ranking/good*
+// @match           https://worldcosplay.net/*/member/*/characters/*
+// @require         https://code.jquery.com/jquery-3.3.1.slim.min.js
+// @require         https://unpkg.com/file-saver@2.0.1/dist/FileSaver.min.js
+// @require         https://greasyfork.org/scripts/6250-waitforkeyelements/code/waitForKeyElements.js?version=23756
+// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
-// @connect      self
-// @connect      sakurastorage.jp
-// @supportURL   https://github.com/lelinhtinh/Userscript/issues
-// @run-at       document-idle
-// @grant        GM.xmlHttpRequest
-// @grant        GM_xmlhttpRequest
-// @grant        GM.openInTab
-// @grant        GM_openInTab
+// @connect         self
+// @connect         sakurastorage.jp
+// @supportURL      https://github.com/lelinhtinh/Userscript/issues
+// @run-at          document-idle
+// @grant           GM.xmlHttpRequest
+// @grant           GM_xmlhttpRequest
+// @grant           GM.openInTab
+// @grant           GM_openInTab
 // ==/UserScript==
 
 /* global waitForKeyElements */

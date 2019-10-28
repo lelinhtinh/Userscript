@@ -1,19 +1,20 @@
 // ==UserScript==
-// @name         Facebook Adblocker
-// @name:vi      Facebook Adblocker
-// @namespace    https://lelinhtinh.github.io
-// @description  Block all ads in Facebook News Feed
-// @version      1.1.2
-// @icon         https://i.imgur.com/F8ai0jB.png
-// @author       lelinhtinh
-// @oujs:author  baivong
-// @license      MIT; https://baivong.mit-license.org/license.txt
-// @match        https://facebook.com/*
-// @match        https://*.facebook.com/*
+// @name            Facebook Adblocker
+// @name:vi         Facebook Adblocker
+// @namespace       https://lelinhtinh.github.io
+// @description     Block all ads in Facebook News Feed.
+// @description:vi  Chặn quảng cáo được tài trợ trên trang chủ Facebook.
+// @version         1.1.3
+// @icon            https://i.imgur.com/F8ai0jB.png
+// @author          lelinhtinh
+// @oujs:author     baivong
+// @license         MIT; https://baivong.mit-license.org/license.txt
+// @match           https://facebook.com/*
+// @match           https://*.facebook.com/*
 // @noframes
-// @supportURL   https://github.com/lelinhtinh/Userscript/issues
-// @run-at       document-idle
-// @grant        none
+// @supportURL      https://github.com/lelinhtinh/Userscript/issues
+// @run-at          document-idle
+// @grant           none
 // ==/UserScript==
 
 (function() {
