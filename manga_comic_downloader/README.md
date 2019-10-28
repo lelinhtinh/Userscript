@@ -61,6 +61,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 32. <https://truyentranhaz.net/>
 33. <https://truyenqq.com/>
 34. <https://sachvui.com/the-loai/truyen-tranh.html>
+35. <https://hentaicube.net/>
 
 ## Video từng bước cài đặt
 
