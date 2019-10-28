@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name         Wallpaperscraft downloader
+// @name:vi      Wallpaperscraft downloader
 // @namespace    http://baivong.github.io/
-// @version      2.1.5
+// @version      2.1.6
 // @description  1-Click download on Wallpaperscraft. You should select the resolution before downloading.
 // @icon         http://i.imgur.com/NA96TWE.png
 // @author       Zzbaivong
@@ -22,71 +23,70 @@
 // @grant        GM_openInTab
 // ==/UserScript==
 
-(function () {
-    'use strict';
+(function() {
+  'use strict';
 
-    /**
-     * Resolution config
-     * @type {String} // Eg: 1920x1200, 1366x768, 1280x1024, ...
-     */
-    var resolution = '';
+  /**
+   * Resolution config
+   * @type {String} // Eg: 1920x1200, 1366x768, 1280x1024, ...
+   */
+  var resolution = '';
 
+  // Do not change the code below this line, unless you know how.
+  var list = document.querySelectorAll('.wallpapers__link');
+  if (!/\d+x\d+/.test(resolution)) resolution = screen.width + 'x' + screen.height;
 
-    // Do not change the code below this line, unless you know how.
-    var list = document.querySelectorAll('.wallpapers__link');
-    if (!/\d+x\d+/.test(resolution)) resolution = screen.width + 'x' + screen.height;
+  [].forEach.call(list, function(link) {
+    var info = link.querySelector('.wallpapers__info'),
+      infoContent = info.innerHTML,
+      img = link.querySelector('img'),
+      imgName,
+      res;
 
-    [].forEach.call(list, function (link) {
-        var info = link.querySelector('.wallpapers__info'),
-            infoContent = info.innerHTML,
-            img = link.querySelector('img'),
-            imgName,
-            res;
+    res = !info ? resolution : info.textContent.match(/\d+x\d+/)[0];
 
-        res = !info ? resolution : info.textContent.match(/\d+x\d+/)[0];
+    if (!img) return;
+    img = img.src.replace(/\d+x\d+/, res);
+    imgName = img.replace(/.*\//, '');
 
-        if (!img) return;
-        img = img.src.replace(/\d+x\d+/, res);
-        imgName = img.replace(/.*\//, '');
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      info.innerHTML = 'Downloading...';
 
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            info.innerHTML = 'Downloading...';
+      GM.xmlHttpRequest({
+        method: 'GET',
+        url: img,
+        responseType: 'blob',
+        onprogress: function(e) {
+          var percent = Math.round((e.loaded / e.total) * 100);
+          info.innerHTML = percent + ' %';
+        },
+        onload: function(response) {
+          if (response.status !== 200) {
+            info.innerHTML = '<span style="color:red">' + res + ' resolution is not available</span>';
+            return;
+          }
 
-            GM.xmlHttpRequest({
-                method: 'GET',
-                url: img,
-                responseType: 'blob',
-                onprogress: function (e) {
-                    var percent = Math.round((e.loaded / e.total) * 100);
-                    info.innerHTML = percent + ' %';
-                },
-                onload: function (response) {
-                    if (response.status !== 200) {
-                        info.innerHTML = '<span style="color:red">' + res + ' resolution is not available</span>';
-                        return;
-                    }
+          var blob = response.response;
 
-                    var blob = response.response;
+          info.innerHTML = infoContent;
+          link.setAttribute('href', URL.createObjectURL(blob));
+          link.setAttribute('download', imgName);
 
-                    info.innerHTML = infoContent;
-                    link.setAttribute('href', URL.createObjectURL(blob));
-                    link.setAttribute('download', imgName);
-
-                    saveAs(blob, imgName);
-                },
-                onerror: function (err) {
-                    info.innerHTML = '<span style="color:red">' + err.message + '</span>';
-                    console.error(err);
-                }
-            });
-        });
-
-        link.addEventListener('contextmenu', function (e) {
-            e.preventDefault();
-            GM.openInTab(img);
-        });
-
-        link.setAttribute('title', 'Click to download this image\nRight Click to open in new tab');
+          saveAs(blob, imgName);
+        },
+        onerror: function(err) {
+          info.innerHTML = '<span style="color:red">' + err.message + '</span>';
+          console.error(err);
+        },
+      });
     });
+
+    link.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      GM.openInTab(img);
+    });
+
+    link.setAttribute('title', 'Click to download this image\nRight Click to open in new tab');
+  });
 })();

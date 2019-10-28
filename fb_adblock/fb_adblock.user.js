@@ -1,8 +1,9 @@
 // ==UserScript==
 // @name         Facebook Adblocker
+// @name:vi      Facebook Adblocker
 // @namespace    https://lelinhtinh.github.io
 // @description  Block all ads in Facebook News Feed
-// @version      1.1.1
+// @version      1.1.2
 // @icon         https://i.imgur.com/F8ai0jB.png
 // @author       lelinhtinh
 // @oujs:author  baivong
@@ -15,67 +16,65 @@
 // @grant        none
 // ==/UserScript==
 
-(function () {
-    'use strict';
+(function() {
+  'use strict';
 
-    /**
-     * Logging level
-     * @type {Number}
-     */
-    const DEBUG = 0;
+  /**
+   * Logging level
+   * @type {Number}
+   */
+  const DEBUG = 0;
 
+  /* === DO NOT CHANGE === */
+  let countAds = 0;
 
-    /* === DO NOT CHANGE === */
-    let countAds = 0;
+  const config = {
+    attributes: false,
+    childList: true,
+    subtree: true,
+  };
 
-    const config = {
-        attributes: false,
-        childList: true,
-        subtree: true
-    };
+  const removeAds = wrap => {
+    if (DEBUG >= 2) console.log(wrap, 'wrapNode');
 
-    const removeAds = wrap => {
-        if (DEBUG >= 2) console.log(wrap, 'wrapNode');
+    const subtiltes = wrap.querySelectorAll('[data-testid*="story"]:not([role]) a');
+    if (!subtiltes.length) return;
 
-        const subtiltes = wrap.querySelectorAll('[data-testid*="story"]:not([role]) a');
-        if (!subtiltes.length) return;
+    Array.from(subtiltes).forEach(v => {
+      if (v.textContent.trim().search(/Được tài trợ|Bài viết được đề xuất|Sponsor|Suggest|Recommend/i) !== -1) {
+        v = v.closest('[data-testid="fbfeed_story"]');
+        if (DEBUG) console.log(++countAds, 'countAds');
+        if (DEBUG >= 3) console.log(v.innerHTML, 'htmlAds');
+        v.remove();
+      }
+    });
+  };
 
-        Array.from(subtiltes).forEach(v => {
-            if (v.textContent.trim().search(/Được tài trợ|Bài viết được đề xuất|Sponsor|Suggest|Recommend/i) !== -1) {
-                v = v.closest('[data-testid="fbfeed_story"]');
-                if (DEBUG) console.log(++countAds, 'countAds');
-                if (DEBUG >= 3) console.log(v.innerHTML, 'htmlAds');
-                v.remove();
-            }
-        });
-    };
+  let observerStory;
+  let observerHead;
 
-    let observerStory;
-    let observerHead;
+  const init = () => {
+    if (DEBUG) console.log('Facebook Adblocker');
+    countAds = 0;
 
-    const init = () => {
-        if (DEBUG) console.log('Facebook Adblocker');
-        countAds = 0;
+    const newsFeed = document.querySelector('[data-testid="newsFeedStream"]');
+    if (DEBUG >= 2) console.log(newsFeed, 'newsFeedNode');
+    if (!newsFeed) return;
 
-        const newsFeed = document.querySelector('[data-testid="newsFeedStream"]');
-        if (DEBUG >= 2) console.log(newsFeed, 'newsFeedNode');
-        if (!newsFeed) return;
+    if (observerStory) observerStory.disconnect();
+    observerStory = new MutationObserver(mutationsList => {
+      for (let mutation of mutationsList) {
+        removeAds(mutation.target);
+      }
+    });
+    observerStory.observe(newsFeed, config);
 
-        if (observerStory) observerStory.disconnect();
-        observerStory = new MutationObserver(mutationsList => {
-            for (let mutation of mutationsList) {
-                removeAds(mutation.target);
-            }
-        });
-        observerStory.observe(newsFeed, config);
+    removeAds(document);
+  };
 
-        removeAds(document);
-    };
+  init();
 
-    init();
-
-    if (observerHead) observerHead.disconnect();
-    observerHead = new MutationObserver(init);
-    observerHead.observe(document.head, config);
-
-}());
+  if (observerHead) observerHead.disconnect();
+  observerHead = new MutationObserver(init);
+  observerHead.observe(document.head, config);
+})();

@@ -1,8 +1,9 @@
 // ==UserScript==
 // @name         viewsource
+// @name:vi      viewsource
 // @namespace    devs.forumvi.com
 // @description  View and beautify page source. Shortcut: Alt+U.
-// @version      3.2.1
+// @version      3.2.2
 // @icon         http://i.imgur.com/6yZMOeH.png
 // @author       Zzbaivong
 // @oujs:author  baivong
@@ -31,140 +32,150 @@
 // ==/UserScript==
 
 /* eslint-env worker, es6 */
-(function () {
-    'use strict';
+(function() {
+  'use strict';
 
-    /**
-     * Color themes
-     * @type {String} dark|light
-     */
-    const STYLE = 'dark';
+  /**
+   * Color themes
+   * @type {String} dark|light
+   */
+  const STYLE = 'dark';
 
+  /* === DO NOT CHANGE === */
 
-    /* === DO NOT CHANGE === */
+  var doc = document,
+    urlpage = location.href,
+    urlbeautify = 'https://lelinhtinh.github.io/Userscript/?beautify-source=';
 
-    var doc = document,
-        urlpage = location.href,
-        urlbeautify = 'https://lelinhtinh.github.io/Userscript/?beautify-source=';
+  if (!/^application\/(xhtml+xml|xml|rss+xml)|text\/(html|xml)$/.test(doc.contentType)) return;
 
-    if (!/^application\/(xhtml+xml|xml|rss+xml)|text\/(html|xml)$/.test(doc.contentType)) return;
-
-    if (urlpage.indexOf(urlbeautify) !== 0) {
-        var viewsource = function () {
-            if (urlpage.indexOf(urlbeautify) === 0) return;
-            GM.openInTab(urlbeautify + encodeURIComponent(urlpage), false);
-        };
-
-        GM_registerMenuCommand('Beautify Page Source', viewsource, 'u');
-        doc.onkeydown = function (e) {
-            if (e.which === 85 && e.altKey) { // Alt+U
-                e.preventDefault();
-                viewsource();
-            }
-        };
-
-        return;
-    }
-
-    urlbeautify = urlpage.replace(urlbeautify, '');
-    urlbeautify = decodeURIComponent(urlbeautify);
-
-    var blobURL, worker;
-
-    blobURL = URL.createObjectURL(new Blob(['(',
-        function () {
-            self.window = {};
-
-            self.onmessage = function (e) {
-                var source = e.data.content;
-
-                importScripts(e.data.libs[0]);
-                importScripts(e.data.libs[1]);
-                importScripts(e.data.libs[2]);
-                source = self.window.html_beautify(source, {
-                    indent_scripts: 'keep'
-                });
-
-                importScripts(e.data.libs[3]);
-                source = self.window.hljs.highlight('xml', source, true).value;
-
-                self.postMessage({
-                    source: source
-                });
-            };
-
-        }.toString(),
-        ')()'
-    ], {
-        type: 'text/javascript'
-    }));
-    worker = new Worker(blobURL);
-
-    worker.onmessage = function (e) {
-        if (!e.data) return;
-
-        var fragment = doc.createDocumentFragment(),
-            pre = doc.createElement('pre');
-
-        pre.innerHTML = e.data.source;
-        pre.className = 'hljs xml';
-
-        fragment.appendChild(pre);
-        doc.body.appendChild(fragment);
-
-        var attrUrl = doc.getElementsByClassName('hljs-attr');
-        for (var j = 0; j < attrUrl.length; j++) {
-            if (/\b(src|href\b)/.test(attrUrl[j].textContent)) {
-                var link = attrUrl[j].nextSibling.nextSibling,
-                    url = link.textContent,
-                    quote = url.slice(0, 1);
-
-                if (quote !== '\'' && quote !== '"') {
-                    quote = '';
-                } else {
-                    url = url.slice(1, -1);
-                }
-
-                link.innerHTML = quote + '<a href="' + url + '" target="_blank">' + url + '</a>' + quote;
-            }
-        }
+  if (urlpage.indexOf(urlbeautify) !== 0) {
+    var viewsource = function() {
+      if (urlpage.indexOf(urlbeautify) === 0) return;
+      GM.openInTab(urlbeautify + encodeURIComponent(urlpage), false);
     };
 
-    var js_beautify = GM.getResourceUrl('js_beautify'),
-        css_beautify = GM.getResourceUrl('css_beautify'),
-        html_beautify = GM.getResourceUrl('html_beautify'),
-        hljs = GM.getResourceUrl('hljs');
+    GM_registerMenuCommand('Beautify Page Source', viewsource, 'u');
+    doc.onkeydown = function(e) {
+      if (e.which === 85 && e.altKey) {
+        // Alt+U
+        e.preventDefault();
+        viewsource();
+      }
+    };
 
-    GM.getResourceUrl(STYLE).then(function (url) {
-        return fetch(url);
-    }).then(function (resp) {
-        return resp.text();
-    }).then(function (style) {
-        GM_addStyle('*{margin:0;padding:0}html{line-height:1em;background:#1d1f21;color:#c5c8c6}pre{white-space:pre-wrap;word-wrap:break-word;word-break:break-all}' + style);
-    });
+    return;
+  }
 
-    GM.xmlHttpRequest({
-        method: 'GET',
-        url: urlbeautify,
-        onload: function (response) {
-            doc.title = 'beautify-source:' + urlbeautify;
+  urlbeautify = urlpage.replace(urlbeautify, '');
+  urlbeautify = decodeURIComponent(urlbeautify);
 
-            Promise.all([js_beautify, css_beautify, html_beautify, hljs]).then(function (urls) {
-                worker.postMessage({
-                    libs: urls,
-                    content: response.response
-                });
+  var blobURL, worker;
+
+  blobURL = URL.createObjectURL(
+    new Blob(
+      [
+        '(',
+        function() {
+          self.window = {};
+
+          self.onmessage = function(e) {
+            var source = e.data.content;
+
+            importScripts(e.data.libs[0]);
+            importScripts(e.data.libs[1]);
+            importScripts(e.data.libs[2]);
+            source = self.window.html_beautify(source, {
+              indent_scripts: 'keep',
             });
 
-            var baseUrl,
-                baseMatch = response.response.match(/<base\s+href="([^"]+)"\s?[^>]*>/),
-                base = doc.createElement('base');
+            importScripts(e.data.libs[3]);
+            source = self.window.hljs.highlight('xml', source, true).value;
 
-            baseUrl = baseMatch ? baseMatch[1] : urlbeautify.replace(/[^/]*$/, '');
+            self.postMessage({
+              source: source,
+            });
+          };
+        }.toString(),
+        ')()',
+      ],
+      {
+        type: 'text/javascript',
+      }
+    )
+  );
+  worker = new Worker(blobURL);
 
-            base.href = baseUrl;
-            doc.head.appendChild(base);
+  worker.onmessage = function(e) {
+    if (!e.data) return;
+
+    var fragment = doc.createDocumentFragment(),
+      pre = doc.createElement('pre');
+
+    pre.innerHTML = e.data.source;
+    pre.className = 'hljs xml';
+
+    fragment.appendChild(pre);
+    doc.body.appendChild(fragment);
+
+    var attrUrl = doc.getElementsByClassName('hljs-attr');
+    for (var j = 0; j < attrUrl.length; j++) {
+      if (/\b(src|href\b)/.test(attrUrl[j].textContent)) {
+        var link = attrUrl[j].nextSibling.nextSibling,
+          url = link.textContent,
+          quote = url.slice(0, 1);
+
+        if (quote !== "'" && quote !== '"') {
+          quote = '';
+        } else {
+          url = url.slice(1, -1);
         }
+
+        link.innerHTML = quote + '<a href="' + url + '" target="_blank">' + url + '</a>' + quote;
+      }
+    }
+  };
+
+  var js_beautify = GM.getResourceUrl('js_beautify'),
+    css_beautify = GM.getResourceUrl('css_beautify'),
+    html_beautify = GM.getResourceUrl('html_beautify'),
+    hljs = GM.getResourceUrl('hljs');
+
+  GM.getResourceUrl(STYLE)
+    .then(function(url) {
+      return fetch(url);
+    })
+    .then(function(resp) {
+      return resp.text();
+    })
+    .then(function(style) {
+      GM_addStyle(
+        '*{margin:0;padding:0}html{line-height:1em;background:#1d1f21;color:#c5c8c6}pre{white-space:pre-wrap;word-wrap:break-word;word-break:break-all}' +
+          style
+      );
     });
 
-}());
+  GM.xmlHttpRequest({
+    method: 'GET',
+    url: urlbeautify,
+    onload: function(response) {
+      doc.title = 'beautify-source:' + urlbeautify;
+
+      Promise.all([js_beautify, css_beautify, html_beautify, hljs]).then(function(urls) {
+        worker.postMessage({
+          libs: urls,
+          content: response.response,
+        });
+      });
+
+      var baseUrl,
+        baseMatch = response.response.match(/<base\s+href="([^"]+)"\s?[^>]*>/),
+        base = doc.createElement('base');
+
+      baseUrl = baseMatch ? baseMatch[1] : urlbeautify.replace(/[^/]*$/, '');
+
+      base.href = baseUrl;
+      doc.head.appendChild(base);
+    },
+  });
+})();

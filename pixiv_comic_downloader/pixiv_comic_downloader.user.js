@@ -1,8 +1,9 @@
 // ==UserScript==
 // @name         Pixiv Comic Downloader
+// @name:vi      Pixiv Comic Downloader
 // @namespace    https://lelinhtinh.github.io
 // @description  Download manga on comic.pixiv.net
-// @version      0.0.1
+// @version      0.0.2
 // @icon         https://i.imgur.com/ZmH0sdx.png
 // @author       lelinhtinh
 // @oujs:author  baivong
@@ -23,46 +24,48 @@
 // ==/UserScript==
 
 GM.xmlHttpRequest({
-    method: 'GET',
-    url: 'https://comic.pixiv.net/api/v1/viewer/stories/wqW7jbjAjL/46529.json',
-    responseType: 'json',
-    headers: {
-        'X-Requested-With': 'XMLHttpRequest'
-    },
-    onload: function (response) {
-        console.log('Data', response.response);
-    },
-    onerror: function (err) {
-        console.error(err);
-    }
+  method: 'GET',
+  url: 'https://comic.pixiv.net/api/v1/viewer/stories/wqW7jbjAjL/46529.json',
+  responseType: 'json',
+  headers: {
+    'X-Requested-With': 'XMLHttpRequest',
+  },
+  onload: function(response) {
+    console.log('Data', response.response);
+  },
+  onerror: function(err) {
+    console.error(err);
+  },
 });
 
 GM.xmlHttpRequest({
-    method: 'GET',
-    url: 'https://img-comic.pximg.net/c!/q=50,f=webp%3Ajpeg/images/page/46529/uWvYU8JvmqiLuZMnPDBy/3.jpg?20190417102900',
-    responseType: 'arraybuffer',
-    headers: {
-        referer: 'https://comic.pixiv.net',
-        origin: 'https://comic.pixiv.net'
-    },
-    onload: function (response) {
-        console.log('Image', response.response);
-    },
-    onerror: function (err) {
-        console.error(err);
-    }
+  method: 'GET',
+  url: 'https://img-comic.pximg.net/c!/q=50,f=webp%3Ajpeg/images/page/46529/uWvYU8JvmqiLuZMnPDBy/3.jpg?20190417102900',
+  responseType: 'arraybuffer',
+  headers: {
+    referer: 'https://comic.pixiv.net',
+    origin: 'https://comic.pixiv.net',
+  },
+  onload: function(response) {
+    console.log('Image', response.response);
+  },
+  onerror: function(err) {
+    console.error(err);
+  },
 });
 
 /* global waitForElems */
 waitForElems({
-    sel: 'a.episode-list-item.horizontal[href^="/viewer/stories/"]',
-    onmatch: function (a) {
-        console.log('Chapter', a);
-    }
+  sel: 'a.episode-list-item.horizontal[href^="/viewer/stories/"]',
+  onmatch: function(a) {
+    console.log('Chapter', a);
+  },
 });
 
 // GM_registerMenuCommand('Download', function () {
 
 // });
 
-GM_addStyle('a.episode-list-item.horizontal[href^="/viewer/stories/"]{background-image:-webkit-gradient(linear,left top,right top,from(#ffc400),to(#fcec00));background-image:-webkit-linear-gradient(left,#ffc400,#fcec00);background-image:-o-linear-gradient(left,#ffc400,#fcec00);background-image:linear-gradient(to right,#ffc400,#fcec00)}');
+GM_addStyle(
+  'a.episode-list-item.horizontal[href^="/viewer/stories/"]{background-image:-webkit-gradient(linear,left top,right top,from(#ffc400),to(#fcec00));background-image:-webkit-linear-gradient(left,#ffc400,#fcec00);background-image:-o-linear-gradient(left,#ffc400,#fcec00);background-image:linear-gradient(to right,#ffc400,#fcec00)}'
+);
