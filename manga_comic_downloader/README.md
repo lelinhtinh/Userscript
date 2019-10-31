@@ -2,7 +2,7 @@
 
 Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 
-![manga comic downloader](screenshot/mangacomic.png)
+![manga comic downloader](https://github.com/lelinhtinh/Userscript/raw/master/manga_comic_downloader/screenshot/mangacomic.png)
 
 ## Hướng dẫn
 
