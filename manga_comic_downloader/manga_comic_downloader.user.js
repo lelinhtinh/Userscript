@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         1.14.2
+// @version         1.14.3
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -1051,10 +1051,10 @@ jQuery(function($) {
         $packer
           .next('script')
           .text()
-          .split('var _0xc320')[0]
+          .split('var ' + '_' + '0' + 'x' + 'c320')[0]
       );
       // eslint-disable-next-line no-undef
-      renderCanvasLH(_0x5f54, _0x5213, _0x52f5);
+      renderCanvasLH(eval('_' + '0' + 'x' + '5f54'), eval('_' + '0' + 'x' + '5213'), eval('_' + '0' + 'x' + '52f5'));
 
       $win.on('beforeunload', function() {
         return 'Progress is running...';
