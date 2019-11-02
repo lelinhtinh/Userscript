@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Xem online và tải phim trực tiếp tại Phim4400, bỏ qua quảng cáo.
 // @description:vi  Xem online và tải phim trực tiếp tại Phim4400, bỏ qua quảng cáo.
-// @version         1.0.2
+// @version         1.1.0
 // @icon            https://i.imgur.com/wRRkkqr.png
 // @author          lelinhtinh
 // @oujs:author     baivong
@@ -32,13 +32,20 @@
   }
 
   var btn = document.querySelector('.button-phim'),
-    link = btn.href;
+    link = document.querySelector('.fb-comments');
 
-  link = /(&|\?)url=([^&\s\n?#!]+)/.exec(link);
-  if (!link) return;
-  link = link[2];
-  if (!link) return;
-  link = atob(link);
-  btn.href = link;
+  if (link === null) return;
+  link = link.dataset.href;
+  if (link.indexOf('/phim/') === -1) return;
+
+  if (btn === null) {
+    btn = document.createElement('A');
+    btn.textContent = 'Tải Phim VIP';
+    document.querySelector('.button-info').appendChild(btn);
+  }
+
+  btn.className = 'button-phim uk-button uk-button-secondary uk-dropdown-right';
   btn.setAttribute('target', '_top');
+
+  btn.href = link;
 })();
