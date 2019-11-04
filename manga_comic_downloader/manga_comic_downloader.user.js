@@ -659,15 +659,19 @@ jQuery(function($) {
       name = configs.name;
 
     configs.href = $this.attr('href');
+    chapName = $this.text().trim();
 
-    if (!name) {
-      chapName = $this.text();
-    } else if (typeof name === 'function') {
-      chapName = name(_this);
-    } else {
-      chapName = $this.find(name).text();
+    if (typeof name === 'function') {
+      chapName = name(_this, chapName);
+    } else if (typeof name === 'string') {
+      chapName =
+        $(name)
+          .text()
+          .trim() +
+        ' ' +
+        chapName;
     }
-    chapName = $.trim(chapName);
+
     notyWait();
 
     GM.xmlHttpRequest({
@@ -1314,51 +1318,21 @@ jQuery(function($) {
     case 'beeng.net':
       configs = {
         link: '.manga-chapter a',
-        name: function(_this) {
-          return (
-            $('#site-title')
-              .text()
-              .trim() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: '#site-title',
         contents: '#image-load',
       };
       break;
     case 'hamtruyen.com':
       configs = {
         link: '.tenChapter a',
-        name: function(_this) {
-          return (
-            $('.tentruyen')
-              .text()
-              .trim() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: '.tentruyen',
         contents: '#content_chap',
       };
       break;
     case 'ntruyen.info':
       configs = {
         link: '.cellChapter a',
-        name: function(_this) {
-          return (
-            $('h1')
-              .text()
-              .trim() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: 'h1',
         init: getNtruyen,
       };
       break;
@@ -1391,17 +1365,7 @@ jQuery(function($) {
     case 'dammetruyen.com':
       configs = {
         link: '#chapter-list-flag a',
-        name: function(_this) {
-          return (
-            $('h1')
-              .text()
-              .trim() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: 'h1',
         contents: '#content_chap',
       };
       break;
@@ -1422,45 +1386,21 @@ jQuery(function($) {
     case 'hocvientruyentranh.net':
       configs = {
         link: '.table-scroll a',
-        name: function(_this) {
-          return (
-            $('.__name').text() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: '.__name',
         contents: '.manga-container',
       };
       break;
     case 'truyenhay24h.com':
       configs = {
         link: '.nano .chapname a',
-        name: function(_this) {
-          return (
-            $.trim($('.name_sp').text()) +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: '.name_sp',
         init: getTruyenHay24h,
       };
       break;
     case 'uptruyen.com':
       configs = {
         link: '#chapter_table a',
-        name: function(_this) {
-          return (
-            $('.breadcrumb a:last').text() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: '.breadcrumb a:last',
         contents: '#reader-box',
       };
       break;
@@ -1489,17 +1429,7 @@ jQuery(function($) {
     case 'm.hentailxx.com':
       configs = {
         link: '#listChuong .col-5 a',
-        name: function(_this) {
-          return (
-            $('h1.title-detail')
-              .text()
-              .trim() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: 'h1.title-detail',
         contents: '#content_chap',
       };
       break;
@@ -1507,16 +1437,7 @@ jQuery(function($) {
       configs = {
         link: '.listing a',
         name: function(_this) {
-          return (
-            $('.page-info h1')
-              .text()
-              .trim()
-              .split(' - ')[0] +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
+          return _this.title;
         },
         contents: '#image',
       };
@@ -1524,34 +1445,14 @@ jQuery(function($) {
     case 'otakusan.net':
       configs = {
         link: '.read-chapter a',
-        name: function(_this) {
-          return (
-            $('h1.header')
-              .text()
-              .trim() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: 'h1.header',
         init: getOtakuSan,
       };
       break;
     case 'ngonphongcomics.com':
       configs = {
         link: '.comic-intro .table-striped a',
-        name: function(_this) {
-          return (
-            $('.info-title')
-              .text()
-              .trim() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: '.info-title',
         contents: '.view-chapter',
         filter: true,
       };
@@ -1559,24 +1460,14 @@ jQuery(function($) {
     case 'www.nettruyen.com':
       configs = {
         link: '#nt_listchapter .row a',
-        name: function(_this) {
-          return (
-            $('.title-detail')
-              .text()
-              .trim() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: '.title-detail',
         contents: '.reading-detail.box_doc',
       };
       break;
     case 'www.hamtruyentranh.net':
       configs = {
         link: '#examples a',
-        name: function(_this) {
+        name: function(_this, chap) {
           var $this = $(_this);
           $this.find('span').remove();
           return (
@@ -1584,9 +1475,7 @@ jQuery(function($) {
               .text()
               .trim() +
             ' ' +
-            $(_this)
-              .text()
-              .trim()
+            chap
           );
         },
         contents: '.each-page',
@@ -1595,17 +1484,7 @@ jQuery(function($) {
     case 'gocthugian.com.vn':
       configs = {
         link: '.ChI a',
-        name: function(_this) {
-          return (
-            $('h1')
-              .text()
-              .trim() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: 'h1',
         contents: '#ctl14_PC',
       };
       break;
@@ -1630,51 +1509,21 @@ jQuery(function($) {
     case 'truyensieuhay.com':
       configs = {
         link: '#chapter-list-flag a',
-        name: function(_this) {
-          return (
-            $('h1')
-              .text()
-              .trim() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: 'h1',
         init: getTruyenSieuHay,
       };
       break;
     case 'truyenchon.com':
       configs = {
         link: '#nt_listchapter .chapter a',
-        name: function(_this) {
-          return (
-            $('h1')
-              .text()
-              .trim() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: 'h1',
         contents: '.reading-detail',
       };
       break;
     case 'truyentranhaz.net':
       configs = {
         link: '#tab-chapper a',
-        name: function(_this) {
-          return (
-            $('h1')
-              .text()
-              .trim() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: 'h1',
         contents: '.chapter-content:not([id])',
         filter: true,
       };
@@ -1682,17 +1531,7 @@ jQuery(function($) {
     case 'truyenqq.com':
       configs = {
         link: '.works-chapter-list a',
-        name: function(_this) {
-          return (
-            $('h1')
-              .text()
-              .trim() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: 'h1',
         contents: '.story-see-content',
       };
       break;
@@ -1700,34 +1539,14 @@ jQuery(function($) {
       configs = {
         reverse: false,
         link: '#list-chapter a[href^="https://sachvui.com/doc-sach/"]',
-        name: function(_this) {
-          return (
-            $('h1.ebook_title')
-              .text()
-              .trim() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: 'h1.ebook_title',
         contents: '.noi_dung_online',
       };
       break;
     case 'hentaicube.net':
       configs = {
         link: '.wp-manga-chapter a',
-        name: function(_this) {
-          return (
-            $('h1')
-              .text()
-              .trim() +
-            ' ' +
-            $(_this)
-              .text()
-              .trim()
-          );
-        },
+        name: 'h1',
         contents: '.reading-content',
       };
       break;
