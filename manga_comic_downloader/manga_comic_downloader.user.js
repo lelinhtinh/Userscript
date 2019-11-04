@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         1.14.4
+// @version         1.14.5
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -126,15 +126,17 @@ jQuery(function($) {
     'i.blogtruyen.com': 'https://blogtruyen.com',
     'truyen.cloud': 'http://www.nettruyen.com',
     'proxy.truyen.cloud': 'http://www.nettruyen.com',
+    'upload.upanhmoi.net': 'https://upanhmoi.net',
     'upload2.upanhmoi.net': 'https://upanhmoi.net',
     'upload3.upanhmoi.net': 'https://upanhmoi.net',
     'img1.upanhmoi.net': 'https://upanhmoi.net',
     'img2.upanhmoi.net': 'https://upanhmoi.net',
-    'proxy1.ttmanga.com': 'https://ttmanga.com/',
-    'proxy2.ttmanga.com': 'https://ttmanga.com/',
-    'proxy3.ttmanga.com': 'https://ttmanga.com/',
+    'proxy1.ttmanga.com': 'https://ttmanga.com',
+    'proxy2.ttmanga.com': 'https://ttmanga.com',
+    'proxy3.ttmanga.com': 'https://ttmanga.com',
     'cdn.lhmanga.com': 'https://truyentranhlh.net',
     'cdn1.lhmanga.com': 'https://truyentranhlh.net',
+    'storage.fshare.vn': 'https://truyentranh.net',
   };
 
   /* === DO NOT CHANGE === */
