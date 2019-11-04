@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         1.14.3
+// @version         1.14.4
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -35,7 +35,7 @@
 // @include         /^https?:\/\/truyen1\.net\/TruyenTranh\/[^\/]+\/?((\?|#).+)?$/
 // @include         /^https?:\/\/bigtruyen\.info\/[^\/]+\/((\?|#).+)?$/
 // @exclude         /^https?:\/\/bigtruyen\.info\/(danh-sach-truyen|truyen-hot|)\/((\?|#).+)?$/
-// @include         /^https?:\/\/(www\.)?hentailxx?\.com\/story\/view\.php\?id=\d+((\&|#).+)?$/
+// @include         /^https?:\/\/((www|m)\.)?hentailxx\.com\/story\/view\.php\?id=\d+((\&|#).+)?$/
 // @include         /^https?:\/\/hentaivn\.net\/\d+\-[^\.]+\.html((\?|#).+)?$/
 // @include         /^https?:\/\/otakusan\.net\/MangaDetail\/\d+\/[^\/\.]+\/?((\?|#).+)?$/
 // @include         /^https?:\/\/ngonphongcomics\.com\/[^\/]+\/?((\?|#).+)?$/
@@ -304,8 +304,8 @@ jQuery(function($) {
 
     noty('<strong>' + chapName + '</strong> đang lấy dữ liệu...', 'warning');
 
-    dlAll = dlAll.filter(function(e) {
-      return e !== configs.href;
+    dlAll = dlAll.filter(function(l) {
+      return configs.href.indexOf(l) === -1;
     });
 
     $(configs.link + '[href="' + configs.href + '"]').css({
@@ -338,8 +338,8 @@ jQuery(function($) {
         var _link = $(this).attr('href');
 
         if (e.ctrlKey && e.shiftKey) {
-          dlAll = dlAll.filter(function(e) {
-            return e !== _link;
+          dlAll = dlAll.filter(function(l) {
+            return _link.indexOf(l) === -1;
           });
 
           $(configs.link + '[href="' + _link + '"]').css({
@@ -380,9 +380,8 @@ jQuery(function($) {
     if (inProgress || inAuto) return;
     if (!inCustom && !dlAll.length) dlAllGen();
     if (!dlAll.length) return;
-
     inAuto = true;
-    $(configs.link + '[href="' + dlAll[0] + '"]').trigger('contextmenu');
+    $(configs.link + '[href*="' + dlAll[0] + '"]').trigger('contextmenu');
   }
 
   function downloadAllOne() {
@@ -408,7 +407,7 @@ jQuery(function($) {
 
     if (inAuto) {
       if (dlAll.length) {
-        $(configs.link + '[href="' + dlAll[0] + '"]').trigger('contextmenu');
+        $(configs.link + '[href*="' + dlAll[0] + '"]').trigger('contextmenu');
       } else {
         inAuto = false;
         inCustom = false;
@@ -1487,11 +1486,14 @@ jQuery(function($) {
     case 'hentailx.com':
     case 'hentailxx.com':
     case 'www.hentailxx.com':
+    case 'm.hentailxx.com':
       configs = {
         link: '#listChuong .col-5 a',
         name: function(_this) {
           return (
-            $('h1.title-detail').text() +
+            $('h1.title-detail')
+              .text()
+              .trim() +
             ' ' +
             $(_this)
               .text()

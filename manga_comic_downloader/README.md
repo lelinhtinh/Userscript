@@ -1,4 +1,4 @@
-# Manga Comic downloader
+# Manga Comic Downloader
 
 Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 
@@ -46,7 +46,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 17. <http://thichtruyentranh.com/>
 18. <http://truyen1.net/>
 19. <https://bigtruyen.info/>
-20. <http://hentailx.com/>, <http://hentailxx.com/>
+20. <http://hentailxx.com/>, <http://m.hentailxx.com/>
 21. <https://hentaivn.net/>
 22. <https://otakusan.net/Manga>
 23. <https://ngonphongcomics.com/>
