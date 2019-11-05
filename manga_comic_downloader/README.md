@@ -67,8 +67,9 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 
 ### Mobile
 
-1. <http://m.hentailxx.com/>
-2. <https://hentaivn.net/>
+1. <http://m.truyentranh8.com/>, <http://m.truyentranh8.net/>, <http://m.truyentranh8.org/>, <http://m.truyentranhtam.com/>, <http://m.truyentranh869.com/>
+2. <http://m.hentailxx.com/>
+3. <https://hentaivn.net/>
 
 ## Video từng bước cài đặt
 

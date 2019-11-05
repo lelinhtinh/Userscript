@@ -8,9 +8,8 @@
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
-// @include         /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh8\.com|truyentranh869\.com)\/[^\/]+\/((\?|#).+)?$/
-// @include         /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh8\.com|truyentranh869\.com)\/\/?manga\/\d+\-[^\/]+\/[^\/]+\/((\?|#).+)?$/
-// @exclude         /^https?:\/\/(truyentranhtam\.com|truyentranh8\.org|truyentranh8\.com|truyentranh869\.com)\/(vechai|truyen_tranh_tuan|danh_sach_truyen|truyen_xem_nhieu|trai|gai|quanly|TinhTrang|LoaiTruyen|TheLoai|DoTuoi|u|lich)\/((\?|#).+)?$/
+// @include         /^https?:\/\/(m\.)?(truyentranhtam\.com|truyentranh8\.org|truyentranh8\.com|truyentranh869\.com)\/[^\/]+\/((\?|#).+)?$/
+// @include         /^https?:\/\/(m\.)?(truyentranhtam\.com|truyentranh8\.org|truyentranh8\.com|truyentranh869\.com)\/\/?manga\/\d+\-[^\/]+\/[^\/]+\/((\?|#).+)?$/
 // @include         /^https?:\/\/iutruyentranh\.com\/truyen\/\d+\-[\w\-]+\/?((\?|#).+)?$/
 // @include         /^https?:\/\/(www\.)?truyentranh\.net\/[^\/]+\/?((\?|#).+)?$/
 // @include         /^https?:\/\/(comicvn|beeng)\.net\/truyen\-tranh(\-online)?\/[^\/]+\-\d+\/?((\?|#).+)?$/
@@ -724,8 +723,8 @@ jQuery(function($) {
   function getTruyenTranh8() {
     getSource(function($data) {
       var packer = $data
-          .find('#logoTT8')
-          .siblings('script')
+          .find('#logoTT8,center')
+          .siblings('script:first')
           .text()
           .trim()
           .split('eval')[1],
@@ -1296,6 +1295,15 @@ jQuery(function($) {
               .trim()
           );
         },
+        init: getTruyenTranh8,
+      };
+      break;
+    case 'm.truyentranhtam.com':
+    case 'm.truyentranh8.org':
+    case 'm.truyentranh869.com':
+      configs = {
+        link: '.chapter-link',
+        name: 'h1',
         init: getTruyenTranh8,
       };
       break;
