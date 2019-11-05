@@ -1436,15 +1436,22 @@ jQuery(function($) {
       };
       break;
     case 'hentaivn.net':
-      configs = {
-        link: '.listing a',
-        name: function(_this) {
-          return $(_this)
-            .find('.chuong_t')
-            .attr('title');
+      configs = [
+        {
+          link: '.listing a',
+          name: function(_this) {
+            return $(_this)
+              .find('.chuong_t')
+              .attr('title');
+          },
+          contents: '#image',
         },
-        contents: '#image',
-      };
+        {
+          link: '.episodes a',
+          name: '[itemprop="name"] b',
+          contents: '#image',
+        },
+      ];
       break;
     case 'otakusan.net':
       configs = {
