@@ -115,6 +115,7 @@ jQuery(function($) {
     'qqtaku.com',
     'qqtaku.net',
     'trangshop.net',
+    '.beeng.net',
   ];
 
   /**
