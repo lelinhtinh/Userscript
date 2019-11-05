@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         1.14.5
+// @version         2.0.0
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -13,8 +13,7 @@
 // @include         /^https?:\/\/iutruyentranh\.com\/truyen\/\d+\-[\w\-]+\/?((\?|#).+)?$/
 // @include         /^https?:\/\/(www\.)?truyentranh\.net\/[^\/]+\/?((\?|#).+)?$/
 // @include         /^https?:\/\/(comicvn|beeng)\.net\/truyen\-tranh(\-online)?\/[^\/]+\-\d+\/?((\?|#).+)?$/
-// @include         /^https?:\/\/hamtruyen\.com\/[^\/\.]+\.html\/?((\?|#).+)?$/
-// @exclude         /^https?:\/\/hamtruyen\.com\/(dangky|quenmatkhau)\/((\?|#).+)?$/
+// @include         /^https?:\/\/((www|m)\.)?hamtruyen\.com\/[^\/\.]+\.html\/?((\?|#).+)?$/
 // @include         /^https?:\/\/ntruyen\.info\/truyen\/[^\/\.]+\/?((\?|#).+)?$/
 // @include         /^https?:\/\/www\.a3manga\.com\/truyen\-tranh\/[^\/]+\/?((\?|#).+)?$/
 // @include         /^https?:\/\/truyentranhtuan\.com\/([^\/](?!\-chuong\-\d+))+\/?((\?|#).+)?$/
@@ -1334,8 +1333,16 @@ jQuery(function($) {
       };
       break;
     case 'hamtruyen.com':
+    case 'www.hamtruyen.com':
       configs = {
         link: '.tenChapter a',
+        name: '.tentruyen',
+        contents: '#content_chap',
+      };
+      break;
+    case 'm.hamtruyen.com':
+      configs = {
+        link: '.list-chap a',
         name: '.tentruyen',
         contents: '#content_chap',
       };
