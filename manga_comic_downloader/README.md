@@ -27,6 +27,8 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 
 ## Danh sách host hỗ trợ
 
+### Desktop
+
 1. <http://truyentranh8.com/>, <http://truyentranh8.net/>, <http://truyentranh8.org/>, <http://truyentranhtam.com/>, <http://truyentranh869.com/>
 2. <http://iutruyentranh.com/>
 3. <http://truyentranh.net/>
@@ -46,7 +48,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 17. <http://thichtruyentranh.com/>
 18. <http://truyen1.net/>
 19. <https://bigtruyen.info/>
-20. <http://hentailxx.com/>, <http://m.hentailxx.com/>
+20. <http://hentailxx.com/>
 21. <https://hentaivn.net/>
 22. <https://otakusan.net/Manga>
 23. <https://ngonphongcomics.com/>
@@ -62,6 +64,11 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 33. <https://truyenqq.com/>
 34. <https://sachvui.com/the-loai/truyen-tranh.html>
 35. <https://hentaicube.net/>
+
+### Mobile
+
+1. <http://m.hentailxx.com/>
+2. <https://hentaivn.net/>
 
 ## Video từng bước cài đặt
 

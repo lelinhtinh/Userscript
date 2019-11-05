@@ -1559,6 +1559,12 @@ jQuery(function($) {
       break;
   }
 
+  if (Array.isArray(configs)) {
+    var isMobile = /mobi|android|touch|mini/i.test(navigator.userAgent.toLowerCase());
+    configs = configs[isMobile ? 1 : 0];
+  }
+  if (!configs) return;
+
   configs = $.extend(configsDefault, configs);
   configs.init();
 });
