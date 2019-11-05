@@ -1439,7 +1439,9 @@ jQuery(function($) {
       configs = {
         link: '.listing a',
         name: function(_this) {
-          return _this.title;
+          return $(_this)
+            .find('.chuong_t')
+            .attr('title');
         },
         contents: '#image',
       };
