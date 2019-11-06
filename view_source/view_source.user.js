@@ -4,7 +4,7 @@
 // @namespace       devs.forumvi.com
 // @description     View and beautify page source. Shortcut: Alt+U.
 // @description:vi  Định dạng và làm đẹp mã nguồn trang web. Phím tắt: Alt+U.
-// @version         3.2.3
+// @version         3.2.4
 // @icon            http://i.imgur.com/6yZMOeH.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -101,7 +101,7 @@
         ')()',
       ],
       {
-        type: 'text/javascript',
+        type: 'application/javascript',
       }
     )
   );
@@ -152,7 +152,7 @@
     .then(function(style) {
       GM_addStyle(
         '*{margin:0;padding:0}html{line-height:1em;background:#1d1f21;color:#c5c8c6}pre{white-space:pre-wrap;word-wrap:break-word;word-break:break-all}' +
-          style
+          style + 'a{color:#29B6F6}a:hover,a:focus{color:#1E88E5}a:visited,a:active{color:#1565C0}'
       );
     });
 

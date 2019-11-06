@@ -4,7 +4,7 @@
 // @namespace       http://devs.forumvi.com
 // @description     Beautify and syntax highlighting for source code JavaScript, JSON, CSS.
 // @description:vi  Định dạng và làm đẹp mã nguồn JavaScript, JSON, CSS.
-// @version         3.2.3
+// @version         3.2.4
 // @icon            http://i.imgur.com/kz8nqz1.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -88,7 +88,7 @@
         ')()',
       ],
       {
-        type: 'text/javascript',
+        type: 'application/javascript',
       }
     )
   );
