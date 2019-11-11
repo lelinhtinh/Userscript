@@ -32,11 +32,11 @@ const configs = {
     tags: '.info [itemprop="genre"]',
     cover: '.book [itemprop="image"]',
     first: '.list-chapter a',
-    next: '#next_chap',
     chapter: {
       id: '{{ id }}/',
       title: '.chapter-title',
       content: '#chapter-c',
+      next: '#next_chap',
     },
   },
   /**
@@ -51,12 +51,12 @@ const configs = {
     tags: 'selector', // optional
     cover: 'selector', // optional
     first: 'selector',
-    next: 'selector',
     total: 'selector', // optional
     chapter: {
       id: 'chuong-{{ id }}',
       title: 'selector',
       content: 'selector',
+      next: 'selector',
     },
     placement: 'top-right', // top-left|top-right|bottom-left|bottom-left
   },
@@ -65,14 +65,14 @@ const configs = {
 /* === DO NOT CHANGE === */
 const DEBUG = 3;
 
-function debug(obj, level = 1) {
+function debug(name, obj, level = 1) {
   if (!DEBUG || typeof DEBUG !== 'number' || typeof level !== 'number' || level > 3 || level < 1) return;
   if (level > DEBUG) return;
 
   const clone = () => {
     if (Array.isArray(obj)) {
       return Object.assign([], obj);
-    } else if (typeof obj === 'object' && obj !== null && !(obj instanceof RegExp)) {
+    } else if (obj.constructor === Object) {
       return Object.assign({}, obj);
     }
     return obj;
@@ -83,15 +83,15 @@ function debug(obj, level = 1) {
     2: '#ecac43',
     3: '#fe2c32',
   };
-  console.log('%cNovel Downloader', 'color:' + palette[level], clone());
+  console.log('%c' + name, 'color:' + palette[level], clone());
 }
 
 function showError(mess) {
-  debug(mess, 2);
+  debug('Error', mess, 2);
 }
 
 function showFatal(mess) {
-  debug(mess, 3);
+  debug('Fatal', mess, 3);
   throw mess;
 }
 
@@ -103,8 +103,10 @@ function cleanSource(ele) {
 }
 
 function saveEpub(e) {
-  e.preventDefault();
-  e.stopPropagation();
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
 }
 
 function readSelector(
@@ -115,10 +117,8 @@ function readSelector(
     attr: false,
   }
 ) {
-  debug(selector);
   if (typeof selector === 'string') {
     try {
-      debug(opts);
       if (opts.multi) {
         let temp = [];
         document.querySelectorAll(selector).forEach(ele => {
@@ -141,16 +141,53 @@ function readSelector(
     return null;
   } else if (typeof selector === 'function') {
     const result = selector();
-    debug(result);
     return result;
   }
   showFatal(selector);
 }
 
-function createEpub(e) {
-  e.preventDefault();
-  e.stopPropagation();
+function getChapter() {
+  if (!novel.next) novel.next = novel.first;
+  debug('Chapter URL', novel.next);
+  fetch(novel.next)
+    .then(res => res.text())
+    .then(res => {
+      const parser = new DOMParser();
+      return parser.parseFromString(res, 'text/html');
+    })
+    .then(res => {
+      let title = res.querySelector(novel.chapter.title);
+      debug('Chapter title', title);
+      let content = res.querySelector(novel.chapter.content);
+      debug('Chapter content', content);
+      let next = res.querySelector(novel.chapter.next);
+      debug('Chapter next', next);
+
+      if (content === null) {
+        showError('Rỗng');
+      } else {
+        content = content.innerHTML;
+      }
+
+      if (title === null) {
+        title = content.match(/(Chương .+?)(<|\n)/i);
+        title = title === null ? 'Không đề' : title[1].trim();
+      } else {
+        title = title.textContent.trim();
+      }
+
+      if (!next || !next.href || !novel.chapter.patt.test(next.href)) {
+        saveEpub();
+        return;
+      }
+      next = next.href;
+    });
+}
+
+function genEpub() {
   $download.removeEventListener('click', createEpub);
+  $download.removeEventListener('contextmenu', setChapterBegin);
+  $download.addEventListener('click', saveEpub);
 
   const props = {
     title: novel.title,
@@ -162,15 +199,32 @@ function createEpub(e) {
 
   jepub = new jEpub();
   jepub.init(props).uuid(novel.credit);
-  debug(jepub);
+  debug('jEpub', jepub);
 
-  $download.addEventListener('click', saveEpub);
+  GM.xmlHttpRequest({
+    method: 'GET',
+    url: novel.cover,
+    responseType: 'arraybuffer',
+    onload: function(response) {
+      jepub.cover(response.response);
+    },
+    onerror: function(err) {
+      console.error(err);
+    },
+  });
+
+  getChapter();
+}
+
+function createEpub(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  genEpub();
 }
 
 function setChapterBegin(e) {
   e.preventDefault();
   e.stopPropagation();
-  $download.removeEventListener('contextmenu', setChapterBegin);
 
   if (!novel.chapter.id) {
     showError('Không có cấu hình Chapter ID');
@@ -178,14 +232,8 @@ function setChapterBegin(e) {
   }
 
   let chapId = novel.first.replace(novel.credit, '');
-  debug(chapId);
   try {
-    let patt = novel.chapter.id.replace(/([./?|()'"$*^])/g, '\\$1');
-    patt = patt.replace(/\{\{\s*id\s*\}\}/i, '(.+?)');
-    patt = new RegExp(patt);
-    debug(patt);
-    chapId = chapId.match(patt)[1];
-    debug(chapId);
+    chapId = chapId.match(novel.chapter.patt)[1];
   } catch (e) {
     showFatal('Cấu hình Chapter ID không đúng');
   }
@@ -194,7 +242,9 @@ function setChapterBegin(e) {
   if (beginId !== null) chapId = beginId;
 
   novel.first = novel.credit + novel.chapter.id.replace(/\{\{\s*id\s*\}\}/i, chapId);
-  debug(novel.first);
+  debug('URL first', novel.first);
+
+  genEpub();
 }
 
 function init() {
@@ -204,7 +254,14 @@ function init() {
   novel = configs[location.host];
   if (!novel) return;
 
-  if (!novel.title || !novel.first || !novel.next || !novel.chapter || !novel.chapter.title || !novel.chapter.content) {
+  if (
+    !novel.title ||
+    !novel.first ||
+    !novel.chapter ||
+    !novel.chapter.title ||
+    !novel.chapter.content ||
+    !novel.chapter.next
+  ) {
     showFatal('Cấu hình không hợp lệ');
   }
 
@@ -219,7 +276,12 @@ function init() {
   novel.description = readSelector(novel.description, { html: true });
   novel.tags = readSelector(novel.tags, { multi: true });
   novel.cover = readSelector(novel.cover, { attr: 'src' });
-  debug(novel);
+
+  let patt = novel.chapter.id.replace(/([./?|()'"$*^])/g, '\\$1');
+  patt = patt.replace(/\{\{\s*id\s*\}\}/i, '(.+?)');
+  patt = new RegExp(patt);
+  novel.chapter.patt = patt;
+  debug('Novel', novel);
 
   $download = document.createElement('a');
   $download.id = 'novelDownloaderButton';
@@ -231,7 +293,7 @@ function init() {
   $download.addEventListener('contextmenu', setChapterBegin);
 
   document.body.appendChild($download);
-  debug($download);
+  debug('Download button', $download);
 }
 
 /**
