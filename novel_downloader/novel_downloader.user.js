@@ -10,6 +10,7 @@
 // @oujs:author     baivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
 // @match           https://truyenfull.vn/*
+// @match           https://truyenvkl.com/*
 // @require         https://unpkg.com/jszip@3.2.1/dist/jszip.min.js
 // @require         https://unpkg.com/ejs@2.6.1/ejs.min.js
 // @require         https://unpkg.com/jepub@2.1.1/dist/jepub.min.js
@@ -17,6 +18,7 @@
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect         self
+// @connect         imgur.com
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
 // @run-at          document-end
 // @grant           GM_xmlhttpRequest
@@ -24,6 +26,20 @@
 // ==/UserScript==
 
 const configs = {
+  'truyenvkl.com': {
+    title: '.info .entry-title',
+    author: '.info .author',
+    description: '#gioithieu',
+    tags: '.info .tags',
+    cover: '.cover img',
+    first: '.info .btns .primary-btn',
+    chapter: {
+      id: '{{ id }}',
+      title: '#bookMain .bookHeading',
+      content: '#bookMain .bookContent',
+      next: '.nextchap',
+    },
+  },
   'truyenfull.vn': {
     title: '.title[itemprop="name"]',
     author: '.info [itemprop="author"]',
