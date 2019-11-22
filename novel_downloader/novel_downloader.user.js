@@ -70,6 +70,8 @@ function debug(name, obj, level = 1) {
   if (level > DEBUG) return;
 
   const clone = () => {
+    if (obj === null) return null;
+    if (obj === undefined) return undefined;
     if (Array.isArray(obj)) {
       return Object.assign([], obj);
     } else if (obj.constructor === Object) {
@@ -143,7 +145,7 @@ function readSelector(
     const result = selector();
     return result;
   }
-  showFatal(selector);
+  return null;
 }
 
 function getChapter() {
