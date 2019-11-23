@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.0.0
+// @version         2.0.1
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -43,7 +43,7 @@
 // @include         /^https?:\/\/gocthugian\.com\.vn\/truyen\/(t|v)\d+\/((\?|#).+)?$/
 // @include         /^https?:\/\/ttmanga\.com\/Manga\/[\w\-]+\-\d+((\?|#).+)?$/
 // @include         /^https?:\/\/truyen\.vnsharing\.site\/index\/read\/\d+\/\d+\/[^\/]+\/?((\?|#).+)?$/
-// @include         /^https?:\/\/blogtruyen\.com\/\d+\/[^\/]+\/?((\?|#).+)?$/
+// @include         /^https?:\/\/blogtruyen\.(com|vn)\/\d+\/[^\/]+\/?((\?|#).+)?$/
 // @include         /^https?:\/\/truyensieuhay\.com\/[^\/\.]+.html\/?((\?|#).+)?$/
 // @include         /^https?:\/\/truyenchon\.com\/truyen\/[^\/]+\/?((\?|#).+)?$/
 // @include         /^https?:\/\/truyentranhaz\.net\/truyen\-[^\/\.]+\.html\/?((\?|#).+)?$/
@@ -1528,6 +1528,7 @@ jQuery(function($) {
       };
       break;
     case 'blogtruyen.com':
+    case 'blogtruyen.vn':
       configs = {
         link: '#list-chapters .title a',
         contents: '#content',
