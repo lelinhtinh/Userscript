@@ -71,6 +71,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 2. <https://m.hamtruyen.com/>
 3. <http://m.hentailxx.com/>
 4. <https://hentaivn.net/>
+5. <https://m.blogtruyen.com/>, <https://m.blogtruyen.vn/>
 
 ## Video từng bước cài đặt
 
