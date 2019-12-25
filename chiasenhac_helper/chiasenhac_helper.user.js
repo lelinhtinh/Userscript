@@ -4,15 +4,19 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Download lossless music directly on ChiaSeNhac, bypass sharing dialog.
 // @description:vi  Tải nhạc lossless trực tiếp tại ChiaSeNhac, không cần đăng nhập hoặc chia sẻ lên MXH.
-// @version         1.2.2
+// @version         1.2.3
 // @icon            https://i.imgur.com/HLqWP3g.png
 // @author          lelinhtinh
 // @oujs:author     baivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
 // @match           https://chiasenhac.vn/*
 // @match           https://*.chiasenhac.vn/*
+// @match           https://chiasenhac.com/*
+// @match           https://*.chiasenhac.com/*
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
+// @connect         chiasenhac.vn
+// @connect         chiasenhac.com
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
 // @run-at          document-idle
 // @grant           GM.xmlHttpRequest
