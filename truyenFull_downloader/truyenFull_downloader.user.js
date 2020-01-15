@@ -4,20 +4,13 @@
 // @namespace       https://baivong.github.io/
 // @description     Tải truyện từ TruyenFull định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenFull định dạng EPUB.
-// @version         4.6.3
+// @version         4.6.4
 // @icon            https://i.imgur.com/FQY8btq.png
 // @author          Zzbaivong
 // @oujs:author     baivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
-// @include         https://truyenfull.vn/*
-// @exclude         https://truyenfull.vn/
-// @exclude         https://truyenfull.vn/*/chuong-*
-// @exclude         https://truyenfull.vn/danh-sach/*
-// @exclude         https://truyenfull.vn/the-loai/*
-// @exclude         https://truyenfull.vn/tac-gia/*
-// @exclude         https://truyenfull.vn/contact/
-// @exclude         https://truyenfull.vn/tos/
-// @exclude         https://truyenfull.vn/sitemap.xml
+// @match           https://truyenfull.vn/*/
+// @match           https://truyenfull.net/*/
 // @require         https://code.jquery.com/jquery-3.4.1.min.js
 // @require         https://unpkg.com/jszip@3.2.1/dist/jszip.min.js
 // @require         https://unpkg.com/ejs@2.6.1/ejs.min.js
@@ -25,7 +18,8 @@
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
-// @connect         truyenfull.vn
+// @connect         self
+// @connect         8cache.com
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
 // @run-at          document-idle
 // @grant           GM_xmlhttpRequest
