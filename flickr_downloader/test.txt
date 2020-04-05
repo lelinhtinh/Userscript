@@ -1,0 +1,11 @@
+https://api.flickr.com/services/rest?extras=url_z%2Curl_c%2Curl_l%2Curl_h%2Curl_k%2Curl_3k%2Curl_4k%2Curl_f%2Curl_5k%2Curl_6k%2Curl_o&per_page=150&page=2&photoset_id=72157713457928842&method=flickr.photosets.getPhotos&api_key=8a744ea37344360eb74ffa8dfcb80718&format=json&nojsoncallback=1
+
+pages
+
+page=500
+
+document.querySelector('.modelExport').textContent.match(/"countPhotosPublic":(\d+?),"id":"(\d+?)"/)
+
+api_key=YUI_config.flickr.api.site_key
+
+{"stat":"fail","code":1,"message":"Photoset not found"}
