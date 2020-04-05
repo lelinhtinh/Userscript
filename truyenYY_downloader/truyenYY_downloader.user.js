@@ -4,7 +4,7 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenYY định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenYY định dạng EPUB.
-// @version         4.7.4
+// @version         4.7.5
 // @icon            https://i.imgur.com/1HkQv2b.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -55,10 +55,12 @@
 
   function downloadError(mess, err) {
     downloadStatus('danger');
+    if (err) console.error(mess);
+    if(!chapTitle) return;
+
     titleError.push(chapTitle);
     if (errorAlert) errorAlert = confirm('Lỗi! ' + mess + '\nBạn có muốn tiếp tục nhận cảnh báo?');
 
-    if (err) console.error(mess);
     return '<p class="no-indent"><a href="' + referrer + chapId + '">' + mess + '</a></p>';
   }
 
@@ -183,6 +185,7 @@
         }
       })
       .fail(function(err) {
+        chapTitle = null;
         downloadError('Kết nối không ổn định', err);
         saveEbook();
       });
