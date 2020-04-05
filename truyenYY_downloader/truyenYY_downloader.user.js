@@ -4,16 +4,16 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenYY định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenYY định dạng EPUB.
-// @version         4.7.3
+// @version         4.7.4
 // @icon            https://i.imgur.com/1HkQv2b.png
 // @author          Zzbaivong
 // @oujs:author     baivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
 // @match           https://truyenyy.com/truyen/*/
 // @require         https://code.jquery.com/jquery-3.4.1.min.js
-// @require         https://unpkg.com/jszip@3.2.1/dist/jszip.min.js
-// @require         https://unpkg.com/ejs@2.6.1/ejs.min.js
-// @require         https://unpkg.com/jepub@2.1.1/dist/jepub.min.js
+// @require         https://unpkg.com/jszip@3.3.0/dist/jszip.min.js
+// @require         https://unpkg.com/ejs@2.7.4/ejs.min.js
+// @require         https://unpkg.com/jepub@2.1.3/dist/jepub.min.js
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
@@ -143,6 +143,8 @@
         } else {
           if ($chapter.find('#btn_buy').length) {
             chapContent = downloadError('Chương VIP');
+          } else if ($chapter.find('a[href="/register/"]').length) {
+            chapContent = downloadError('Chương yêu cầu đăng nhập');
           } else {
             var $img = $chapter.find('img');
             if ($img.length)
