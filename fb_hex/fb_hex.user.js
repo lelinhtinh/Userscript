@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Convert HEX to text, in a post or comment on Facebook.
 // @description:vi  Chuyển đổi HEX thành URL hoặc text, trong bài viết hoặc bình luận trên Facebook.
-// @version         0.9.1
+// @version         0.9.2
 // @icon            https://i.imgur.com/oz5CjJe.png
 // @author          lelinhtinh
 // @oujs:author     baivong
@@ -19,7 +19,7 @@
 // ==/UserScript==
 
 /**
- * If `true`, open in new tab after clicking on decoded link.
+ * If `false`, open in new tab after clicking on decoded link.
  * @type {boolean} true or false
  */
 const COPY_ONLY = false;
@@ -129,7 +129,7 @@ function handle(post) {
     <strong
       class="fb-hex${validURL(result) ? ' fb-hex-link' : ''}"
       title="Copied to clipboard${COPY_ONLY ? '' : '\nClick to open in new tab'}"
-      ${COPY_ONLY ? '' : ' style="cursor:pointer"'}
+      style="cursor:pointer"
     >${result}</strong>
     `
   );
