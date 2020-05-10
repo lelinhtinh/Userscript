@@ -32,7 +32,7 @@ function addCssToDocument(css) {
 function downloadImage(ori, callback) {
   const canvas = document.createElement('canvas');
   canvas.width = ori.width;
-  canvas.height = ori.height;
+  canvas.height = ori.height - 103;
 
   const context = canvas.getContext('2d');
   context.fillStyle = ori.style.backgroundColor;
