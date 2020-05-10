@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Download Mother’s Day card, created by Google Doodle.
 // @description:vi  Tải thiệp Ngày Của Mẹ, được tạo bởi Google Doodle.
-// @version         1.0.0
+// @version         1.0.1
 // @icon            https://i.imgur.com/MJayIyA.png
 // @author          lelinhtinh
 // @oujs:author     baivong
@@ -29,6 +29,7 @@ function addCssToDocument(css) {
   document.head.appendChild(style);
 }
 
+let recentUrl = null;
 function downloadImage(ori, callback) {
   const canvas = document.createElement('canvas');
   canvas.width = ori.width;
@@ -40,20 +41,22 @@ function downloadImage(ori, callback) {
 
   ori.toBlob(blob => {
     const image = new Image();
-    const url = URL.createObjectURL(blob);
+    const oriUrl = URL.createObjectURL(blob);
 
     image.onload = () => {
       context.drawImage(image, 0, 0);
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(oriUrl);
 
       canvas.toBlob(function(blob) {
         saveAs(blob, IMG_NAME);
         context.clearRect(0, 0, canvas.width, canvas.height);
-        callback(URL.createObjectURL(blob));
+
+        if (recentUrl) URL.revokeObjectURL(recentUrl);
+        recentUrl = URL.createObjectURL(blob);
+        callback(recentUrl);
       });
     };
-
-    image.src = url;
+    image.src = oriUrl;
   });
 }
 
