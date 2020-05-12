@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Download Mother’s Day card, created by Google Doodle.
 // @description:vi  Tải thiệp Ngày Của Mẹ, được tạo bởi Google Doodle.
-// @version         1.0.1
+// @version         1.1.0
 // @icon            https://i.imgur.com/MJayIyA.png
 // @author          lelinhtinh
 // @oujs:author     baivong
@@ -18,6 +18,20 @@
 // @grant           none
 // ==/UserScript==
 
+/**
+ * Export image or video
+ * @type {String} image|video
+ */
+const EXPORT = 'video';
+
+/**
+ * Set filename to be downloaded
+ * @type {String}
+ */
+const FILENAME = 'mothersday20';
+
+/* === DO NOT CHANGE === */
+
 /* global SelectorSet, SelectorObserver */
 function insertAfter(referenceNode, newNode) {
   referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
@@ -30,33 +44,81 @@ function addCssToDocument(css) {
 }
 
 let recentUrl = null;
-function downloadImage(ori, callback) {
-  const canvas = document.createElement('canvas');
-  canvas.width = ori.width;
-  canvas.height = ori.height - 103;
+function download(blob, ext) {
+  const fileName = `${FILENAME}.${ext}`;
 
-  const context = canvas.getContext('2d');
-  context.fillStyle = ori.style.backgroundColor;
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  saveAs(blob, `${FILENAME}.${ext}`);
+  if (recentUrl) URL.revokeObjectURL(recentUrl);
+  recentUrl = URL.createObjectURL(blob);
 
-  ori.toBlob(blob => {
-    const image = new Image();
-    const oriUrl = URL.createObjectURL(blob);
+  const link = document.querySelector('#mothersday20DownloadBtn');
+  const linkText = link.querySelector('.text');
 
-    image.onload = () => {
-      context.drawImage(image, 0, 0);
-      URL.revokeObjectURL(oriUrl);
+  link.download = fileName;
+  link.href = recentUrl;
+  linkText.textContent = DOWNLOAD;
 
-      canvas.toBlob(function(blob) {
-        saveAs(blob, IMG_NAME);
-        context.clearRect(0, 0, canvas.width, canvas.height);
+  wait = false;
+}
 
-        if (recentUrl) URL.revokeObjectURL(recentUrl);
-        recentUrl = URL.createObjectURL(blob);
-        callback(recentUrl);
-      });
-    };
-    image.src = oriUrl;
+function startRecording(canvas, callback) {
+  const chunks = [];
+  const stream = canvas.captureStream();
+  const rec = new MediaRecorder(stream);
+
+  rec.addEventListener('dataavailable', e => chunks.push(e.data));
+  rec.addEventListener('stop', () => {
+    const blob = new Blob(chunks, { type: 'video/mp4' });
+    download(blob, 'mp4');
+  });
+
+  rec.start();
+  setTimeout(() => {
+    rec.stop();
+    callback();
+  }, 3000);
+}
+
+function draw(canvas, context, clone) {
+  context.fillStyle = canvas.style.backgroundColor;
+  context.fillRect(0, 0, clone.width, clone.height);
+  context.drawImage(canvas, 0, 0);
+}
+
+function cloneCanvas(canvas, callback) {
+  const clone = document.createElement('canvas');
+  const context = clone.getContext('2d');
+  const mouseArea = document.querySelector('.ddlmdsb-V');
+
+  clone.width = mouseArea.width;
+  clone.height = mouseArea.height;
+
+  draw(canvas, context, clone);
+
+  callback(context, clone);
+}
+
+let captureCanvas = false;
+function exportVideo(canvas) {
+  cloneCanvas(canvas, (context, clone) => {
+    captureCanvas = true;
+
+    (function loop() {
+      draw(canvas, context, clone);
+      if (captureCanvas) requestAnimationFrame(loop);
+    })();
+
+    startRecording(clone, () => {
+      captureCanvas = false;
+    });
+  });
+}
+
+function exportImage(canvas) {
+  cloneCanvas(canvas, (context, clone) => {
+    clone.toBlob(blob => {
+      download(blob, 'png');
+    }, 'image/png');
   });
 }
 
@@ -108,7 +170,6 @@ a#mothersday20DownloadBtn span.icon {
 
 let DOWNLOAD = 'Download';
 let WAITING = 'Waiting...';
-const IMG_NAME = 'mothersday20.png';
 
 const params = new URLSearchParams(location.search);
 if (params.has('hl') && params.get('hl') === 'vi') {
@@ -129,12 +190,8 @@ document.addEventListener('click', e => {
   linkText.textContent = WAITING;
   wait = true;
 
-  const ori = document.querySelector('canvas#hpcanvas');
-  downloadImage(ori, url => {
-    wait = false;
-    link.href = url;
-    linkText.textContent = DOWNLOAD;
-  });
+  const ori = document.querySelector('#hpcanvas');
+  EXPORT === 'image' ? exportImage(ori) : exportVideo(ori);
 });
 
 const observer = new SelectorObserver.default(document.body, SelectorSet);
@@ -153,7 +210,6 @@ observer.observe('.ddlmdsb-G', el => {
       <span class="icon" style="background: url(/logos/2020/mothersday20/r5/main-sprite.png) -170.471px -628.765px / 2151.84px 769.686px no-repeat;"></span>
       <span class="text" style="font-size: 18px;">‪‪${DOWNLOAD}‬‬</span>
     `;
-    link.download = IMG_NAME;
     link.rel = 'noopener';
     insertAfter(el, link);
   }
