@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Download Mother’s Day card, created by Google Doodle.
 // @description:vi  Tải thiệp Ngày Của Mẹ, được tạo bởi Google Doodle.
-// @version         1.1.0
+// @version         1.2.0
 // @icon            https://i.imgur.com/MJayIyA.png
 // @author          lelinhtinh
 // @oujs:author     baivong
@@ -13,6 +13,8 @@
 // @require         https://cdn.jsdelivr.net/npm/selector-set@1.1.5/selector-set.js
 // @require         https://cdn.jsdelivr.net/npm/selector-observer@2.1.6/dist/index.umd.js
 // @require         https://cdn.jsdelivr.net/npm/file-saver@2.0.2/dist/FileSaver.min.js
+// @require         https://cdn.jsdelivr.net/npm/ccapture.js@1.1.0/build/CCapture.min.js
+// @require         https://cdn.jsdelivr.net/npm/ccapture.js@1.1.0/src/webm-writer-0.2.0.js
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
 // @run-at          document-idle
 // @grant           none
@@ -32,7 +34,7 @@ const FILENAME = 'mothersday20';
 
 /* === DO NOT CHANGE === */
 
-/* global SelectorSet, SelectorObserver */
+/* global SelectorSet, SelectorObserver, CCapture */
 function insertAfter(referenceNode, newNode) {
   referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
@@ -61,24 +63,6 @@ function download(blob, ext) {
   wait = false;
 }
 
-function startRecording(canvas, callback) {
-  const chunks = [];
-  const stream = canvas.captureStream();
-  const rec = new MediaRecorder(stream);
-
-  rec.addEventListener('dataavailable', e => chunks.push(e.data));
-  rec.addEventListener('stop', () => {
-    const blob = new Blob(chunks, { type: 'video/mp4' });
-    download(blob, 'mp4');
-  });
-
-  rec.start();
-  setTimeout(() => {
-    rec.stop();
-    callback();
-  }, 3000);
-}
-
 function draw(canvas, context, clone) {
   context.fillStyle = canvas.style.backgroundColor;
   context.fillRect(0, 0, clone.width, clone.height);
@@ -102,15 +86,22 @@ let captureCanvas = false;
 function exportVideo(canvas) {
   cloneCanvas(canvas, (context, clone) => {
     captureCanvas = true;
+    const capturer = new CCapture({ format: 'webm' });
+    capturer.start();
 
     (function loop() {
       draw(canvas, context, clone);
+      capturer.capture(clone);
       if (captureCanvas) requestAnimationFrame(loop);
     })();
 
-    startRecording(clone, () => {
+    setTimeout(() => {
       captureCanvas = false;
-    });
+      capturer.stop();
+      capturer.save(blob => {
+        download(blob, 'webm');
+      });
+    }, 3000);
   });
 }
 
