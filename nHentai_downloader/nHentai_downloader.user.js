@@ -4,32 +4,32 @@
 // @namespace       http://devs.forumvi.com
 // @description     Download manga on nHentai.
 // @description:vi  Tải truyện tranh tại NhệnTái.
-// @version         1.6.9
+// @version         1.7.0
 // @icon            http://i.imgur.com/FAsQ4vZ.png
 // @author          Zzbaivong
 // @oujs:author     baivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
 // @match           http://nhentai.net/g/*
 // @match           https://nhentai.net/g/*
-// @require         https://code.jquery.com/jquery-3.4.1.min.js
-// @require         https://unpkg.com/jszip@3.2.2/dist/jszip.min.js
+// @require         https://code.jquery.com/jquery-3.5.1.min.js
+// @require         https://unpkg.com/jszip@3.4.0/dist/jszip.min.js
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect         self
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
-// @run-at          document-start
+// @run-at          document-idle
 // @grant           GM.xmlHttpRequest
 // @grant           GM_xmlhttpRequest
+// @grant           unsafeWindow
 // ==/UserScript==
 
-jQuery(function($) {
+(function ($, window) {
   'use strict';
 
   /**
    * Output extension
-   * @type {String} zip
-   *                cbz
+   * @type {'cbz'|'zip'}
    *
    * Tips: Convert .zip to .cbz
    * Windows
@@ -40,10 +40,18 @@ jQuery(function($) {
   var outputExt = 'cbz'; // or 'zip'
 
   /**
+   * File name
+   * @type {'pretty'|'english'|'japanese'}
+   */
+  var outputName = 'pretty';
+
+  /**
    * Multithreading
    * @type {Number} [1 -> 32]
    */
-  var threading = 8;
+  var threading = 4;
+
+  /* === DO NOT CHANGE === */
 
   /**
    * Logging
@@ -58,33 +66,40 @@ jQuery(function($) {
   }
 
   function getInfo() {
-    var $info = $('#info'),
-      $h1 = $info.find('h1'),
-      $h2 = $info.find('h2'),
-      $tags = $('#tags').clone(),
-      info = '';
+    var info = '',
+      tags = [],
+      artists = [],
+      groups = [],
+      parodies = [],
+      characters = [],
+      categories = [],
+      languages = [];
 
-    $tags.find('.tag-container.hidden').remove();
-    $tags.find('.count').remove();
-    $tags.find('.tags a').replaceWith(function() {
-      return this.textContent.trim() + ', ';
-    });
-    $tags.find('.tags').replaceWith(function() {
-      return this.textContent.trim().slice(0, -1);
-    });
-    $tags.find('.tag-container').replaceWith(function() {
-      return this.textContent.trim().replace(/[\n\s\t]{2,}/, ' ');
-    });
+    if (gallery.title.english) info += gallery.title.english + '\r\n';
+    if (gallery.title.japanese) info += gallery.title.japanese + '\r\n';
+    if (gallery.title.pretty) info += gallery.title.pretty + '\r\n';
+    info += '#' + gallery.id + '\r\n';
 
-    if ($h1.length) info += $h1.text().trim() + '\r\n';
-    if ($h2.length) info += $h2.text().trim() + '\r\n';
-    if ($tags.length)
-      info +=
-        '\r\n' +
-        $tags
-          .text()
-          .trim()
-          .replace(/[\n\s\t]{2,}/g, '\r\n');
+    if (gallery.tags) {
+      for (const tag of gallery.tags) {
+        if (tag.type === 'tag') tags.push(tag.name);
+        if (tag.type === 'artist') artists.push(tag.name);
+        if (tag.type === 'category') categories.push(tag.name);
+        if (tag.type === 'group') groups.push(tag.name);
+        if (tag.type === 'parody') parodies.push(tag.name);
+        if (tag.type === 'character') characters.push(tag.name);
+        if (tag.type === 'language') languages.push(tag.name);
+      }
+    }
+    if (tags.length) info += '\r\n' + 'Tags: ' + tags.join(', ');
+    if (categories.length) info += '\r\n' + 'Categories: ' + categories.join(', ');
+    if (groups.length) info += '\r\n' + 'Groups: ' + groups.join(', ');
+    if (parodies.length) info += '\r\n' + 'Parodies: ' + parodies.join(', ');
+    if (characters.length) info += '\r\n' + 'Characters: ' + characters.join(', ');
+    if (languages.length) info += '\r\n' + 'Languages: ' + languages.join(', ');
+
+    info += '\r\n\r\n' + 'Pages: ' + total;
+    info += '\r\n' + 'Uploaded at: ' + new Date(gallery.upload_date * 1000).toLocaleString() + '\r\n';
 
     if (debug) console.log(info);
     return info;
@@ -94,12 +109,18 @@ jQuery(function($) {
     zip.file('info.txt', getInfo());
 
     zip
-      .generateAsync({
-        type: 'blob',
-      })
+      .generateAsync(
+        {
+          type: 'blob',
+          compression: 'STORE',
+        },
+        function updateCallback(metadata) {
+          $download.html('<i class="fa fa-file-archive"></i> ' + metadata.percent.toFixed(2) + ' %');
+        }
+      )
       .then(
-        function(blob) {
-          var zipName = tit.split(' » ')[0].replace(/\s/g, '_') + '.' + comicId + '.' + outputExt;
+        function (blob) {
+          var zipName = tit.replace(/\s+/g, '-') + '.' + comicId + '.' + outputExt;
 
           if (prevZip) window.URL.revokeObjectURL(prevZip);
           prevZip = blob;
@@ -118,7 +139,7 @@ jQuery(function($) {
           if (debug) console.log('COMPLETE');
           end();
         },
-        function(reason) {
+        function (reason) {
           $download.html('<i class="fa fa-exclamation"></i> Fail').css('backgroundColor', 'red');
 
           doc.title = '[x] ' + tit;
@@ -128,23 +149,33 @@ jQuery(function($) {
       );
   }
 
-  function dlImg(url, success, error) {
-    var filename = url.replace(/.*\//g, '');
-    filename = filename.split('.');
-    filename = ('0000' + filename[0]).slice(-4) + '.' + filename[1];
+  function dlImg(current, success, error) {
+    var url = images[current].url,
+      filename = url.replace(/.*\//g, '');
 
+    filename = ('0000' + filename).slice(-8);
     if (debug) console.log(filename, 'progress');
+
     GM.xmlHttpRequest({
       method: 'GET',
       url: url,
       responseType: 'arraybuffer',
-      onload: function(response) {
+      onload: function (response) {
         final++;
         success(response, filename);
       },
-      onerror: function(err) {
-        final++;
-        error(err, filename);
+      onerror: function (err) {
+        if (images[current].attempt <= 0) {
+          final++;
+          error(err, filename);
+          return;
+        }
+
+        setTimeout(function () {
+          if (debug) console.log(filename, 'retry ' + images[current].attempt);
+          dlImg(current, success, error);
+          images[current].attempt--;
+        }, 2000);
       },
     });
   }
@@ -162,18 +193,16 @@ jQuery(function($) {
     if (max > total) max = total;
 
     for (current; current < max; current++) {
-      var url = images[current];
-
-      if (debug) console.log(url, 'download');
+      if (debug) console.log(images[current].url, 'download');
       dlImg(
-        url,
-        function(response, filename) {
+        current,
+        function (response, filename) {
           zip.file(filename, response.response);
 
           if (debug) console.log(filename, 'success');
           next();
         },
-        function(err, filename) {
+        function (err, filename) {
           hasErr = true;
           zip.file(filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
           $download.css('backgroundColor', '#FF7F7F');
@@ -186,22 +215,24 @@ jQuery(function($) {
     if (debug) console.log(current, 'current');
   }
 
+  var gallery = window._gallery;
+  if (!gallery) return;
+
   var zip = new JSZip(),
     prevZip = false,
     current = 0,
     final = 0,
-    total = 0,
-    images = [],
+    total = gallery.num_pages,
+    images = gallery.images.pages,
     hasErr = false,
-    $images = $('#thumbnail-container img'),
     $_download = $('#download-torrent, #download'),
     $download,
     doc = document,
-    tit = doc.title,
+    tit = gallery.title[outputName],
     $win = $(window),
-    comicId = location.pathname.match(/\d+/)[0];
+    comicId = gallery.id;
 
-  if (!$images.length || !$_download.length) return;
+  if (!$_download.length) return;
 
   window.URL = window.URL || window.webkitURL;
 
@@ -215,29 +246,33 @@ jQuery(function($) {
   $download.insertAfter($_download);
   $download.before('\n');
 
-  $download.css('backgroundColor', 'cornflowerblue').one('click', function(e) {
+  $download.css('backgroundColor', 'cornflowerblue').one('click', function (e) {
     e.preventDefault();
     if (debug) console.time('nHentai');
 
     if (threading < 1) threading = 1;
     if (threading > 32) threading = 32;
 
-    $win.on('beforeunload', function() {
+    $win.on('beforeunload', function () {
       return 'Progress is running...';
     });
 
     $download.html('<i class="fa fa-cog fa-spin"></i> Waiting...').css('backgroundColor', 'orange');
 
-    $images.each(function(i, v) {
-      var src = $(v).data('src');
-
-      if (/^\/\/t\./i.test(src)) src = location.protocol + src;
-      src = src.replace('t.n', 'i.n').replace(/\/(\d+)t\./, '/$1.');
-
-      images[i] = src;
+    images = images.map(function (img, index) {
+      return {
+        url:
+          'https://i.nhentai.net/galleries/' +
+          gallery.media_id +
+          '/' +
+          (index + 1) +
+          '.' +
+          { j: 'jpg', p: 'png', g: 'gif' }[img.t],
+        attempt: 3,
+      };
     });
+    if (debug) console.log(images, 'images');
 
-    total = images.length;
     addZip();
   });
-});
+})(jQuery, unsafeWindow);
