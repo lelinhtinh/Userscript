@@ -4,7 +4,7 @@
 // @namespace       http://devs.forumvi.com
 // @description     Download manga on nHentai.
 // @description:vi  Tải truyện tranh tại NhệnTái.
-// @version         1.7.0
+// @version         2.0.0
 // @icon            http://i.imgur.com/FAsQ4vZ.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -14,6 +14,7 @@
 // @require         https://code.jquery.com/jquery-3.5.1.min.js
 // @require         https://unpkg.com/jszip@3.4.0/dist/jszip.min.js
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
+// @require         https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js?version=184529
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect         self
@@ -22,10 +23,62 @@
 // @grant           GM.xmlHttpRequest
 // @grant           GM_xmlhttpRequest
 // @grant           unsafeWindow
+// @grant           GM_getValue
+// @grant           GM_setValue
+// @grant           GM.getValue
+// @grant           GM.setValue
 // ==/UserScript==
 
 (function ($, window) {
   'use strict';
+
+  var configFrame = document.createElement('div');
+  $('#info-block').append(configFrame);
+
+  GM_config.init({
+    id: 'nHentaiDlConfig',
+    title: 'Downloader Settings',
+    fields: {
+      outputExt: {
+        options: ['cbz', 'zip'],
+        label: 'Export as',
+        type: 'radio',
+        default: 'cbz',
+      },
+      outputName: {
+        label: 'Filename',
+        type: 'select',
+        options: ['pretty', 'english', 'japanese'],
+        default: 'pretty',
+      },
+      threading: {
+        label: 'Max. conn. number',
+        type: 'unsigned int',
+        min: 1,
+        max: 32,
+        default: 4,
+      },
+    },
+    frame: configFrame,
+    events: {
+      save: function () {
+        outputExt = GM_config.get('outputExt');
+        outputName = GM_config.get('outputName');
+        threading = GM_config.get('threading');
+
+        $download.find('span').text(' as ' + outputExt.toUpperCase());
+
+        var $saveBtn = $('#nHentaiDlConfig_saveBtn');
+        $saveBtn.prop('disabled', true).addClass('saved').text('Saved!');
+
+        setTimeout(function () {
+          $saveBtn.prop('disabled', false).removeClass('saved').text('Save');
+        }, 1500);
+      },
+    },
+    css:
+      '#nHentaiDlConfig{width:100%!important;position:initial!important;padding:10px!important;background:#0d0d0d;border:1px solid #313131!important;border-radius:5px;text-align:left}#nHentaiDlConfig *{font-family:"Noto Sans",sans-serif}#nHentaiDlConfig .config_header{text-align:left;font-size:17px;font-weight:700;margin-bottom:20px;color:#999}#nHentaiDlConfig .reset_holder{float:left;height:30px;line-height:30px}#nHentaiDlConfig .reset{color:#4d4d4d;text-align:left}#nHentaiDlConfig .saveclose_buttons{margin:0;padding:4px;min-width:100px;height:30px;line-height:14px;border-radius:2px;border:1px solid;cursor:pointer}#nHentaiDlConfig .saveclose_buttons.saved{background:#ffeb3b;border:1px solid #ffc107}#nHentaiDlConfig #nHentaiDlConfig_closeBtn{display:none}#nHentaiDlConfig_buttons_holder{margin-top:20px;border-top:1px dashed #4d4d4d;padding-top:11px}#nHentaiDlConfig .config_var::after{clear:both;content:"";display:block}#nHentaiDlConfig .config_var{position:relative}#nHentaiDlConfig .field_label{font-size:14px;height:26px;line-height:26px;margin:0;padding:0 10px 0 0;width:30%;display:block;float:left}#nHentaiDlConfig .config_var>[type=text],#nHentaiDlConfig .config_var>div,#nHentaiDlConfig .config_var>select,#nHentaiDlConfig .config_var>textarea{width:70%;border-radius:0;display:block;height:26px;line-height:26px;padding:0 10px;float:left}#nHentaiDlConfig .config_var>textarea{height:auto;line-height:14px;padding:10px;min-height:5em}#nHentaiDlConfig .config_var>select{background:#4d4d4d;color:#d9d9d9;padding:0}#nHentaiDlConfig .config_var>select:hover{background:#666}#nHentaiDlConfig .config_var>select:focus{outline:0 none}#nHentaiDlConfig .config_var>div>label{display:inline-block;vertical-align:top;margin-right:5px}#nHentaiDlConfig .config_var>#nHentaiDlConfig_field_outputName{width:150px;text-transform:capitalize}#nHentaiDlConfig .config_var>#nHentaiDlConfig_field_threading{width:70px}#nHentaiDlConfig .config_var>div{padding:0}#nHentaiDlConfig_field_outputExt{text-transform:uppercase}#nHentaiDlConfig_field_outputExt [value=cbz]{margin-right:20px!important}',
+  });
 
   /**
    * Output extension
@@ -37,21 +90,19 @@
    * Linux
    * $ rename 's/\.zip$/\.cbz/' *.zip
    */
-  var outputExt = 'cbz'; // or 'zip'
+  var outputExt = GM_config.get('outputExt') || 'cbz';
 
   /**
    * File name
    * @type {'pretty'|'english'|'japanese'}
    */
-  var outputName = 'pretty';
+  var outputName = GM_config.get('outputName') || 'pretty';
 
   /**
    * Multithreading
    * @type {Number} [1 -> 32]
    */
-  var threading = 4;
-
-  /* === DO NOT CHANGE === */
+  var threading = GM_config.get('threading') || 4;
 
   /**
    * Logging
@@ -120,7 +171,7 @@
       )
       .then(
         function (blob) {
-          var zipName = tit.replace(/\s+/g, '-') + '.' + comicId + '.' + outputExt;
+          var zipName = gallery.title[outputName].replace(/\s+/g, '-') + '.' + comicId + '.' + outputExt;
 
           if (prevZip) window.URL.revokeObjectURL(prevZip);
           prevZip = blob;
@@ -135,14 +186,14 @@
 
           saveAs(blob, zipName);
 
-          doc.title = '[⇓] ' + tit;
+          doc.title = '[⇓] ' + gallery.title[outputName];
           if (debug) console.log('COMPLETE');
           end();
         },
         function (reason) {
           $download.html('<i class="fa fa-exclamation"></i> Fail').css('backgroundColor', 'red');
 
-          doc.title = '[x] ' + tit;
+          doc.title = '[x] ' + gallery.title[outputName];
           if (debug) console.error(reason, 'ERROR');
           end();
         }
@@ -215,7 +266,8 @@
     if (debug) console.log(current, 'current');
   }
 
-  var gallery = window._gallery;
+  var gallery = JSON.parse(JSON.stringify(window._gallery));
+  if (debug) console.log(gallery, 'gallery');
   if (!gallery) return;
 
   var zip = new JSZip(),
@@ -228,11 +280,11 @@
     $_download = $('#download-torrent, #download'),
     $download,
     doc = document,
-    tit = gallery.title[outputName],
     $win = $(window),
     comicId = gallery.id;
 
   if (!$_download.length) return;
+  GM_config.open();
 
   window.URL = window.URL || window.webkitURL;
 
@@ -241,7 +293,7 @@
   $download.removeClass('btn-disabled');
   $download.attr('href', '#download');
   $download.find('.top').html('No login required<br>No sign up required<i></i>');
-  $download.append(' as ' + outputExt.toUpperCase());
+  $download.append('<span> as ' + outputExt.toUpperCase() + '</span>');
 
   $download.insertAfter($_download);
   $download.before('\n');
@@ -249,6 +301,7 @@
   $download.css('backgroundColor', 'cornflowerblue').one('click', function (e) {
     e.preventDefault();
     if (debug) console.time('nHentai');
+    if (debug) console.log({ outputExt, outputName, threading });
 
     if (threading < 1) threading = 1;
     if (threading > 32) threading = 32;
