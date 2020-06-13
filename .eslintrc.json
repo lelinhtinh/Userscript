@@ -8,7 +8,8 @@
   "globals": {
     "saveAs": false,
     "JSZip": false,
-    "jEpub": false
+    "jEpub": false,
+    "GM_config": false
   },
   "extends": "eslint:recommended",
   "rules": {
