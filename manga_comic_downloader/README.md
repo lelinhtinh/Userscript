@@ -30,48 +30,41 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 ### Desktop
 
 1. <http://truyentranh8.com/>, <http://truyentranh8.net/>, <http://truyentranh8.org/>, <http://truyentranhtam.com/>, <http://truyentranh869.com/>
-2. <http://iutruyentranh.com/>
-3. <http://truyentranh.net/>
-4. <http://comicvn.net/>, <https://beeng.net/>
-5. <https://hamtruyen.com/>
-6. <https://ntruyen.info/>
-7. <https://www.a3manga.com/>
-8. <http://truyentranhtuan.com/>
-9. <http://mangak.info/>
-10. <https://truyentranhmoi.net/>
-11. <http://dammetruyen.com/>
-12. <http://manga.goccay.vn/>
-13. <https://truyentranhlh.com/>, <https://truyentranhlh.net/>
-14. <http://hocvientruyentranh.com/>, <http://hocvientruyentranh.net/>
-15. <http://truyenhay24h.com/>
-16. <http://uptruyen.com/manga>
-17. <http://thichtruyentranh.com/>
-18. <http://truyen1.net/>
-19. <https://bigtruyen.info/>
-20. <http://hentailxx.com/>
-21. <https://hentaivn.net/>
-22. <https://otakusan.net/Manga>
-23. <https://ngonphongcomics.com/>
-24. <http://www.nettruyen.com/>
-25. <http://www.hamtruyentranh.net/>
-26. <http://gocthugian.com.vn/truyen>
-27. <http://ttmanga.com/>
-28. <http://truyen.vnsharing.site/>
-29. <https://blogtruyen.com/>, <https://blogtruyen.vn/>
-30. <http://truyensieuhay.com/>
-31. <http://truyenchon.com/>
-32. <https://truyentranhaz.net/>
-33. <https://truyenqq.com/>
-34. <https://sachvui.com/the-loai/truyen-tranh.html>
-35. <https://hentaicube.net/>
+1. <http://iutruyentranh.com/>
+1. <https://truyentranh.net/>
+1. <https://comicvn.net/>, <https://beeng.net/>
+1. <https://hamtruyen.com/>
+1. <https://ntruyen.info/>
+1. <https://www.a3manga.com/>
+1. <http://truyentranhtuan.com/>
+1. <http://mangak.info/>
+1. <https://truyentranhlh.com/>, <https://truyentranhlh.net/>
+1. <https://hocvientruyentranh.com/>, <https://hocvientruyentranh.net/>
+1. <https://truyenhay24h.com/>
+1. <https://thichtruyentranh.com/>
+1. <http://truyen1.net/>
+1. <https://hentailxx.com/>
+1. <https://hentaivn.net/>
+1. <https://otakusan.net/Manga>
+1. <https://ngonphongcomics.com/>
+1. <http://www.nettruyen.com/>
+1. <http://www.hamtruyentranh.net/>
+1. <https://ttmanga.com/>
+1. <http://truyen.vnsharing.site/>
+1. <https://blogtruyen.com/>, <https://blogtruyen.vn/>, <https://blogtruyen.top/>
+1. <https://truyensieuhay.com/>
+1. <http://truyenchon.com/>
+1. <http://truyenqq.com/>
+1. <https://sachvui.com/the-loai/doc-truyen-tranh-online.html>
+1. <https://hentaicube.net/>
 
 ### Mobile
 
 1. <http://m.truyentranh8.com/>, <http://m.truyentranh8.net/>, <http://m.truyentranh8.org/>, <http://m.truyentranhtam.com/>, <http://m.truyentranh869.com/>
-2. <https://m.hamtruyen.com/>
-3. <http://m.hentailxx.com/>
-4. <https://hentaivn.net/>
-5. <https://m.blogtruyen.com/>, <https://m.blogtruyen.vn/>
+1. <https://m.hamtruyen.com/>
+1. <http://m.hentailxx.com/>
+1. <https://hentaivn.net/>
+1. <https://m.blogtruyen.com/>, <https://m.blogtruyen.vn/>, <https://m.blogtruyen.top/>
 
 ## Video từng bước cài đặt
 

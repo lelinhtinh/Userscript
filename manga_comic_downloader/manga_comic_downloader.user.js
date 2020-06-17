@@ -4,52 +4,47 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.1.0
+// @version         2.1.1
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
-// @include         /^https?:\/\/(m\.)?(truyentranhtam\.com|truyentranh8\.org|truyentranh8\.com|truyentranh869\.com)\/[^\/]+\/((\?|#).+)?$/
-// @include         /^https?:\/\/(m\.)?(truyentranhtam\.com|truyentranh8\.org|truyentranh8\.com|truyentranh869\.com)\/\/?manga\/\d+\-[^\/]+\/[^\/]+\/((\?|#).+)?$/
-// @include         /^https?:\/\/iutruyentranh\.com\/truyen\/\d+\-[\w\-]+\/?((\?|#).+)?$/
-// @include         /^https?:\/\/(www\.)?truyentranh\.net\/[^\/]+\/?((\?|#).+)?$/
-// @include         /^https?:\/\/(comicvn|beeng)\.net\/truyen\-tranh(\-online)?\/[^\/]+\-\d+\/?((\?|#).+)?$/
-// @include         /^https?:\/\/((www|m)\.)?hamtruyen\.com\/[^\/\.]+\.html\/?((\?|#).+)?$/
-// @include         /^https?:\/\/ntruyen\.info\/truyen\/[^\/\.]+\/?((\?|#).+)?$/
-// @include         /^https?:\/\/www\.a3manga\.com\/truyen\-tranh\/[^\/]+\/?((\?|#).+)?$/
-// @include         /^https?:\/\/truyentranhtuan\.com\/([^\/](?!\-chuong\-\d+))+\/?((\?|#).+)?$/
-// @include         /^https?:\/\/mangak\.info\/([^\/](?!\-chap\-\d+))+\/((\?|#).+)?$/
-// @include         /^https?:\/\/mangak\.info\/(moi\-cap\-nhat\/)?(page\/\d+\/)?((\?|#).+)?$/
-// @exclude         /^https?:\/\/mangak\.info\/(moi\-dang|ongoing|top\-view|hot|full|action|adult|adventure|anh\-dep|anime|bender|bishounen|comedy|comic|cooking|cosplay|demons|doujinshi|drama|ecchi|fanmade|fantasy|gender|gender\-bender|harem|historical|horror|huyen\-huyen|josei|live\-action|magic|manhua|manhwa|martial\-arts|mature|mecha|mystery|one\-shot|oneshot|psychological|romance|school\-life|sci\-fi|seinen|shoujo|shoujo\-ai|shoujoai|shounen|shounen\-ai|slice\-of\-life|smut|sports|supernatural|tragedy|trap|vampire|webtoons|yuri|zombie)\/((\?|#).+)?$/
-// @include         /^https?:\/\/(1\.)?truyentranhmoi\.net\/[^\/\.]+\/?((\?|#).+)?$/
-// @exclude         /^https?:\/\/(1\.)?truyentranhmoi\.net\/(tac-gia|the-loai|truyen-moi-cap-nhat|truyen-tranh-hay|truyen-tranh-hoan-thanh)\/?/
-// @include         /^https?:\/\/dammetruyen\.com\/[^\/\.]+.html\/?((\?|#).+)?$/
-// @include         /^https?:\/\/manga.goccay\.vn/\d{4}/\d{2}/[^\/\.]+.html((\?|#).+)?$/
-// @include         /^https?:\/\/truyentranhlh\.(com|net)\/truyen\-[^\/\.]+\.html((\?|#).+)?$/
-// @include         /^https?:\/\/hocvientruyentranh\.(com|net)\/(manga|truyen)\/\d+\/[^\/\.\?]+((\?|#).+)?$/
-// @include         /^https?:\/\/truyenhay24h\.com\/[^\/\.]+\.html((\?|#).+)?$/
-// @exclude         /^https?:\/\/truyenhay24h\.com\/(lien\-he|Dang\-ky|forgetPass)\.html((\?|#).+)?$/
-// @include         /^https?:\/\/uptruyen\.com\/manga\/\d+/([^\/]+\/)?([^\/\.]+)?.html((\?|#).+)?$/
-// @include         /^https?:\/\/thichtruyentranh\.com/([^\/]+)/\d+(\/trang\.\d+)?.html((\?|#).+)?$/
-// @include         /^https?:\/\/truyen1\.net\/TruyenTranh\/[^\/]+\/?((\?|#).+)?$/
-// @include         /^https?:\/\/bigtruyen\.info\/[^\/]+\/((\?|#).+)?$/
-// @exclude         /^https?:\/\/bigtruyen\.info\/(danh-sach-truyen|truyen-hot|)\/((\?|#).+)?$/
-// @include         /^https?:\/\/((www|m)\.)?hentailxx\.com\/story\/view\.php\?id=\d+((\&|#).+)?$/
-// @include         /^https?:\/\/hentaivn\.net\/\d+\-[^\.]+\.html((\?|#).+)?$/
-// @include         /^https?:\/\/otakusan\.net\/MangaDetail\/\d+\/[^\/\.]+\/?((\?|#).+)?$/
-// @include         /^https?:\/\/ngonphongcomics\.com\/[^\/]+\/?((\?|#).+)?$/
-// @exclude         /^https?:\/\/ngonphongcomics\.com\/(danh-sach-truyen|the-loai|nhom-dich|tac-gia)\/?((\?|#).+)?$/
-// @include         /^https?:\/\/(www\.)?nettruyen.com\/truyen\-tranh/[^\/]+\/?((\?|#).+)?$/
-// @include         /^https?:\/\/(www\.)?hamtruyentranh.net\/truyen\/[\w\-]+\.html((\?|#).+)?$/
-// @include         /^https?:\/\/gocthugian\.com\.vn\/truyen\/(t|v)\d+\/((\?|#).+)?$/
-// @include         /^https?:\/\/ttmanga\.com\/Manga\/[\w\-]+\-\d+((\?|#).+)?$/
-// @include         /^https?:\/\/truyen\.vnsharing\.site\/index\/read\/\d+\/\d+\/[^\/]+\/?((\?|#).+)?$/
-// @include         /^https?:\/\/((www|m)\.)?blogtruyen\.(com|vn)\/\d+\/[^\/]+\/?((\?|#).+)?$/
-// @include         /^https?:\/\/truyensieuhay\.com\/[^\/\.]+.html\/?((\?|#).+)?$/
-// @include         /^https?:\/\/truyenchon\.com\/truyen\/[^\/]+\/?((\?|#).+)?$/
-// @include         /^https?:\/\/truyentranhaz\.net\/truyen\-[^\/\.]+\.html\/?((\?|#).+)?$/
-// @include         /^https?:\/\/truyenqq\.com\/truyen\-tranh\/[^\/\.]+\.html((\?|#).+)?$/
-// @include         /^https?:\/\/sachvui\.com\/ebook\/[^\/\.]+\.\d+\.html\/?\d*((\?|#).+)?$/
-// @include         /^https?:\/\/hentaicube\.net\/manga\/[\w\-]+\/?((\?|#).+)?$/
+// @match           http://*.truyentranhtam.com/*
+// @match           http://*.truyentranh8.org/*
+// @match           http://*.truyentranh8.com/*
+// @match           http://*.truyentranh869.com/*
+// @match           http://iutruyentranh.com/*
+// @match           https://iutruyentranh.com/*
+// @match           https://*.truyentranh.net/*
+// @match           https://comicvn.net/*
+// @match           https://beeng.net/*
+// @match           https://*.hamtruyen.com/*
+// @match           https://ntruyen.info/*
+// @match           https://*.a3manga.com/*
+// @match           http://truyentranhtuan.com/*
+// @match           http://mangak.info/*
+// @match           https://truyentranhlh.net/*
+// @match           https://truyentranhlh.com/*
+// @match           https://hocvientruyentranh.net/*
+// @match           https://hocvientruyentranh.com/*
+// @match           https://truyenhay24h.com/*
+// @match           http://truyen1.net/*
+// @match           http://*.hentailxx.com/*
+// @match           https://*.hentailxx.com/*
+// @match           https://hentaivn.net/*
+// @match           https://otakusan.net/*
+// @match           https://ngonphongcomics.com/*
+// @match           http://*.nettruyen.com/*
+// @match           http://*.hamtruyentranh.net/*
+// @match           https://ttmanga.com/*
+// @match           http://truyen.vnsharing.site/*
+// @match           https://blogtruyen.com/*
+// @match           https://blogtruyen.vn/*
+// @match           https://blogtruyen.top/*
+// @match           https://truyensieuhay.com/*
+// @match           http://truyenchon.com/*
+// @match           http://truyenqq.com/*
+// @match           https://sachvui.com/*
+// @match           https://hentaicube.net/*
 // @require         https://code.jquery.com/jquery-3.4.1.min.js
 // @require         https://unpkg.com/jszip@3.2.1/dist/jszip.min.js
 // @require         https://unpkg.com/file-saver@2.0.1/dist/FileSaver.min.js
@@ -66,7 +61,7 @@
 
 window._URL = window.URL || window.webkitURL;
 
-jQuery(function($) {
+jQuery(function ($) {
   /**
    * Output extension
    * @type {String} zip
@@ -196,7 +191,7 @@ jQuery(function($) {
   function noty(txt, status) {
     function destroy() {
       if (!$noty.length) return;
-      $noty.fadeOut(300, function() {
+      $noty.fadeOut(300, function () {
         $noty.remove();
         $noty = [];
       });
@@ -204,7 +199,7 @@ jQuery(function($) {
     }
 
     function autoHide() {
-      notyTimeout = setTimeout(function() {
+      notyTimeout = setTimeout(function () {
         destroy();
       }, 2000);
     }
@@ -236,14 +231,14 @@ jQuery(function($) {
     }
 
     $noty
-      .click(function() {
+      .click(function () {
         destroy();
       })
       .hover(
-        function() {
+        function () {
           clearTimeout(notyTimeout);
         },
-        function() {
+        function () {
           autoHide();
         }
       );
@@ -295,7 +290,7 @@ jQuery(function($) {
 
     noty('Bắt đầu tải <strong>' + chapName + '</strong>', 'warning');
 
-    $win.on('beforeunload', function() {
+    $win.on('beforeunload', function () {
       return 'Progress is running...';
     });
   }
@@ -305,7 +300,7 @@ jQuery(function($) {
 
     noty('<strong>' + chapName + '</strong> đang lấy dữ liệu...', 'warning');
 
-    dlAll = dlAll.filter(function(l) {
+    dlAll = dlAll.filter(function (l) {
       return configs.href.indexOf(l) === -1;
     });
 
@@ -320,7 +315,7 @@ jQuery(function($) {
 
   function dlAllGen() {
     dlAll = [];
-    $(configs.link).each(function(i, el) {
+    $(configs.link).each(function (i, el) {
       dlAll[i] = $(el).attr('href');
     });
     if (configs.reverse) dlAll.reverse();
@@ -332,14 +327,14 @@ jQuery(function($) {
     dlAllGen();
 
     $doc
-      .on('click', configs.link, function(e) {
+      .on('click', configs.link, function (e) {
         if (!e.ctrlKey && !e.shiftKey) return;
 
         e.preventDefault();
         var _link = $(this).attr('href');
 
         if (e.ctrlKey && e.shiftKey) {
-          dlAll = dlAll.filter(function(l) {
+          dlAll = dlAll.filter(function (l) {
             return _link.indexOf(l) === -1;
           });
 
@@ -365,7 +360,7 @@ jQuery(function($) {
           });
         }
       })
-      .on('keyup', function(e) {
+      .on('keyup', function (e) {
         if (e.which === 17 || e.which === 16) {
           e.preventDefault();
 
@@ -424,7 +419,7 @@ jQuery(function($) {
         type: 'blob',
       })
       .then(
-        function(blob) {
+        function (blob) {
           var zipName = genFileName() + '.' + outputExt;
 
           if (dlPrevZip) URL.revokeObjectURL(dlPrevZip);
@@ -446,7 +441,7 @@ jQuery(function($) {
           document.title = '[⇓] ' + tit;
           endZip();
         },
-        function() {
+        function () {
           noty('Lỗi tạo file nén của <strong>' + chapName + '</strong>', 'error');
           cancelProgress();
 
@@ -473,7 +468,7 @@ jQuery(function($) {
       url: url,
       responseType: 'arraybuffer',
       headers: headers,
-      onload: function(response) {
+      onload: function (response) {
         var imgext = getImageType(response.response).ext;
         dlFinal++;
         if (imgext === 'gif') {
@@ -492,7 +487,7 @@ jQuery(function($) {
           success(response, filename);
         }
       },
-      onerror: function(err) {
+      onerror: function (err) {
         dlFinal++;
         error(err, filename);
       },
@@ -531,12 +526,12 @@ jQuery(function($) {
     for (dlCurrent; dlCurrent < max; dlCurrent++) {
       dlImg(
         dlImages[dlCurrent],
-        function(response, filename) {
+        function (response, filename) {
           dlZip.file(path + filename, response.response);
 
           next();
         },
-        function(err, filename) {
+        function (err, filename) {
           dlZip.file(path + filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
 
           noty(err.statusText, 'error');
@@ -576,7 +571,7 @@ jQuery(function($) {
   }
 
   function imageFilter(url) {
-    var keep = keepOriginal.some(function(key) {
+    var keep = keepOriginal.some(function (key) {
       return url.indexOf(key) !== -1;
     });
     if (keep) return protocolUrl(url);
@@ -609,7 +604,7 @@ jQuery(function($) {
     if (!images.length) {
       notyImages();
     } else {
-      $.each(images, function(i, v) {
+      $.each(images, function (i, v) {
         if (imageIgnore(v) || typeof v === 'undefined') return;
         if (/[><"']/.test(v)) return;
 
@@ -635,7 +630,7 @@ jQuery(function($) {
 
   function getImages($contents) {
     var images = [];
-    $contents.each(function(i, v) {
+    $contents.each(function (i, v) {
       var $img = $(v);
       images[i] = $img.data('cdn') || $img.data('original') || $img.data('src');
     });
@@ -665,12 +660,7 @@ jQuery(function($) {
     if (typeof name === 'function') {
       chapName = name(_this, chapName);
     } else if (typeof name === 'string') {
-      chapName =
-        $(name)
-          .text()
-          .trim() +
-        ' ' +
-        chapName;
+      chapName = $(name).text().trim() + ' ' + chapName;
     }
 
     notyWait();
@@ -678,7 +668,7 @@ jQuery(function($) {
     GM.xmlHttpRequest({
       method: 'GET',
       url: configs.href,
-      onload: function(response) {
+      onload: function (response) {
         var responseText = response.responseText;
         responseText = responseText.replace(/[\s\n]+src[\s\n]*=[\s\n]*/gi, ' data-src=');
         responseText = responseText.replace(/^[^<]*/, '');
@@ -690,7 +680,7 @@ jQuery(function($) {
           getContents($data);
         }
       },
-      onerror: function() {
+      onerror: function () {
         notyError();
       },
     });
@@ -710,7 +700,7 @@ jQuery(function($) {
 
     if (!$link.length) return;
 
-    $link.on('contextmenu', function(e) {
+    $link.on('contextmenu', function (e) {
       e.preventDefault();
       if (!oneProgress()) return;
 
@@ -721,13 +711,8 @@ jQuery(function($) {
   }
 
   function getTruyenTranh8() {
-    getSource(function($data) {
-      var packer = $data
-          .find('#logoTT8,center')
-          .siblings('script:first')
-          .text()
-          .trim()
-          .split('eval')[1],
+    getSource(function ($data) {
+      var packer = $data.find('#logoTT8,center').siblings('script:first').text().trim().split('eval')[1],
         lstImages = [];
 
       eval(eval(packer));
@@ -736,13 +721,8 @@ jQuery(function($) {
   }
 
   function getIuTruyenTranh() {
-    getSource(function($data) {
-      var packer = $data
-          .filter('div.wrapper')
-          .find('script:first')
-          .text()
-          .trim()
-          .split('eval')[1],
+    getSource(function ($data) {
+      var packer = $data.filter('div.wrapper').find('script:first').text().trim().split('eval')[1],
         lstImages = [];
 
       eval(eval(packer));
@@ -751,7 +731,7 @@ jQuery(function($) {
   }
 
   function getNtruyen() {
-    getSource(function($data) {
+    getSource(function ($data) {
       var $entry = $data.find('#containerListPage');
       if (!$entry.length) {
         notyImages();
@@ -768,7 +748,7 @@ jQuery(function($) {
             }),
             contentType: 'application/json',
             dataType: 'json',
-          }).done(function(data) {
+          }).done(function (data) {
             var input = data.result.data.listPages,
               regex = /src="([^"]+)"/gi,
               matches,
@@ -789,7 +769,7 @@ jQuery(function($) {
   }
 
   function getTruyenTranhTuan() {
-    getSource(function($data) {
+    getSource(function ($data) {
       var $entry = $data.find('#read-title').next('script');
       if (!$entry.length) {
         notyImages();
@@ -802,7 +782,7 @@ jQuery(function($) {
   }
 
   function getMangaK() {
-    getSource(function($data) {
+    getSource(function ($data) {
       var $entry = $data.find('.vung_doc script');
       if (!$entry.length) {
         notyImages();
@@ -817,53 +797,12 @@ jQuery(function($) {
     });
   }
 
-  function getGocCay() {
-    $(configs.link).on('contextmenu', function(e) {
-      e.preventDefault();
-      if (!oneProgress()) return;
-
-      var $this = $(this);
-
-      configs.href = $this.attr('href');
-      chapName =
-        $('.entry-title')
-          .text()
-          .split(' chap ')[0]
-          .trim() +
-        ' ' +
-        $this.text().trim();
-      notyWait();
-
-      GM.xmlHttpRequest({
-        method: 'GET',
-        url: configs.href,
-        onload: function(response) {
-          response = response.responseText.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function(match, capture) {
-            return '<img data-src="' + capture + '" />';
-          });
-
-          var $entry = $(response).find('.entry-content img');
-          if (!$entry.length) {
-            notyImages();
-          } else {
-            getImages($(response).find('.entry-content img'));
-          }
-        },
-        onerror: function() {
-          notyError();
-        },
-      });
-    });
-
-    notyReady();
-  }
-
   function renderCanvasLH(cdn, key, ext) {
     function renderImage(imageIndex, filename) {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         var img = new Image();
         img.crossOrigin = 'anonymous';
-        img.onload = function() {
+        img.onload = function () {
           var cv = fragment.getElementById('cv-' + imageIndex);
           var ctx = cv.getContext('2d');
 
@@ -908,7 +847,7 @@ jQuery(function($) {
             blockMap.push(shuffleMap[iMap]);
           }
 
-          blockMap.forEach(function(block, index) {
+          blockMap.forEach(function (block, index) {
             ctx.drawImage(
               img,
               block.x,
@@ -967,14 +906,14 @@ jQuery(function($) {
           method: 'GET',
           url: cdn[0] + atob(key[imageIndex]) + '.' + atob(ext[imageIndex]),
           responseType: 'arraybuffer',
-          onload: function(response) {
+          onload: function (response) {
             var blob = new Blob([response.response], {
               type: getImageType(response.response).mime,
             });
             img.src = URL.createObjectURL(blob);
             tempBlob[imageIndex] = blob;
           },
-          onerror: function(err) {
+          onerror: function (err) {
             dlZip.file(filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
             dlFinal++;
             nextLH();
@@ -1015,7 +954,7 @@ jQuery(function($) {
       } else {
         tempBlob = [];
 
-        Promise.all(progressLH).then(function() {
+        Promise.all(progressLH).then(function () {
           if (inMerge) {
             if (dlAll.length) {
               linkSuccess();
@@ -1042,7 +981,7 @@ jQuery(function($) {
   }
 
   function getTruyenTranhLH() {
-    getSource(function($data) {
+    getSource(function ($data) {
       var $packer = $data.find('#chapter-images');
       if (!$packer.length) {
         configs.contents = '[class="chapter-content"]';
@@ -1060,18 +999,15 @@ jQuery(function($) {
       // eslint-disable-next-line no-undef
       renderCanvasLH(eval('_' + '0' + 'x' + '5f54'), eval('_' + '0' + 'x' + '5213'), eval('_' + '0' + 'x' + '52f5'));
 
-      $win.on('beforeunload', function() {
+      $win.on('beforeunload', function () {
         return 'Progress is running...';
       });
     });
   }
 
   function getTruyenHay24h() {
-    getSource(function($data) {
-      $data = $data
-        .find('#dvContentChap')
-        .siblings('script')
-        .text();
+    getSource(function ($data) {
+      $data = $data.find('#dvContentChap').siblings('script').text();
       $data = $data.match(/GI2017\(([^;]+);/)[1];
       $data = $data.split(/[,']+/);
 
@@ -1082,28 +1018,25 @@ jQuery(function($) {
         name: '',
         s: 0,
       })
-        .done(function(response) {
+        .done(function (response) {
           var images = [];
           $(response)
             .find('string')
-            .each(function(i, v) {
+            .each(function (i, v) {
               images[i] = v.textContent.replace(/\.(jpe?g|png)\w*$/, '.$1');
             });
 
           checkImages(images);
         })
-        .fail(function() {
+        .fail(function () {
           notyError();
         });
     });
   }
 
   function getThichTruyenTranh() {
-    getSource(function($data) {
-      $data = $data
-        .find('#content_read')
-        .next('script')
-        .text();
+    getSource(function ($data) {
+      $data = $data.find('#content_read').next('script').text();
       $data = $data.match(/https?:\/\/[^"]+/g);
       if (!$data.length) {
         notyImages();
@@ -1114,19 +1047,14 @@ jQuery(function($) {
   }
 
   function getTruyen1() {
-    $(configs.link).on('contextmenu', function(e) {
+    $(configs.link).on('contextmenu', function (e) {
       e.preventDefault();
       if (!oneProgress()) return;
 
       var $this = $(this);
 
       configs.href = $this.attr('href');
-      chapName =
-        $('h1.title')
-          .text()
-          .trim() +
-        ' ' +
-        $this.text().trim();
+      chapName = $('h1.title').text().trim() + ' ' + $this.text().trim();
       notyWait();
 
       var chapKey = configs.href.match(/\/(\d+)\/[^/]+$/);
@@ -1147,7 +1075,7 @@ jQuery(function($) {
         }),
         contentType: 'application/json',
       })
-        .done(function(response) {
+        .done(function (response) {
           if (!response.result) {
             notyError();
             return;
@@ -1163,7 +1091,7 @@ jQuery(function($) {
             checkImages(data);
           }
         })
-        .fail(function() {
+        .fail(function () {
           notyError();
         });
     });
@@ -1172,7 +1100,7 @@ jQuery(function($) {
   }
 
   function getOtakuSan() {
-    getSource(function($data) {
+    getSource(function ($data) {
       var data = $data.find('#inpit-c').val();
       data = JSON.parse(data);
       checkImages(data);
@@ -1180,12 +1108,8 @@ jQuery(function($) {
   }
 
   function getTtManga() {
-    getSource(function($data) {
-      var data = $data
-        .find('#divImage')
-        .siblings('script')
-        .first()
-        .text();
+    getSource(function ($data) {
+      var data = $data.find('#divImage').siblings('script').first().text();
       if (!/lstImages\.push\("([^"]+)"\)/.test(data)) {
         notyImages();
       } else {
@@ -1203,11 +1127,8 @@ jQuery(function($) {
   }
 
   function getTruyenSieuHay() {
-    getSource(function($data) {
-      var sID = $data
-        .find('#content_chap')
-        .find('script:not([type]):first')
-        .text();
+    getSource(function ($data) {
+      var sID = $data.find('#content_chap').find('script:not([type]):first').text();
       sID = /\bgetContentchap\('(\w+)'\)\B/.exec(sID)[1];
       $.ajax({
         type: 'POST',
@@ -1215,7 +1136,7 @@ jQuery(function($) {
         data: '{ sID: "' + sID + '",chuc:"k" }',
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
-        success: function(data) {
+        success: function (data) {
           var regex = /\s+src='(http[^']+)'/gi,
             matches,
             output = [];
@@ -1227,7 +1148,7 @@ jQuery(function($) {
           }
           checkImages(output);
         },
-        error: function() {
+        error: function () {
           notyImages();
         },
       });
@@ -1265,7 +1186,7 @@ jQuery(function($) {
   GM_registerMenuCommand('Download All Chapters', downloadAll);
   GM_registerMenuCommand('Download All To One File', downloadAllOne);
 
-  $doc.on('keydown', function(e) {
+  $doc.on('keydown', function (e) {
     if (e.which === 89 && e.altKey) {
       // Alt+Y
       e.preventDefault();
@@ -1283,17 +1204,8 @@ jQuery(function($) {
     case 'truyentranh869.com':
       configs = {
         link: '#ChapList a',
-        name: function(_this) {
-          return (
-            $('.breadcrumb li:last')
-              .text()
-              .trim() +
-            ' ' +
-            $(_this)
-              .find('span, strong, h2')
-              .text()
-              .trim()
-          );
+        name: function (_this) {
+          return $('.breadcrumb li:last').text().trim() + ' ' + $(_this).find('span, strong, h2').text().trim();
         },
         init: getTruyenTranh8,
       };
@@ -1318,7 +1230,7 @@ jQuery(function($) {
       configs = {
         reverse: false,
         link: '.content a',
-        name: function(_this) {
+        name: function (_this) {
           return _this.title;
         },
         contents: '.paddfixboth-mobile',
@@ -1354,6 +1266,7 @@ jQuery(function($) {
         init: getNtruyen,
       };
       break;
+    case 'a3manga.com':
     case 'www.a3manga.com':
       configs = {
         link: '.table-striped a',
@@ -1371,26 +1284,6 @@ jQuery(function($) {
       configs = {
         link: '.chapter-list a',
         init: getMangaK,
-      };
-      break;
-    case 'truyentranhmoi.net':
-      configs = {
-        link: '.chapter > a',
-        contents: '.view-chapter',
-        filter: true,
-      };
-      break;
-    case 'dammetruyen.com':
-      configs = {
-        link: '#chapter-list-flag a',
-        name: 'h1',
-        contents: '#content_chap',
-      };
-      break;
-    case 'manga.goccay.vn':
-      configs = {
-        link: '.entry-content table a',
-        init: getGocCay,
       };
       break;
     case 'truyentranhlh.com':
@@ -1415,13 +1308,6 @@ jQuery(function($) {
         init: getTruyenHay24h,
       };
       break;
-    case 'uptruyen.com':
-      configs = {
-        link: '#chapter_table a',
-        name: '.breadcrumb a:last',
-        contents: '#reader-box',
-      };
-      break;
     case 'thichtruyentranh.com':
       configs = {
         reverse: false,
@@ -1435,13 +1321,6 @@ jQuery(function($) {
         init: getTruyen1,
       };
       break;
-    case 'bigtruyen.info':
-      configs = {
-        link: '.chapter-list a',
-        contents: '#chapter-content',
-      };
-      break;
-    case 'hentailx.com':
     case 'hentailxx.com':
     case 'www.hentailxx.com':
     case 'm.hentailxx.com':
@@ -1455,10 +1334,8 @@ jQuery(function($) {
       configs = [
         {
           link: '.listing a',
-          name: function(_this) {
-            return $(_this)
-              .find('.chuong_t')
-              .attr('title');
+          name: function (_this) {
+            return $(_this).find('.chuong_t').attr('title');
           },
           contents: '#image',
         },
@@ -1494,25 +1371,12 @@ jQuery(function($) {
     case 'www.hamtruyentranh.net':
       configs = {
         link: '#examples a',
-        name: function(_this, chap) {
+        name: function (_this, chap) {
           var $this = $(_this);
           $this.find('span').remove();
-          return (
-            $('.title-manga')
-              .text()
-              .trim() +
-            ' ' +
-            chap
-          );
+          return $('.title-manga').text().trim() + ' ' + chap;
         },
         contents: '.each-page',
-      };
-      break;
-    case 'gocthugian.com.vn':
-      configs = {
-        link: '.ChI a',
-        name: 'h1',
-        contents: '#ctl14_PC',
       };
       break;
     case 'ttmanga.com':
@@ -1529,8 +1393,10 @@ jQuery(function($) {
       break;
     case 'blogtruyen.com':
     case 'blogtruyen.vn':
+    case 'blogtruyen.top':
     case 'www.blogtruyen.com':
     case 'www.blogtruyen.vn':
+    case 'www.blogtruyen.top':
       configs = {
         link: '#list-chapters .title a',
         contents: '#content',
@@ -1538,6 +1404,7 @@ jQuery(function($) {
       break;
     case 'm.blogtruyen.com':
     case 'm.blogtruyen.vn':
+    case 'm.blogtruyen.top':
       configs = {
         link: '#listChapter a',
         contents: '.content',
@@ -1555,14 +1422,6 @@ jQuery(function($) {
         link: '#nt_listchapter .chapter a',
         name: 'h1',
         contents: '.reading-detail',
-      };
-      break;
-    case 'truyentranhaz.net':
-      configs = {
-        link: '#tab-chapper a',
-        name: 'h1',
-        contents: '.chapter-content:not([id])',
-        filter: true,
       };
       break;
     case 'truyenqq.com':
