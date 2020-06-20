@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.3.6
+// @version         2.3.7
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -459,8 +459,151 @@ jQuery(function ($) {
       );
   }
 
-  function dlImg(url, success, error) {
-    var filename = ('0000' + dlCurrent).slice(-4),
+  function otakuSanFilter(url, level, index) {
+    String.prototype.replaceAll = function (n, t) {
+      var i = this;
+      return i.replace(new RegExp(n, 'g'), t);
+    };
+    function encode(n) {
+      return n.indexOf('%3A') > 0 || n.indexOf('%2F') > 0 ? n : encodeURIComponent(n);
+    }
+    var pattern, matched, dataip;
+    if (typeof url == 'undefined' || url === null || url === '') return '/Content/Img/424450.jpg';
+    if (url.indexOf('424450.jpg') > 0) return null;
+    url = url
+      .replaceAll('_h_', 'http')
+      .replaceAll('_e_', '/extendContent/Manga/')
+      .replaceAll('_r_', '/extendContent/MangaRaw/');
+    url.indexOf('//') === 0 && (url = 'http:' + url);
+    if (url.indexOf('[GDP]') === 0 || url.indexOf('drive.google.com') > 0)
+      return level > 1
+        ? '/api/Value/ImageSyncing?ip=34512351&url=' +
+          encode(url.replace('[GDP]', 'https://drive.google.com/uc?export=view&id='))
+        : url.replace('[GDP]', 'https://drive.google.com/uc?export=view&id=');
+    if (
+      (url.indexOf('[IS1]') >= 0 && (url = url.replace('[IS1]', 'https://imagepi.otakuscan.net/')),
+      url.indexOf('[IS3]') >= 0 && (url = url.replace('[IS3]', 'http://image3.otakuscan.net/')),
+      url.indexOf('[IO3]') >= 0 && (url = url.replace('[IO3]', 'http://image3.shopotaku.net/')),
+      url.indexOf('/Content/Workshop/') >= 0)
+    )
+      return url;
+    if (url.indexOf('/Content/Workshop/') >= 0) return url;
+    if (
+      (url.indexOf('i.blogtruyen') > 0 && level > 9 && (url = url.replace('i.blogtruyen', 'i2.blogtruyen')),
+      url.indexOf('file-bato-orig.anyacg.co') > 0 &&
+        (url = url.replace('file-bato-orig.anyacg.co', 'file-bato-orig.bato.to')),
+      url.indexOf('file-comic') > 0 &&
+        (url.indexOf('file-comic-1') > 0 && (url = url.replace('file-comic-1.anyacg.co', 'z-img-01.mangapark.net')),
+        url.indexOf('file-comic-2') > 0 && (url = url.replace('file-comic-2.anyacg.co', 'z-img-02.mangapark.net')),
+        url.indexOf('file-comic-3') > 0 && (url = url.replace('file-comic-3.anyacg.co', 'z-img-03.mangapark.net')),
+        url.indexOf('file-comic-4') > 0 && (url = url.replace('file-comic-4.anyacg.co', 'z-img-04.mangapark.net')),
+        url.indexOf('file-comic-5') > 0 && (url = url.replace('file-comic-5.anyacg.co', 'z-img-05.mangapark.net')),
+        url.indexOf('file-comic-6') > 0 && (url = url.replace('file-comic-6.anyacg.co', 'z-img-06.mangapark.net')),
+        url.indexOf('file-comic-9') > 0 && (url = url.replace('file-comic-9.anyacg.co', 'z-img-09.mangapark.net')),
+        url.indexOf('file-comic-10') > 0 && (url = url.replace('file-comic-10.anyacg.co', 'z-img-10.mangapark.net')),
+        url.indexOf('file-comic-99') > 0 &&
+          (url = url.replace('file-comic-99.anyacg.co/uploads', 'file-bato-0001.bato.to'))),
+      url.indexOf('cdn.nettruyen.com') > 0 &&
+        (url = url.replace('cdn.nettruyen.com/Data/Images/', 'truyen.cloud/data/images/')),
+      url.indexOf('http') >= 30 && (url = url.substr(url.indexOf('http'))),
+      (url.indexOf('%2f%2f') > 0 || url.indexOf('%2F%2F') > 0) && (url = decodeURIComponent(url)),
+      url.indexOf('url=') >= 1 && (url = url.substr(url.indexOf('url=') + 4)),
+      (url.indexOf('blogspot') >= 1 || url.indexOf('fshare') >= 1) && (url = url.replace('http:', 'https:')),
+      url.indexOf('blogspot') >= 0 && url.indexOf('http') < 0 && (url = 'https://' + url),
+      url.indexOf('app/manga/uploads/') >= 0 && (url = 'https://lhscan.net/' + url),
+      (url = url.replace('//cdn.adtrue.com/rtb/async.js', '')),
+      url.indexOf('[ON2]') >= 0 ||
+      url.indexOf('[OSN]') >= 0 ||
+      url.indexOf('[TT3]') >= 0 ||
+      url.indexOf('[GDT]') >= 0 ||
+      url.indexOf('truyen.cloud') > 0 ||
+      url.indexOf('fshare.vn') > 0 ||
+      url.indexOf('[GDT]') === 0 ||
+      url.indexOf('lhmanga') > 0 ||
+      url.indexOf('blogtruyen') > 0 ||
+      url.indexOf('lhscanlation') > 0 ||
+      url.indexOf('hako') > 0 ||
+      url.indexOf('manhwahentai.com') > 0 ||
+      url.indexOf('uptruyen.com') > 0 ||
+      url.indexOf('mangaqq') > 0 ||
+      url.indexOf('otakuqq') > 0 ||
+      url.indexOf('qqtaku') > 0 ||
+      url.indexOf('trangshop') > 0 ||
+      url.indexOf('ocumeo') > 0 ||
+      url.indexOf('hamtruyen') > 0 ||
+      url.indexOf('beeng.net') > 0 ||
+      url.indexOf('rawdevart.com') > 0 ||
+      url.indexOf('mangasy.com') > 0 ||
+      url.indexOf('cdnqq.xyz') > 0 ||
+      url.indexOf('imgmirror.club') > 0 ||
+      url.indexOf('cdnimg.club') > 0 ||
+      url.indexOf('forumnt') > 0 ||
+      (url.indexOf('hiperdex') > 0 && level <= 1) ||
+      url.indexOf('netsnippet') > 0 ||
+      url.indexOf('mangakakalot') > 0 ||
+      (url.indexOf('mangapark') > 0 && level > 1)
+        ? (index == null && (index = 1), (url = '/api/Value/ImageSyncing?ip=34512351&url=' + encode(url)))
+        : url.indexOf('merakiscans') > 0 ||
+          url.indexOf('mangazuki') > 0 ||
+          url.indexOf('ninjascans') > 0 ||
+          url.indexOf('anyacg.co') > 0 ||
+          url.indexOf('mangakatana') > 0 ||
+          url.indexOf('zeroscans') > 0 ||
+          url.indexOf('mangapark') > 0 ||
+          url.indexOf('mangadex') > 0 ||
+          url.indexOf('uptruyen') > 0 ||
+          url.indexOf('hocvientruyentranh') > 0 ||
+          url.indexOf('ntruyen.info') > 0 ||
+          url.indexOf('chancanvas') > 0 ||
+          url.indexOf('ff.cdnimg.club') > 0 ||
+          url.indexOf('bato.to') > 0
+          ? url.indexOf('googleusercontent') < 0 &&
+          url.indexOf('otakusan') < 0 &&
+          url.indexOf('otakuscan') < 0 &&
+          url.indexOf('shopotaku') < 0 &&
+          (url =
+            'https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=' +
+            encode(url))
+          : url.indexOf('imageinstant.com') > 0
+            ? (url = 'https://images.weserv.nl/?url=' + encode(url))
+            : url.indexOf('hiperdex') > 0 && level > 1 && (url = 'loading error page'),
+      (pattern = /http:\/[^/]/g),
+      (matched = pattern.exec(url)),
+      matched != null && matched.length > 0 && (url = url.replace('http:/', 'http://')),
+      (pattern = /https:\/[^/]/g),
+      (matched = pattern.exec(url)),
+      matched != null && matched.length > 0 && (url = url.replace('https:/', 'http://')),
+      (dataip = 'err'),
+      url.indexOf('otakusan.net_') > 0 && url.indexOf('vi=') < 0)
+    )
+      try {
+        dataip = window.otakusanVi;
+        !dataip && (dataip = 'err');
+        level === 99 && (dataip = dataip.replace(dataip.substr(0, 4), '9120'));
+        url += url.indexOf('?') > 0 ? '&vi=' + dataip : '?vi=' + dataip;
+      } catch (e) {
+        dataip = 'err';
+      }
+    return url;
+  }
+
+  function otakuSanHeader(url, headers) {
+    if (
+      url.indexOf('otakusan.net') > 0 &&
+      url.indexOf('extendContent') > 0 &&
+      url.indexOf('fetcher.otakusan.net') < 0 &&
+      url.indexOf('image3.otakusan.net') < 0
+    ) {
+      headers['page-lang'] = window.otakusanSuccess[dlCurrent] + ',' + window.otakusanKey;
+    } else {
+      headers['page-lang'] = 'vn-lang';
+    }
+    return headers;
+  }
+
+  function dlImg(success, error) {
+    var url = dlImages[dlCurrent],
+      filename = ('0000' + dlCurrent).slice(-4),
       urlObj = new URL(url),
       urlHost = urlObj.hostname,
       headers = {};
@@ -472,7 +615,7 @@ jQuery(function ($) {
       headers.referer = urlObj.origin;
       headers.origin = urlObj.origin;
     }
-    if (url.indexOf('otakusan.net') !== -1) headers['page-lang'] = 'vn-lang';
+    headers = otakuSanHeader(url, headers);
 
     GM.xmlHttpRequest({
       method: 'GET',
@@ -507,7 +650,6 @@ jQuery(function ($) {
 
   function next() {
     noty('<strong class="centered">' + dlFinal + '/' + dlTotal + '</strong>', 'warning');
-
     if (dlFinal < dlCurrent) return;
 
     if (dlFinal < dlTotal) {
@@ -536,7 +678,6 @@ jQuery(function ($) {
 
     for (dlCurrent; dlCurrent < max; dlCurrent++) {
       dlImg(
-        dlImages[dlCurrent],
         function (response, filename) {
           dlZip.file(path + filename, response.response);
 
@@ -711,7 +852,6 @@ jQuery(function ($) {
 
   function getSource(callback) {
     var $link = $(configs.link);
-
     if (!$link.length) return;
 
     $link.on('contextmenu', function (e) {
@@ -1026,11 +1166,51 @@ jQuery(function ($) {
   }
 
   function getOtakuSan() {
-    getSource(function ($data) {
-      var data = $data.find('#inpit-c').val();
-      data = JSON.parse(data);
-      checkImages(data);
+    var $link = $(configs.link);
+    if (!$link.length) return;
+
+    $link.on('contextmenu', function (e) {
+      e.preventDefault();
+      if (!oneProgress()) return;
+
+      var $this = $(this);
+
+      configs.href = $this.attr('href');
+      chapName = $('h1.title').first().attr('title') + ' ' + $this.text().trim();
+      notyWait();
+
+      GM.xmlHttpRequest({
+        method: 'GET',
+        url: configs.href,
+        onload: function (data) {
+          var $data = cleanSource(data);
+          window.otakusanVi = $data.find('#dataip').val();
+
+          GM.xmlHttpRequest({
+            method: 'POST',
+            url: '/Manga/UpdateView',
+            responseType: 'json',
+            onload: function (response) {
+              var res = response.response;
+              if (!res.chapid) {
+                notyImages();
+              } else {
+                window.otakusanKey = res.key;
+                window.otakusanSuccess = res.isSuccess;
+
+                var images = JSON.parse(res.view);
+                $.each(images, function (i, v) {
+                  images[i] = otakuSanFilter(v, 1, i);
+                });
+                notySuccess(images);
+              }
+            },
+          });
+        },
+      });
     });
+
+    notyReady();
   }
 
   function getTtManga() {
