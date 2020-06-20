@@ -50,6 +50,7 @@
 // @require         https://unpkg.com/jszip@3.2.1/dist/jszip.min.js
 // @require         https://unpkg.com/file-saver@2.0.1/dist/FileSaver.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
+// @require         https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js
 // @noframes
 // @connect         *
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
@@ -132,6 +133,8 @@ jQuery(function ($) {
     'cdn.lhmanga.com': 'https://truyentranhlh.net',
     'cdn1.lhmanga.com': 'https://truyentranhlh.net',
     'storage.fshare.vn': 'https://truyentranh.net',
+    'ocumeo.com': 'https://www.a3manga.com/',
+    'www.ocumeo.com': 'https://www.a3manga.com/',
   };
 
   /* === DO NOT CHANGE === */
@@ -829,6 +832,57 @@ jQuery(function ($) {
     });
   }
 
+  function getA3Manga() {
+    getSource(function ($data) {
+      var $entry = $data.find('#chapter-content script');
+      if (!$entry.length) {
+        notyImages();
+      } else {
+        $entry = $entry.text().replace('document.write(chapterHTML);', '').trim();
+        if (!$entry) {
+          notyImages();
+          return;
+        }
+
+        /* global CryptoJS, chapterHTML */
+        // eslint-disable-next-line no-inner-declarations, no-unused-vars
+        function CryptoJSAesDecrypt(passphrase, encrypted_json_string) {
+          var obj_json = JSON.parse(encrypted_json_string);
+
+          var encrypted = obj_json.ciphertext;
+          var salt = CryptoJS.enc.Hex.parse(obj_json.salt);
+          var iv = CryptoJS.enc.Hex.parse(obj_json.iv);
+
+          var key = CryptoJS.PBKDF2(passphrase, salt, {
+            hasher: CryptoJS.algo.SHA512,
+            keySize: 64 / 8,
+            iterations: 999,
+          });
+
+          var decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: iv });
+          return decrypted.toString(CryptoJS.enc.Utf8);
+        }
+        String.prototype.replaceAll = function (search, replacement) {
+          var target = this;
+          return target.split(search).join(replacement);
+        };
+
+        eval($entry);
+        $entry = $(chapterHTML);
+
+        var images = [];
+        $entry.each(function (i, v) {
+          var imgLink = $(v).data('9rqz');
+          imgLink = imgLink.replaceAll('@9rQz^', '.');
+          imgLink = imgLink.replaceAll('~4ZLsA*', ':');
+          imgLink = imgLink.replaceAll('^u$UZ!QyI<yt_Z2}', '/');
+          images.push(imgLink);
+        });
+        checkImages(images);
+      }
+    });
+  }
+
   function getTruyenTranhTuan() {
     getSource(function ($data) {
       var $entry = $data.find('#read-title').next('script');
@@ -1333,8 +1387,7 @@ jQuery(function ($) {
     case 'www.a3manga.com':
       configs = {
         link: '.table-striped a',
-        contents: '#view-chapter',
-        filter: true,
+        init: getA3Manga,
       };
       break;
     case 'truyentranhtuan.com':
