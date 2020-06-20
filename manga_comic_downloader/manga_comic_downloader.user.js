@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.3.1
+// @version         2.3.2
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -889,9 +889,23 @@ jQuery(function ($) {
       if (!$entry.length) {
         notyImages();
       } else {
-        $data = $entry.text().match(/slides_page_url_path\s=\s([^\]]+)/)[1];
-        $data = JSON.parse($data + ']');
-        checkImages($data);
+        $data = $entry.text().match(/var\s+slides_page_path\s*=\s*(.+?);/)[1];
+        $data = JSON.parse($data);
+
+        var slides_page = $data,
+          length_chapter = slides_page.length - 1;
+
+        for (var i = 0; i < length_chapter; i++) {
+          for (var j = i + 1; j < slides_page.length; j++) {
+            if (slides_page[j] < slides_page[i]) {
+              var temp = slides_page[j];
+              slides_page[j] = slides_page[i];
+              slides_page[i] = temp;
+            }
+          }
+        }
+
+        checkImages(slides_page);
       }
     });
   }
