@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.3.10
+// @version         2.3.11
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -53,6 +53,8 @@
 // @require         https://unpkg.com/file-saver@2.0.1/dist/FileSaver.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @require         https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js
+// @require         https://cdn.jsdelivr.net/npm/selector-set@1.1.5/selector-set.js
+// @require         https://cdn.jsdelivr.net/npm/selector-observer@2.1.6/dist/index.umd.js
 // @noframes
 // @connect         *
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
@@ -116,6 +118,14 @@ jQuery(function ($) {
     'trangshop.net',
     '.beeng.net',
     'forumnt.com',
+  ];
+
+  /**
+   * Keep the original source code
+   * @type {Array} key
+   */
+  var keepSource = [
+    'hentaicube.net',
   ];
 
   /**
@@ -832,6 +842,12 @@ jQuery(function ($) {
 
   function cleanSource(response) {
     var responseText = response.responseText;
+
+    var keep = keepSource.some(function (key) {
+      return configs.href.indexOf(key) !== -1;
+    });
+    if (keep) return $(responseText);
+
     responseText = responseText.replace(/[\s\n]+src[\s\n]*=[\s\n]*/gi, ' data-src=');
     responseText = responseText.replace(/^[^<]*/, '');
     return $(responseText);
@@ -1309,6 +1325,24 @@ jQuery(function ($) {
     });
   }
 
+  /* global SelectorObserver, SelectorSet */
+  function getHentaiCube() {
+    const observer = new SelectorObserver.default($('#manga-chapters-holder').get(0), SelectorSet);
+    observer.observe('.listing-chapters_wrap', function () {
+      var $link = $(configs.link);
+      if (!$link.length) return;
+
+      $link.on('contextmenu', function (e) {
+        e.preventDefault();
+        if (!oneProgress()) return;
+
+        rightClickEvent(this);
+      });
+
+      notyReady();
+    });
+  }
+
   var configsDefault = {
       reverse: true,
       link: '',
@@ -1600,8 +1634,9 @@ jQuery(function ($) {
     case 'hentaicube.net':
       configs = {
         link: '.wp-manga-chapter a',
-        name: 'h1',
+        name: '.post-title',
         contents: '.reading-content',
+        init: getHentaiCube,
       };
       break;
     default:
