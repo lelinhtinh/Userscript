@@ -651,6 +651,13 @@ jQuery(function ($) {
     }
   }
 
+  function cleanSource(response) {
+    var responseText = response.responseText;
+    responseText = responseText.replace(/[\s\n]+src[\s\n]*=[\s\n]*/gi, ' data-src=');
+    responseText = responseText.replace(/^[^<]*/, '');
+    return $(responseText);
+  }
+
   function rightClickEvent(_this, callback) {
     var $this = $(_this),
       name = configs.name;
@@ -670,11 +677,7 @@ jQuery(function ($) {
       method: 'GET',
       url: configs.href,
       onload: function (response) {
-        var responseText = response.responseText;
-        responseText = responseText.replace(/[\s\n]+src[\s\n]*=[\s\n]*/gi, ' data-src=');
-        responseText = responseText.replace(/^[^<]*/, '');
-
-        var $data = $(responseText);
+        var $data = cleanSource(response);
         if (typeof callback === 'function') {
           callback($data);
         } else {
@@ -721,14 +724,71 @@ jQuery(function ($) {
     });
   }
 
-  function getIuTruyenTranh() {
-    getSource(function ($data) {
+  function getIuTruyenTranh($data) {
+    function init($data) {
+      var $goiy = $data.find('.goiy');
+
+      if ($goiy.length) {
+        var comic_id, chap_index, chap_id;
+        try {
+          var matched = configs.href.match(/(\d+)-.*?\/c([\d.\-a-z]+)\.html\?id=(\d+)$/i);
+          comic_id = matched[1];
+          chap_index = matched[2];
+          chap_id = matched[3];
+          // eslint-disable-next-line no-empty
+        } catch (error) {}
+
+        var recentPassword = sessionStorage.getItem('recent-password');
+        var pass = prompt(
+          'Truyện yêu cầu nhập mật khẩu, gợi ý là:\n\n' +
+            $goiy.text() +
+            '\n\nSử dụng mã gõ tắt để nhập nhanh:\n{{ comic_id }}: ID truyện (' +
+            comic_id +
+            ')\n{{ chap_index }}: Thứ tự chương (' +
+            chap_index +
+            ')\n{{ chap_id }}: ID chương (' +
+            chap_id +
+            ')',
+          recentPassword ? recentPassword : '{{ chap_index }}ltn'
+        );
+
+        if (!pass || !pass.trim()) {
+          notyError();
+          return;
+        }
+        pass = pass.trim();
+        sessionStorage.setItem('recent-password', pass);
+
+        pass = pass.replace(/\{\{\s*comic_id\s*\}\}/, comic_id);
+        pass = pass.replace(/\{\{\s*chap_index\s*\}\}/, chap_index);
+        pass = pass.replace(/\{\{\s*chap_id\s*\}\}/, chap_id);
+
+        GM.xmlHttpRequest({
+          method: 'POST',
+          url: configs.href,
+          data: 'act=doUnclock&pass=' + pass,
+          headers: {
+            withCredentials: true,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          onload: function (response) {
+            getIuTruyenTranh(cleanSource(response));
+          },
+          onerror: function () {
+            notyError();
+          },
+        });
+        return;
+      }
+
       var packer = $data.filter('div.wrapper').find('script:first').text().trim().split('eval')[1],
         lstImages = [];
 
       eval(eval(packer));
       checkImages(lstImages);
-    });
+    }
+
+    !$data ? getSource(init) : init($data);
   }
 
   function getNtruyen() {
