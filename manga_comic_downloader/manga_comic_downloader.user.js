@@ -30,6 +30,7 @@
 // @match           https://truyenhay24h.com/*
 // @match           https://thichtruyentranh.com/*
 // @match           http://truyen1.net/*
+// @match           http://truyentranh1.info/*
 // @match           http://*.hentailxx.com/*
 // @match           https://*.hentailxx.com/*
 // @match           https://hentaivn.net/*
@@ -1240,6 +1241,7 @@ jQuery(function ($) {
       };
       break;
     case 'truyen1.net':
+    case 'truyentranh1.info':
       configs = {
         link: '#MainContent_CenterContent_detailStoryControl_listChapter a',
         init: getTruyen1,
