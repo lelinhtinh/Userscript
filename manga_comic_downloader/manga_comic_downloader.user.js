@@ -151,9 +151,9 @@ jQuery(function ($) {
     var ext = '',
       mime = '',
       dv = new DataView(arrayBuffer, 0, 5),
-      nume1 = dv.getUint8(0, true),
-      nume2 = dv.getUint8(1, true),
-      hex = nume1.toString(16) + nume2.toString(16);
+      numE1 = dv.getUint8(0, true),
+      numE2 = dv.getUint8(1, true),
+      hex = numE1.toString(16) + numE2.toString(16);
 
     switch (hex) {
       case '8950':
@@ -469,21 +469,21 @@ jQuery(function ($) {
       responseType: 'arraybuffer',
       headers: headers,
       onload: function (response) {
-        var imgext = getImageType(response.response).ext;
+        var imgExt = getImageType(response.response).ext;
         dlFinal++;
-        if (imgext === 'gif') {
+        if (imgExt === 'gif') {
           next();
           return;
         }
 
         if (
-          !imgext ||
+          !imgExt ||
           response.response.byteLength < 3000 ||
           (response.statusText !== 'OK' && response.statusText !== '')
         ) {
           error(response, filename);
         } else {
-          filename = filename + '.' + imgext;
+          filename = filename + '.' + imgExt;
           success(response, filename);
         }
       },
