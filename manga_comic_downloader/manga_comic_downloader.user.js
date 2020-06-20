@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.3.2
+// @version         2.3.3
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -912,14 +912,12 @@ jQuery(function ($) {
 
   function getMangaK() {
     getSource(function ($data) {
-      var $entry = $data.find('.vung_doc script');
+      var $entry = $data.find('#content-chap script');
       if (!$entry.length) {
         notyImages();
       } else {
-        $data = $entry
-          .text()
-          .replace(/^[\n\s]*var\scontent\s?=\s?/, '')
-          .replace(/,\];[\n\s]*$/, ']');
+        $data = $entry.text().match(/var\s+content\s*=\s*(.+?);/)[1];
+        $data = $data.trim().replace(/,[\s\n]*\]$/, ']');
         $data = JSON.parse($data);
         checkImages($data);
       }
