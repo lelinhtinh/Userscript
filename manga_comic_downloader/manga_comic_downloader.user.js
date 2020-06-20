@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.3.5
+// @version         2.3.6
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -127,6 +127,8 @@ jQuery(function ($) {
     'upload.upanhmoi.net': 'https://upanhmoi.net',
     'upload2.upanhmoi.net': 'https://upanhmoi.net',
     'upload3.upanhmoi.net': 'https://upanhmoi.net',
+    'upload4.upanhmoi.com': 'https://upanhmoi.com',
+    'upload5.upanhmoi.com': 'https://upanhmoi.com',
     'img1.upanhmoi.net': 'https://upanhmoi.net',
     'img2.upanhmoi.net': 'https://upanhmoi.net',
     'proxy1.ttmanga.com': 'https://ttmanga.com',
@@ -466,6 +468,9 @@ jQuery(function ($) {
     if (referer[urlHost]) {
       headers.referer = referer[urlHost];
       headers.origin = referer[urlHost];
+    } else {
+      headers.referer = urlObj.origin;
+      headers.origin = urlObj.origin;
     }
     if (url.indexOf('otakusan.net') !== -1) headers['page-lang'] = 'vn-lang';
 
