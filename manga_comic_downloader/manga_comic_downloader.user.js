@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.3.9
+// @version         2.3.10
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -109,6 +109,7 @@ jQuery(function ($) {
     '.fbcdn.net',
     'mangaqq.net',
     'mangaqq.com',
+    'truyenqq.net',
     '.upanhmoi.net',
     'qqtaku.com',
     'qqtaku.net',
@@ -143,6 +144,9 @@ jQuery(function ($) {
     'storage.fshare.vn': 'https://truyentranh.net',
     'ocumeo.com': 'https://www.a3manga.com/',
     'www.ocumeo.com': 'https://www.a3manga.com/',
+    'mangaqq.net': 'http://truyenqq.com/',
+    'mangaqq.com': 'http://truyenqq.com/',
+    'truyenqq.net': 'http://truyenqq.com/',
   };
 
   /* === DO NOT CHANGE === */
