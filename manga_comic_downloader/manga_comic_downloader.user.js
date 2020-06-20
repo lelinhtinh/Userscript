@@ -479,7 +479,7 @@ jQuery(function ($) {
 
         if (
           !imgExt ||
-          response.response.byteLength < 3000 ||
+          response.response.byteLength < 300 ||
           (response.statusText !== 'OK' && response.statusText !== '')
         ) {
           error(response, filename);
@@ -633,7 +633,7 @@ jQuery(function ($) {
     var images = [];
     $contents.each(function (i, v) {
       var $img = $(v);
-      images[i] = $img.data('cdn') || $img.data('original') || $img.data('src');
+      images[i] = $img.data('cdn') || $img.data('src') || $img.data('original');
     });
 
     checkImages(images);
