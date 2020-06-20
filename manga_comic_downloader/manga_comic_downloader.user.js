@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.3.7
+// @version         2.3.8
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -457,6 +457,23 @@ jQuery(function ($) {
           endZip();
         }
       );
+  }
+
+  /* global CryptoJS, chapterHTML */
+  // Using for getA3Manga + getNgonPhongComics
+  // eslint-disable-next-line no-unused-vars
+  function CryptoJSAesDecrypt(passphrase, encrypted_json_string) {
+    var obj_json = JSON.parse(encrypted_json_string);
+    var encrypted = obj_json.ciphertext;
+    var salt = CryptoJS.enc.Hex.parse(obj_json.salt);
+    var iv = CryptoJS.enc.Hex.parse(obj_json.iv);
+    var key = CryptoJS.PBKDF2(passphrase, salt, {
+      hasher: CryptoJS.algo.SHA512,
+      keySize: 64 / 8,
+      iterations: 999,
+    });
+    var decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: iv });
+    return decrypted.toString(CryptoJS.enc.Utf8);
   }
 
   function otakuSanFilter(url, level, index) {
@@ -991,24 +1008,6 @@ jQuery(function ($) {
           return;
         }
 
-        /* global CryptoJS, chapterHTML */
-        // eslint-disable-next-line no-inner-declarations, no-unused-vars
-        function CryptoJSAesDecrypt(passphrase, encrypted_json_string) {
-          var obj_json = JSON.parse(encrypted_json_string);
-
-          var encrypted = obj_json.ciphertext;
-          var salt = CryptoJS.enc.Hex.parse(obj_json.salt);
-          var iv = CryptoJS.enc.Hex.parse(obj_json.iv);
-
-          var key = CryptoJS.PBKDF2(passphrase, salt, {
-            hasher: CryptoJS.algo.SHA512,
-            keySize: 64 / 8,
-            iterations: 999,
-          });
-
-          var decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: iv });
-          return decrypted.toString(CryptoJS.enc.Utf8);
-        }
         String.prototype.replaceAll = function (search, replacement) {
           var target = this;
           return target.split(search).join(replacement);
@@ -1211,6 +1210,39 @@ jQuery(function ($) {
     });
 
     notyReady();
+  }
+
+  function getNgonPhongComics() {
+    getSource(function ($data) {
+      var $entry = $data.filter('#chapter-content').find('script');
+      if (!$entry.length) {
+        notyImages();
+      } else {
+        $entry = $entry.text().trim().match(/^(.+?)document\.write\(chapterHTML\);/);
+        if (!$entry) {
+          notyImages();
+          return;
+        }
+
+        String.prototype.replaceAll = function (search, replacement) {
+          var target = this;
+          return target.split(search).join(replacement);
+        };
+
+        eval($entry[1]);
+        $entry = $(chapterHTML);
+
+        var images = [];
+        $entry.each(function (i, v) {
+          var imgLink = $(v).data('9rpq');
+          imgLink = imgLink.replaceAll('@9rpQ^', '.');
+          imgLink = imgLink.replaceAll('~4ZLls*', ':');
+          imgLink = imgLink.replaceAll('^u$UZ!Qy<yut_Z2}', '/');
+          images.push(imgLink);
+        });
+        checkImages(images);
+      }
+    });
   }
 
   function getTtManga() {
@@ -1468,8 +1500,7 @@ jQuery(function ($) {
       configs = {
         link: '.comic-intro .table-striped a',
         name: '.info-title',
-        contents: '.view-chapter',
-        filter: true,
+        init: getNgonPhongComics,
       };
       break;
     case 'www.nettruyen.com':
