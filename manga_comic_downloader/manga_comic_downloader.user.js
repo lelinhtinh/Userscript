@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.3.11
+// @version         2.4.0
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -85,7 +85,7 @@ jQuery(function ($) {
    * Multithreading
    * @type {Number} [1 -> 32]
    */
-  var threading = 8;
+  var threading = 4;
 
   /**
    * Image list will be ignored
@@ -124,9 +124,7 @@ jQuery(function ($) {
    * Keep the original source code
    * @type {Array} key
    */
-  var keepSource = [
-    'hentaicube.net',
-  ];
+  var keepSource = ['hentaicube.net'];
 
   /**
    * HTTP referer
@@ -441,12 +439,18 @@ jQuery(function ($) {
   }
 
   function genZip() {
-    noty('Đang tạo file nén của <strong>' + chapName + '</strong>', 'warning');
+    noty('Tạo file nén của <strong>' + chapName + '</strong>', 'warning');
 
     dlZip
-      .generateAsync({
-        type: 'blob',
-      })
+      .generateAsync(
+        {
+          type: 'blob',
+          compression: 'STORE',
+        },
+        function updateCallback(metadata) {
+          noty('Đang nén file <strong>' + metadata.percent.toFixed(2) + '%</strong>', 'warning');
+        }
+      )
       .then(
         function (blob) {
           var zipName = genFileName() + '.' + outputExt;
@@ -516,7 +520,7 @@ jQuery(function ($) {
     if (url.indexOf('[GDP]') === 0 || url.indexOf('drive.google.com') > 0)
       return level > 1
         ? '/api/Value/ImageSyncing?ip=34512351&url=' +
-          encode(url.replace('[GDP]', 'https://drive.google.com/uc?export=view&id='))
+            encode(url.replace('[GDP]', 'https://drive.google.com/uc?export=view&id='))
         : url.replace('[GDP]', 'https://drive.google.com/uc?export=view&id=');
     if (
       (url.indexOf('[IS1]') >= 0 && (url = url.replace('[IS1]', 'https://imagepi.otakuscan.net/')),
@@ -687,7 +691,7 @@ jQuery(function ($) {
   }
 
   function next() {
-    noty('<strong class="centered">' + dlFinal + '/' + dlTotal + '</strong>', 'warning');
+    noty('Đang tải xuống <strong>' + dlFinal + '/' + dlTotal + '</strong>', 'warning');
     if (dlFinal < dlCurrent) return;
 
     if (dlFinal < dlTotal) {
@@ -1245,7 +1249,10 @@ jQuery(function ($) {
       if (!$entry.length) {
         notyImages();
       } else {
-        $entry = $entry.text().trim().match(/^(.+?)document\.write\(chapterHTML\);/);
+        $entry = $entry
+          .text()
+          .trim()
+          .match(/^(.+?)document\.write\(chapterHTML\);/);
         if (!$entry) {
           notyImages();
           return;
@@ -1293,7 +1300,7 @@ jQuery(function ($) {
 
   function getTruyenSieuHay() {
     getSource(function ($data) {
-      if($data.find('#wrap_alertvip')) {
+      if ($data.find('#wrap_alertvip')) {
         notyImages();
         return;
       }
