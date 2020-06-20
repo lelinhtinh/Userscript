@@ -12,6 +12,7 @@
 // @match           http://*.truyentranh8.org/*
 // @match           http://*.truyentranh8.com/*
 // @match           http://*.truyentranh869.com/*
+// @match           http://*.truyentranh86.com/*
 // @match           http://iutruyentranh.com/*
 // @match           https://iutruyentranh.com/*
 // @match           https://*.truyentranh.net/*
@@ -1202,6 +1203,7 @@ jQuery(function ($) {
     case 'truyentranhtam.com':
     case 'truyentranh8.org':
     case 'truyentranh869.com':
+    case 'truyentranh86.com':
       configs = {
         link: '#ChapList a',
         name: function (_this) {
@@ -1213,6 +1215,7 @@ jQuery(function ($) {
     case 'm.truyentranhtam.com':
     case 'm.truyentranh8.org':
     case 'm.truyentranh869.com':
+    case 'm.truyentranh86.com':
       configs = {
         link: '.chapter-link',
         name: 'h1',

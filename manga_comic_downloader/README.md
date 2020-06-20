@@ -29,7 +29,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 
 ### Desktop
 
-1. <http://truyentranh8.com/>, <http://truyentranh8.net/>, <http://truyentranh8.org/>, <http://truyentranhtam.com/>, <http://truyentranh869.com/>
+1. <http://truyentranh8.com/>, <http://truyentranh8.net/>, <http://truyentranh8.org/>, <http://truyentranhtam.com/>, <http://truyentranh869.com/>, <http://truyentranh86.com/>
 1. <http://iutruyentranh.com/>
 1. <https://truyentranh.net/>
 1. <https://comicvn.net/>, <https://beeng.net/>
