@@ -39,7 +39,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 1. <http://truyentranhtuan.com/>
 1. <http://mangak.info/>
 1. <https://truyentranhlh.com/>, <https://truyentranhlh.net/>
-1. <https://hocvientruyentranh.com/>, <https://hocvientruyentranh.net/>
+1. <http://hocvientruyentranh.com/>, <https://hocvientruyentranh.net/>
 1. <https://truyenhay24h.com/>
 1. <https://thichtruyentranh.com/>
 1. <http://truyen1.net/>

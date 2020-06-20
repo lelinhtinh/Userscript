@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.3.4
+// @version         2.3.5
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -28,6 +28,7 @@
 // @match           https://hocvientruyentranh.net/*
 // @match           https://hocvientruyentranh.com/*
 // @match           https://truyenhay24h.com/*
+// @match           https://thichtruyentranh.com/*
 // @match           http://truyen1.net/*
 // @match           http://*.hentailxx.com/*
 // @match           https://*.hentailxx.com/*
