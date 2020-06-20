@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.3.8
+// @version         2.3.9
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -114,6 +114,7 @@ jQuery(function ($) {
     'qqtaku.net',
     'trangshop.net',
     '.beeng.net',
+    'forumnt.com',
   ];
 
   /**
@@ -124,6 +125,9 @@ jQuery(function ($) {
     'i.blogtruyen.com': 'https://blogtruyen.com',
     'truyen.cloud': 'http://www.nettruyen.com',
     'proxy.truyen.cloud': 'http://www.nettruyen.com',
+    'i.netsnippet.com': 'http://www.nettruyen.com/',
+    'upload.forumnt.com': 'http://www.nettruyen.com/',
+    'upload2.forumnt.com': 'http://www.nettruyen.com/',
     'upload.upanhmoi.net': 'https://upanhmoi.net',
     'upload2.upanhmoi.net': 'https://upanhmoi.net',
     'upload3.upanhmoi.net': 'https://upanhmoi.net',
