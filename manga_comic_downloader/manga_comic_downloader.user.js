@@ -398,7 +398,10 @@ jQuery(function ($) {
   }
 
   function genFileName() {
-    return chapName.replace(/\s+/g, '_').replace(/\./g, '-');
+    return chapName
+      .replace(/\s+/g, '_')
+      .replace(/\./g, '-')
+      .replace(/(^[\W_]+|[\W_]+$)/, '');
   }
 
   function endZip() {
@@ -1517,10 +1520,10 @@ jQuery(function ($) {
     case 'www.hamtruyentranh.net':
       configs = {
         link: '#examples a',
-        name: function (_this, chap) {
-          var $this = $(_this);
-          $this.find('span').remove();
-          return $('.title-manga').text().trim() + ' ' + chap;
+        name: function (_this) {
+          var $clone = $(_this).clone();
+          $clone.find('span').remove();
+          return $('.title-manga').text().trim() + ' ' + $clone.text().trim();
         },
         contents: '.each-page',
       };
