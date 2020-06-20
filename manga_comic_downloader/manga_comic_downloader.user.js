@@ -1273,6 +1273,11 @@ jQuery(function ($) {
 
   function getTruyenSieuHay() {
     getSource(function ($data) {
+      if($data.find('#wrap_alertvip')) {
+        notyImages();
+        return;
+      }
+
       var sID = $data.find('#content_chap').find('script:not([type]):first').text();
       sID = /\bgetContentchap\('(\w+)'\)\B/.exec(sID)[1];
       $.ajax({
