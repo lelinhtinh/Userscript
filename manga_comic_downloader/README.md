@@ -60,6 +60,8 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 1. <http://tuthienbao.com/>
 1. <https://vietcomic.net/>
 1. <https://hamtruyentranh.com/>
+1. <https://hoihentai.com/>
+1. <https://hoitruyentranh.com/>
 
 ### Mobile
 

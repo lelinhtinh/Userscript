@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.7.0
+// @version         2.9.0
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -51,6 +51,8 @@
 // @match           http://*.tuthienbao.com/*
 // @match           https://vietcomic.net/*
 // @match           https://hamtruyentranh.com/*
+// @match           https://hoihentai.com/*
+// @match           https://hoitruyentranh.com/*
 // @require         https://code.jquery.com/jquery-3.5.1.min.js
 // @require         https://unpkg.com/jszip@3.4.0/dist/jszip.min.js
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
@@ -121,6 +123,8 @@ jQuery(function ($) {
     'trangshop.net',
     '.beeng.net',
     'forumnt.com',
+    'hoitruyentranh.com',
+    'hoihentai.com',
   ];
 
   /**
@@ -762,11 +766,6 @@ jQuery(function ($) {
   }
 
   function imageFilter(url) {
-    var keep = keepOriginal.some(function (key) {
-      return url.indexOf(key) !== -1;
-    });
-    if (keep) return protocolUrl(url);
-
     url = decodeUrl(url);
     url = url.trim();
     url = url.replace(/^.+(&|\?)url=/, '');
@@ -796,6 +795,14 @@ jQuery(function ($) {
       notyImages();
     } else {
       $.each(images, function (i, v) {
+        var keep = keepOriginal.some(function (key) {
+          return v.indexOf(key) !== -1;
+        });
+        if (keep) {
+          source.push(v);
+          return;
+        }
+
         if (imageIgnore(v) || typeof v === 'undefined') return;
         if (/[><"']/.test(v)) return;
 
@@ -1365,6 +1372,43 @@ jQuery(function ($) {
     });
   }
 
+  function getHoiTruyenTranh() {
+    var $link = $(configs.link);
+    if (!$link.length) return;
+
+    $link.on('contextmenu', function (e) {
+      e.preventDefault();
+      if (!oneProgress()) return;
+
+      var $this = $(this);
+      configs.href = $this.attr('href');
+      chapName = $(configs.name).text().trim() + ' ' + $this.text().trim();
+
+      notyWait();
+
+      var threadId = configs.href.match(/\/threads\/(\d+)\/?/)[1];
+      GM.xmlHttpRequest({
+        method: 'GET',
+        url: '/load-post-data?thread_id=' + threadId + '&is_backup=false',
+        onload: function (response) {
+          var $data = cleanSource(response),
+            $entry = $data.find('img');
+
+          if (!$entry.length) {
+            notyImages();
+          } else {
+            getImages($entry);
+          }
+        },
+        onerror: function () {
+          notyError();
+        },
+      });
+    });
+
+    notyReady();
+  }
+
   var configsDefault = {
       reverse: true,
       link: '',
@@ -1686,6 +1730,15 @@ jQuery(function ($) {
         name: 'h1',
         contents: '.table-responsive',
         imgSrc: 'id-source',
+      };
+      break;
+    case 'hoihentai.com':
+    case 'hoitruyentranh.com':
+      configs = {
+        reverse: false,
+        link: '.chapterList a',
+        name: 'h1.title',
+        init: getHoiTruyenTranh,
       };
       break;
     default:
