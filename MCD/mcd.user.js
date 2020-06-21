@@ -1,6 +1,5 @@
 // ==UserScript==
 // @name            MCD
-// @name:vi         MCD
 // @namespace       https://lelinhtinh.github.io
 // @description     Manga Comic Downloader. Shortcut: Alt+Y.
 // @version         1.0.0
