@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.5.0
+// @version         2.6.0
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -49,6 +49,7 @@
 // @match           https://sachvui.com/*
 // @match           https://hentaicube.net/*
 // @match           http://*.tuthienbao.com/*
+// @match           https://vietcomic.net/*
 // @require         https://code.jquery.com/jquery-3.5.1.min.js
 // @require         https://unpkg.com/jszip@3.4.0/dist/jszip.min.js
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
@@ -1351,6 +1352,26 @@ jQuery(function ($) {
     });
   }
 
+  function getVietComic() {
+    getSource(function ($data) {
+      var data = $data.filter('script:not([src]):contains("Loadimage(i)")');
+      if (!data.length) {
+        notyImages();
+        return;
+      }
+
+      data = data.text().match(/data\s=\s'(.+?)';/);
+      if (!data) {
+        notyImages();
+        return;
+      }
+
+      data = data[1];
+      data = data.split('|');
+      checkImages(data);
+    });
+  }
+
   var configsDefault = {
       reverse: true,
       link: '',
@@ -1652,6 +1673,15 @@ jQuery(function ($) {
       configs = {
         link: 'a[id^="thread_title_"]',
         contents: '.quotecontent',
+      };
+      break;
+    case 'vietcomic.net':
+      configs = {
+        link: '.chapter-list a:not([rel="nofollow"])',
+        name: function (_this) {
+          return $('.manga-info-text h1').text().trim() + ' ' + $(_this).text().trim();
+        },
+        init: getVietComic,
       };
       break;
     default:
