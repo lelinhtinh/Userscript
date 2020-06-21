@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.6.0
+// @version         2.6.1
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -121,12 +121,6 @@ jQuery(function ($) {
     '.beeng.net',
     'forumnt.com',
   ];
-
-  /**
-   * Keep the original source code
-   * @type {Array} key
-   */
-  var keepSource = ['hentaicube.net'];
 
   /**
    * HTTP referer
@@ -828,7 +822,9 @@ jQuery(function ($) {
     var images = [];
     $contents.each(function (i, v) {
       var $img = $(v);
-      images[i] = $img.data('cdn') || $img.data('src') || $img.data('original');
+      images[i] = !configs.imgSrc
+        ? $img.data('cdn') || $img.data('src') || $img.data('original')
+        : $img.attr(configs.imgSrc);
     });
 
     checkImages(images);
@@ -848,11 +844,7 @@ jQuery(function ($) {
 
   function cleanSource(response) {
     var responseText = response.responseText;
-
-    var keep = keepSource.some(function (key) {
-      return configs.href.indexOf(key) !== -1;
-    });
-    if (keep) return $(responseText);
+    if (configs.imgSrc) return $(responseText);
 
     responseText = responseText.replace(/[\s\n]+src[\s\n]*=[\s\n]*/gi, ' data-src=');
     responseText = responseText.replace(/^[^<]*/, '');
@@ -1377,6 +1369,7 @@ jQuery(function ($) {
       link: '',
       name: '',
       contents: '',
+      imgSrc: '',
       filter: false,
       init: getSource,
     },
@@ -1665,6 +1658,7 @@ jQuery(function ($) {
         link: '.wp-manga-chapter a',
         name: '.post-title',
         contents: '.reading-content',
+        imgSrc: 'data-src',
         init: getHentaiCube,
       };
       break;
