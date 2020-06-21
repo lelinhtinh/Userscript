@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.4.0
+// @version         2.5.0
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -48,9 +48,10 @@
 // @match           http://truyenqq.com/*
 // @match           https://sachvui.com/*
 // @match           https://hentaicube.net/*
-// @require         https://code.jquery.com/jquery-3.4.1.min.js
-// @require         https://unpkg.com/jszip@3.2.1/dist/jszip.min.js
-// @require         https://unpkg.com/file-saver@2.0.1/dist/FileSaver.min.js
+// @match           http://*.tuthienbao.com/*
+// @require         https://code.jquery.com/jquery-3.5.1.min.js
+// @require         https://unpkg.com/jszip@3.4.0/dist/jszip.min.js
+// @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @require         https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js
 // @require         https://cdn.jsdelivr.net/npm/selector-set@1.1.5/selector-set.js
@@ -1644,6 +1645,13 @@ jQuery(function ($) {
         name: '.post-title',
         contents: '.reading-content',
         init: getHentaiCube,
+      };
+      break;
+    case 'tuthienbao.com':
+    case 'www.tuthienbao.com':
+      configs = {
+        link: 'a[id^="thread_title_"]',
+        contents: '.quotecontent',
       };
       break;
     default:
