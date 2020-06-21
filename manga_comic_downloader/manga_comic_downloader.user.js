@@ -650,8 +650,8 @@ jQuery(function ($) {
       headers.referer = referer[urlHost];
       headers.origin = referer[urlHost];
     } else {
-      headers.referer = urlObj.origin;
-      headers.origin = urlObj.origin;
+      headers.referer = configs.href;
+      headers.origin = location.origin;
     }
     headers = otakuSanHeader(url, headers);
 
