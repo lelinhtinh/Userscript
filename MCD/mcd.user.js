@@ -2,7 +2,7 @@
 // @name            MCD
 // @namespace       https://lelinhtinh.github.io
 // @description     Manga Comic Downloader. Shortcut: Alt+Y.
-// @version         1.0.0
+// @version         1.0.1
 // @icon            https://i.imgur.com/GAM6cCg.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
