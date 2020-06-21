@@ -4,18 +4,18 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenCV định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenCV định dạng EPUB.
-// @version         4.6.5
+// @version         4.6.6
 // @icon            http://i.imgur.com/o5cmtkU.png
 // @author          Zzbaivong
 // @oujs:author     baivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
 // @match           http://truyencv.com/*/
 // @match           https://truyencv.com/*/
-// @require         https://code.jquery.com/jquery-3.4.1.min.js
-// @require         https://unpkg.com/jszip@3.3.0/dist/jszip.min.js
-// @require         https://unpkg.com/ejs@2.7.4/ejs.min.js
-// @require         https://unpkg.com/jepub@2.1.3/dist/jepub.min.js
+// @require         https://code.jquery.com/jquery-3.5.1.min.js
+// @require         https://unpkg.com/jszip@3.4.0/dist/jszip.min.js
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
+// @require         https://unpkg.com/ejs@2.7.4/ejs.min.js
+// @require         https://unpkg.com/jepub@2.1.4/dist/jepub.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect         self
@@ -24,7 +24,7 @@
 // @grant           GM_xmlhttpRequest
 // @grant           GM.xmlHttpRequest
 // ==/UserScript==
-(function($, window, document) {
+(function ($, window, document) {
   'use strict';
 
   /**
@@ -44,7 +44,7 @@
   function cleanHtml(str) {
     str = str.replace(/\s*Chương\s*\d+\s?:[^<\n]/, '');
     str = str.replace(/[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]+/gm, ''); // eslint-disable-line
-    str = str.replace(/\s[a-zA-Z0-9]{6,8}(="")?\s/gm, function(key, attr) {
+    str = str.replace(/\s[a-zA-Z0-9]{6,8}(="")?\s/gm, function (key, attr) {
       if (attr) return ' ';
       if (!isNaN(key)) return key;
       if (key.split(/[A-Z]/).length > 2) return ' ';
@@ -59,7 +59,7 @@
   function downloadError(mess, err) {
     downloadStatus('danger');
     if (err) console.error(mess);
-    if(!chapTitle) return;
+    if (!chapTitle) return;
 
     titleError.push(chapTitle);
     if (errorAlert) errorAlert = confirm('Lỗi! ' + mess + '\nBạn có muốn tiếp tục nhận cảnh báo?');
@@ -69,8 +69,10 @@
 
   function genEbook() {
     jepub
-      .generate()
-      .then(function(epubZipContent) {
+      .generate('blob', function (metadata) {
+        $download.html('Đang nén <strong>' + metadata.percent.toFixed(2) + '%</strong>');
+      })
+      .then(function (epubZipContent) {
         document.title = '[⇓] ' + ebookTitle;
         $win.off('beforeunload');
 
@@ -85,7 +87,7 @@
 
         saveAs(epubZipContent, ebookFilename);
       })
-      .catch(function(err) {
+      .catch(function (err) {
         downloadStatus('danger');
         console.error(err);
       });
@@ -94,7 +96,7 @@
   function saveEbook() {
     if (endDownload) return;
     endDownload = true;
-    $download.html('Đang nén EPUB');
+    $download.html('Bắt đầu tạo EPUB');
 
     if (titleError.length) {
       titleError = '<p class="no-indent"><strong>Các chương lỗi: </strong>' + titleError.join(', ') + '</p>';
@@ -109,11 +111,15 @@
       method: 'GET',
       url: ebookCover,
       responseType: 'arraybuffer',
-      onload: function(response) {
-        jepub.cover(response.response);
+      onload: function (response) {
+        try {
+          jepub.cover(response.response);
+        } catch (err) {
+          console.error(err);
+        }
         genEbook();
       },
-      onerror: function(err) {
+      onerror: function (err) {
         console.error(err);
         genEbook();
       },
@@ -130,21 +136,18 @@
         withCredentials: true,
       },
     })
-      .done(function(response) {
+      .done(function (response) {
         var $data = $(response),
           $chapter = $data.find('#js-truyencv-content'),
           $notContent = $chapter.find('iframe, script, style, a, div, p:has(a[href*="truyencv.com"])'),
-          $referrer = $chapter.find('[style]').filter(function() {
+          $referrer = $chapter.find('[style]').filter(function () {
             return this.style.fontSize === '1px' || this.style.fontSize === '0px' || this.style.color === 'white';
           }),
           chapContent;
 
         if (endDownload) return;
 
-        chapTitle = $data
-          .find('#js-truyencv-read-content .title')
-          .text()
-          .trim();
+        chapTitle = $data.find('#js-truyencv-read-content .title').text().trim();
         if (chapTitle === '') chapTitle = 'Chương ' + chapId.match(/\d+/)[0];
 
         if (!$chapter.length) {
@@ -153,7 +156,7 @@
           if ($chapter.find('#btnChapterVip').length) {
             chapContent = downloadError('Chương VIP');
           } else if (
-            $chapter.filter(function() {
+            $chapter.filter(function () {
               return this.textContent.toLowerCase().indexOf('vui lòng đăng nhập để đọc chương này') !== -1;
             }).length
           ) {
@@ -161,7 +164,7 @@
           } else {
             var $img = $chapter.find('img');
             if ($img.length)
-              $img.replaceWith(function() {
+              $img.replaceWith(function () {
                 return '<br /><a href="' + this.src + '">Click để xem ảnh</a><br />';
               });
 
@@ -182,7 +185,7 @@
         if (count === 0) begin = chapTitle;
         end = chapTitle;
 
-        $download.html('Đang tải: ' + Math.floor((count / chapListSize) * 100) + '%');
+        $download.html('Đang tải <strong>' + count + '/' + chapListSize + '</strong>');
 
         count++;
         document.title = '[' + count + '] ' + pageName;
@@ -192,7 +195,7 @@
           getContent();
         }
       })
-      .fail(function(err) {
+      .fail(function (err) {
         chapTitle = null;
         downloadError('Kết nối không ổn định', err);
         saveEbook();
@@ -206,7 +209,7 @@
       href: '#download',
       text: 'Tải xuống',
     }),
-    downloadStatus = function(status) {
+    downloadStatus = function (status) {
       $download.removeClass('btn-primary btn-success btn-info btn-warning btn-danger').addClass('btn-' + status);
     },
     $novelId = $('.basic'),
@@ -239,25 +242,15 @@
 
   var $infoBlock = $('.truyencv-detail-info-block');
 
-  ebookTitle = $infoBlock
-    .find('h1')
-    .text()
-    .trim();
-  ebookAuthor = $infoBlock
-    .find('.author')
-    .text()
-    .trim();
+  ebookTitle = $infoBlock.find('h1').text().trim();
+  ebookAuthor = $infoBlock.find('.author').text().trim();
   ebookCover = $infoBlock.find('.img-responsive').attr('src');
   ebookDesc = $('.brief').html();
 
   var $ebookType = $infoBlock.find('.categories a');
   if ($ebookType.length)
-    $ebookType.each(function() {
-      ebookType.push(
-        $(this)
-          .text()
-          .trim()
-      );
+    $ebookType.each(function () {
+      ebookType.push($(this).text().trim());
     });
 
   jepub = new jEpub();
@@ -272,7 +265,7 @@
     .uuid(referrer);
 
   $download.insertAfter('#btnregistRecentReadingStory');
-  $download.one('click contextmenu', function(e) {
+  $download.one('click contextmenu', function (e) {
     e.preventDefault();
     var showChapList = $('.truyencv-detail-block a[href="#truyencv-detail-chap"]');
 
@@ -294,10 +287,10 @@
       },
       contentType: 'application/x-www-form-urlencoded',
     })
-      .done(function(response) {
+      .done(function (response) {
         chapList = response.match(/(?:href=")[^")]+(?=")/g);
         if (response.indexOf('panel panel-vip') === -1) chapList = chapList.reverse();
-        chapList = chapList.map(function(val) {
+        chapList = chapList.map(function (val) {
           val = val.slice(6, -1);
           val = val.replace(referrer, '');
           return val;
@@ -314,11 +307,11 @@
 
         chapListSize = chapList.length;
         if (chapListSize > 0) {
-          $win.on('beforeunload', function() {
+          $win.on('beforeunload', function () {
             return 'Truyện đang được tải xuống...';
           });
 
-          $download.one('click', function(e) {
+          $download.one('click', function (e) {
             e.preventDefault();
             saveEbook();
           });
@@ -326,7 +319,7 @@
           getContent();
         }
       })
-      .fail(function(err) {
+      .fail(function (err) {
         $download.text('Lỗi danh mục');
         downloadStatus('danger');
         console.error(err);
