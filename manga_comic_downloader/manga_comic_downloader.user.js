@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.6.1
+// @version         2.7.0
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -50,6 +50,7 @@
 // @match           https://hentaicube.net/*
 // @match           http://*.tuthienbao.com/*
 // @match           https://vietcomic.net/*
+// @match           https://hamtruyentranh.com/*
 // @require         https://code.jquery.com/jquery-3.5.1.min.js
 // @require         https://unpkg.com/jszip@3.4.0/dist/jszip.min.js
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
@@ -1676,6 +1677,15 @@ jQuery(function ($) {
           return $('.manga-info-text h1').text().trim() + ' ' + $(_this).text().trim();
         },
         init: getVietComic,
+      };
+      break;
+    case 'hamtruyentranh.com':
+      configs = {
+        reverse: false,
+        link: '#chaps .chapter-title a:not([target])',
+        name: 'h1',
+        contents: '.table-responsive',
+        imgSrc: 'id-source',
       };
       break;
     default:
