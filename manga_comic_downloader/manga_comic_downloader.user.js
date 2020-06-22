@@ -411,6 +411,7 @@ jQuery(function ($) {
   }
 
   function genFileName() {
+    // TODO: Add __ERROR__ prefix to filename.
     return chapName
       .replace(/\s+/g, '_')
       .replace(/\./g, '-')
@@ -685,6 +686,7 @@ jQuery(function ($) {
         }
       },
       onerror: function (err) {
+        // TODO: Retry up to 3 times, delay 2s.
         dlFinal++;
         error(err, filename);
       },
@@ -1431,6 +1433,7 @@ jQuery(function ($) {
     dlCurrent = 0,
     dlFinal = 0,
     dlTotal = 0,
+    // TODO: {url, attempt}
     dlImages = [],
     dlAll = [],
     inProgress = false,
