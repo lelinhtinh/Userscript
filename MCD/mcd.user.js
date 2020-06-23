@@ -2,7 +2,7 @@
 // @name            MCD
 // @namespace       https://lelinhtinh.github.io
 // @description     Manga Comic Downloader. Shortcut: Alt+Y.
-// @version         1.0.1
+// @version         1.1.0
 // @icon            https://i.imgur.com/GAM6cCg.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -42,6 +42,12 @@ jQuery(function ($) {
    * @type {Number} [1 -> 32]
    */
   var threading = 4;
+
+  /**
+   * The number of times the download may be attempted.
+   * @type {Number}
+   */
+  var tries = 5;
 
   /**
    * Image list will be ignored
@@ -175,17 +181,16 @@ jQuery(function ($) {
   }
 
   function linkError() {
-    $(configs.link + '[href="' + configs.href + '"]')
-      .css({
-        color: 'red',
-        textShadow: '0 0 1px red, 0 0 1px red, 0 0 1px red',
-      })
-      .data('hasDownloadError', true);
+    $(configs.link + '[href="' + configs.href + '"]').css({
+      color: 'red',
+      textShadow: '0 0 1px red, 0 0 1px red, 0 0 1px red',
+    });
+    hasDownloadError = true;
   }
 
   function linkSuccess() {
     var $currLink = $(configs.link + '[href="' + configs.href + '"]');
-    if (!$currLink.data('hasDownloadError'))
+    if (!hasDownloadError)
       $currLink.css({
         color: 'green',
         textShadow: '0 0 1px green, 0 0 1px green, 0 0 1px green',
@@ -213,7 +218,12 @@ jQuery(function ($) {
     if (threading < 1) threading = 1;
     if (threading > 32) threading = 32;
 
-    dlImages = source;
+    dlImages = source.map(function (url) {
+      return {
+        url: url,
+        attempt: tries,
+      };
+    });
     dlTotal = dlImages.length;
     addZip();
 
@@ -315,10 +325,12 @@ jQuery(function ($) {
   }
 
   function genFileName() {
-    return chapName
+    chapName = chapName
       .replace(/\s+/g, '_')
       .replace(/\./g, '-')
       .replace(/(^[\W_]+|[\W_]+$)/, '');
+    if (hasDownloadError) chapName = '__ERROR__' + chapName;
+    return chapName;
   }
 
   function endZip() {
@@ -331,6 +343,7 @@ jQuery(function ($) {
     dlTotal = 0;
     dlImages = [];
 
+    hasDownloadError = false;
     inProgress = false;
 
     if (inAuto) {
@@ -389,8 +402,21 @@ jQuery(function ($) {
       );
   }
 
-  function dlImg(success, error) {
-    var url = dlImages[dlCurrent],
+  function dlImgError(current, success, error, err, filename) {
+    if (dlImages[current].attempt <= 0) {
+      dlFinal++;
+      error(err, filename);
+      return;
+    }
+
+    setTimeout(function () {
+      dlImg(current, success, error);
+      dlImages[current].attempt--;
+    }, 2000);
+  }
+
+  function dlImg(current, success, error) {
+    var url = dlImages[current].url,
       filename = ('0000' + dlCurrent).slice(-4),
       urlObj = new URL(url),
       urlHost = urlObj.hostname,
@@ -411,8 +437,9 @@ jQuery(function ($) {
       headers: headers,
       onload: function (response) {
         var imgExt = getImageType(response.response).ext;
-        dlFinal++;
+
         if (imgExt === 'gif') {
+          dlFinal++;
           next();
           return;
         }
@@ -422,15 +449,15 @@ jQuery(function ($) {
           response.response.byteLength < 300 ||
           (response.statusText !== 'OK' && response.statusText !== '')
         ) {
-          error(response, filename);
+          dlImgError(current, success, error, response, filename);
         } else {
           filename = filename + '.' + imgExt;
+          dlFinal++;
           success(response, filename);
         }
       },
       onerror: function (err) {
-        dlFinal++;
-        error(err, filename);
+        dlImgError(current, success, error, err, filename);
       },
     });
   }
@@ -465,6 +492,7 @@ jQuery(function ($) {
 
     for (dlCurrent; dlCurrent < max; dlCurrent++) {
       dlImg(
+        dlCurrent,
         function (response, filename) {
           dlZip.file(path + filename, response.response);
 
@@ -712,6 +740,7 @@ jQuery(function ($) {
     dlTotal = 0,
     dlImages = [],
     dlAll = [],
+    hasDownloadError = false,
     inProgress = false,
     inAuto = false,
     inCustom = false,
