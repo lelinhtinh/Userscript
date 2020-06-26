@@ -695,6 +695,7 @@ jQuery(function ($) {
       onload: function (response) {
         var imgExt = getImageType(response.response).ext;
 
+        // FIXME: https://beeng.net/truyen-tranh-online/hoa-hong-nien-dai-hac-cot-duong-12750
         if (imgExt === 'gif') {
           dlFinal++;
           next();
@@ -1329,6 +1330,7 @@ jQuery(function ($) {
     });
   }
 
+  // FIXME: cannot use console
   function getTruyenSieuHay() {
     getSource(function ($data) {
       if ($data.find('#wrap_alertvip')) {
@@ -1472,7 +1474,7 @@ jQuery(function ($) {
   GM_registerMenuCommand('Download All To One File', downloadAllOne);
 
   $doc.on('keydown', function (e) {
-    if (e.which === 89 && e.altKey) {
+    if (e.which === 89 && e.altKey) { // TODO: Add touch events https://github.com/hammerjs/hammer.js
       // Alt+Y
       e.preventDefault();
       e.shiftKey ? downloadAllOne() : downloadAll();
