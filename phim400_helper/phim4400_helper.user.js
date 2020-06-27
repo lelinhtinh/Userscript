@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Xem online và tải phim trực tiếp tại Phim4400, bỏ qua quảng cáo.
 // @description:vi  Xem online và tải phim trực tiếp tại Phim4400, bỏ qua quảng cáo.
-// @version         1.2.0
+// @version         1.3.0
 // @icon            https://i.imgur.com/wRRkkqr.png
 // @author          lelinhtinh
 // @oujs:author     baivong
@@ -22,7 +22,7 @@
 // ==/UserScript==
 
 /* global shortcut, sha256 */
-(function() {
+(function () {
   'use strict';
 
   document.oncontextmenu = null;
@@ -36,10 +36,12 @@
 
   if (location.pathname.indexOf('/phim/') === -1) {
     let $btn = document.querySelector('.button-phim'),
-      link = document.querySelector('.fb-comments');
+      link = $btn.search;
 
-    if (link === null) return;
-    link = link.dataset.href;
+    if (!link) return;
+    link = new URLSearchParams(link);
+    if (!link.has('url')) return;
+    link = atob(link.get('url'));
     if (link.indexOf('/phim/') === -1) return;
 
     if ($btn === null) {
@@ -48,7 +50,7 @@
       document.querySelector('.button-info').appendChild($btn);
     }
 
-    $btn.className = 'button-phim uk-button uk-button-secondary uk-dropdown-right';
+    $btn.className = 'button-phim uk-button uk-button-default uk-dropdown-right';
     $btn.setAttribute('target', '_top');
 
     $btn.href = link;
@@ -113,7 +115,7 @@
       headers: hostConfigs[host].headers,
       data: hostConfigs[host].data,
 
-      onload: response => {
+      onload: (response) => {
         let src = hostConfigs[host].getSrc(response.response);
         hostConfigs[host].src = src;
         renderVideo(src);
@@ -140,14 +142,14 @@
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      getSrc: response => {
+      getSrc: (response) => {
         return JSON.parse(response).Link;
       },
     },
     drivehub: {
       selector: 'a[href*="drivehub.link"]',
       method: 'GET',
-      getSrc: response => {
+      getSrc: (response) => {
         const parser = new DOMParser();
         const $html = parser.parseFromString(response, 'text/html');
         const $proceed = $html.querySelector('#proceed');
@@ -162,7 +164,7 @@
         'X-Requested-With': 'XMLHttpRequest',
       },
       data: 'type=file_check',
-      getSrc: response => {
+      getSrc: (response) => {
         return JSON.parse(response).debug[0].file_source;
       },
     },
@@ -172,7 +174,7 @@
   $tabs.className = 'uk-subnav uk-subnav-pill';
 
   let hostCount = 0;
-  Object.keys(hostConfigs).forEach(host => {
+  Object.keys(hostConfigs).forEach((host) => {
     const currHost = hostConfigs[host];
     const $btn = document.querySelector('.uk-accordion-content ' + currHost.selector);
     if ($btn === null) return;
