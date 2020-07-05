@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.10.0
+// @version         2.10.1
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -37,6 +37,7 @@
 // @match           https://otakusan.net/*
 // @match           https://ngonphongcomics.com/*
 // @match           http://*.nettruyen.com/*
+// @match           http://nhattruyen.com/*
 // @match           http://*.hamtruyentranh.net/*
 // @match           https://ttmanga.com/*
 // @match           http://truyen.vnsharing.site/*
@@ -1653,6 +1654,7 @@ jQuery(function ($) {
       };
       break;
     case 'www.nettruyen.com':
+    case 'nhattruyen.com':
       configs = {
         link: '#nt_listchapter .row a',
         name: '.title-detail',
