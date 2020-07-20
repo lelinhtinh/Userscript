@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.10.1
+// @version         2.10.2
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -111,6 +111,7 @@ jQuery(function ($) {
     '/Content/Img/1eeef5d2-b936-496d-ba41-df1b21d0166a.jpg',
     '/Content/Img/d79886b3-3699-47b2-bbf4-af6149c2e8fb.jpg',
     'http://st.beeng.net/files/uploads/images/21/c8/21c8d2c3599c485e31f270675bc57e4c.jpeg',
+    '00k9jbV.gif',
   ];
 
   /**
@@ -132,6 +133,7 @@ jQuery(function ($) {
     'forumnt.com',
     'hoitruyentranh.com',
     'hoihentai.com',
+    'i02.hentaivn.net',
   ];
 
   /**
@@ -150,6 +152,10 @@ jQuery(function ($) {
     'upload3.upanhmoi.net': 'https://upanhmoi.net',
     'upload4.upanhmoi.com': 'https://upanhmoi.com',
     'upload5.upanhmoi.com': 'https://upanhmoi.com',
+    'upload6.upanhmoi.com': 'https://upanhmoi.com',
+    'upload7.upanhmoi.com': 'https://upanhmoi.com',
+    'upload8.upanhmoi.com': 'https://upanhmoi.com',
+    'upload9.upanhmoi.com': 'https://upanhmoi.com',
     'img1.upanhmoi.net': 'https://upanhmoi.net',
     'img2.upanhmoi.net': 'https://upanhmoi.net',
     'proxy1.ttmanga.com': 'https://ttmanga.com',
@@ -163,6 +169,8 @@ jQuery(function ($) {
     'mangaqq.net': 'http://truyenqq.com/',
     'mangaqq.com': 'http://truyenqq.com/',
     'truyenqq.net': 'http://truyenqq.com/',
+    'i02.hentaivn.net': 'https://hentaivn.net/',
+    'i1.hentaivn.net': 'https://hentaivn.net/',
   };
 
   /* === DO NOT CHANGE === */
