@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.10.2
+// @version         2.10.3
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -691,7 +691,7 @@ jQuery(function ($) {
       headers.referer = referer[urlHost];
       headers.origin = referer[urlHost];
     } else {
-      headers.referer = configs.href;
+      headers.referer = location.origin;
       headers.origin = location.origin;
     }
     headers = otakuSanHeader(url, headers);
@@ -704,7 +704,6 @@ jQuery(function ($) {
       onload: function (response) {
         var imgExt = getImageType(response.response).ext;
 
-        // FIXME: https://beeng.net/truyen-tranh-online/hoa-hong-nien-dai-hac-cot-duong-12750
         if (imgExt === 'gif') {
           dlFinal++;
           next();
@@ -1485,7 +1484,7 @@ jQuery(function ($) {
   GM_registerMenuCommand('Download All To One File', downloadAllOne);
 
   $doc.on('keydown', function (e) {
-    if (e.which === 89 && e.altKey) { // TODO: Add touch events https://github.com/hammerjs/hammer.js
+    if (e.which === 89 && e.altKey) {
       // Alt+Y
       e.preventDefault();
       e.shiftKey ? downloadAllOne() : downloadAll();
