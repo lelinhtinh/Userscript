@@ -770,7 +770,9 @@ jQuery(function ($) {
   }
 
   function imageIgnore(url) {
-    return ignoreList.indexOf(url) !== -1;
+    return ignoreList.some(function (v) {
+      return url.indexOf(v) !== -1;
+    });
   }
 
   function protocolUrl(url) {
