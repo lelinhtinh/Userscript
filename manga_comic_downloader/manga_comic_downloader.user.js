@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.10.3
+// @version         2.10.4
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -134,6 +134,7 @@ jQuery(function ($) {
     'hoitruyentranh.com',
     'hoihentai.com',
     'i02.hentaivn.net',
+    'truyentop1.com',
   ];
 
   /**
@@ -946,6 +947,7 @@ jQuery(function ($) {
 
     $link.on('contextmenu', function (e) {
       e.preventDefault();
+      hasDownloadError = false;
       if (!oneProgress()) return;
 
       rightClickEvent(this, callback);
@@ -1187,6 +1189,7 @@ jQuery(function ($) {
   function getTruyen1() {
     $(configs.link).on('contextmenu', function (e) {
       e.preventDefault();
+      hasDownloadError = false;
       if (!oneProgress()) return;
 
       var $this = $(this);
@@ -1243,6 +1246,7 @@ jQuery(function ($) {
 
     $link.on('contextmenu', function (e) {
       e.preventDefault();
+      hasDownloadError = false;
       if (!oneProgress()) return;
 
       var $this = $(this);
@@ -1340,16 +1344,21 @@ jQuery(function ($) {
     });
   }
 
-  // FIXME: cannot use console
   function getTruyenSieuHay() {
     getSource(function ($data) {
-      if ($data.find('#wrap_alertvip')) {
+      if ($data.find('#wrap_alertvip').length) {
         notyImages();
         return;
       }
 
-      var sID = $data.find('#content_chap').find('script:not([type]):first').text();
-      sID = /\bgetContentchap\('(\w+)'\)\B/.exec(sID)[1];
+      var sID = $data.find('.content-chap-image').find('script:not([type]):first').text();
+      sID = /\bgetContentchap\('(\w+)'\)\B/.exec(sID);
+      if (!sID) {
+        notyImages();
+        return;
+      }
+      sID = sID[1];
+
       $.ajax({
         type: 'POST',
         url: '/Service.asmx/getContentChap',
@@ -1357,6 +1366,11 @@ jQuery(function ($) {
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
         success: function (data) {
+          if (data.Message) {
+            notyImages();
+            return;
+          }
+
           var regex = /\s+src='(http[^']+)'/gi,
             matches,
             output = [];
@@ -1384,6 +1398,7 @@ jQuery(function ($) {
 
       $link.on('contextmenu', function (e) {
         e.preventDefault();
+        hasDownloadError = false;
         if (!oneProgress()) return;
 
         rightClickEvent(this);
@@ -1419,6 +1434,7 @@ jQuery(function ($) {
 
     $link.on('contextmenu', function (e) {
       e.preventDefault();
+      hasDownloadError = false;
       if (!oneProgress()) return;
 
       var $this = $(this);
