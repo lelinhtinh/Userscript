@@ -2,7 +2,7 @@
 // @name            MCD
 // @namespace       https://lelinhtinh.github.io
 // @description     Manga Comic Downloader. Shortcut: Alt+Y.
-// @version         1.1.0
+// @version         1.1.1
 // @icon            https://i.imgur.com/GAM6cCg.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -338,6 +338,7 @@ jQuery(function ($) {
       dlZip = new JSZip();
       dlPrevZip = false;
     }
+
     dlCurrent = 0;
     dlFinal = 0;
     dlTotal = 0;
@@ -426,7 +427,7 @@ jQuery(function ($) {
       headers.referer = referer[urlHost];
       headers.origin = referer[urlHost];
     } else {
-      headers.referer = configs.href;
+      headers.referer = location.origin;
       headers.origin = location.origin;
     }
 
@@ -446,7 +447,7 @@ jQuery(function ($) {
 
         if (
           !imgExt ||
-          response.response.byteLength < 300 ||
+          response.response.byteLength < 100 ||
           (response.statusText !== 'OK' && response.statusText !== '')
         ) {
           dlImgError(current, success, error, response, filename);
@@ -511,7 +512,9 @@ jQuery(function ($) {
   }
 
   function imageIgnore(url) {
-    return ignoreList.indexOf(url) !== -1;
+    return ignoreList.some(function (v) {
+      return url.indexOf(v) !== -1;
+    });
   }
 
   function protocolUrl(url) {
@@ -678,6 +681,7 @@ jQuery(function ($) {
 
     $link.on('contextmenu', function (e) {
       e.preventDefault();
+      hasDownloadError = false;
       if (!oneProgress()) return;
 
       rightClickEvent(this, callback);

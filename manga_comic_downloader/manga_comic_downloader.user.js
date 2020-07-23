@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.11.0
+// @version         2.11.1
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -714,7 +714,7 @@ jQuery(function ($) {
 
         if (
           !imgExt ||
-          response.response.byteLength < 300 ||
+          response.response.byteLength < 100 ||
           (response.statusText !== 'OK' && response.statusText !== '')
         ) {
           dlImgError(current, success, error, response, filename);
