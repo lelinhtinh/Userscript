@@ -2,11 +2,12 @@
 // @name            MCD
 // @namespace       https://lelinhtinh.github.io
 // @description     Manga Comic Downloader. Shortcut: Alt+Y.
-// @version         1.1.1
+// @version         1.2.0
 // @icon            https://i.imgur.com/GAM6cCg.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
 // @match           https://www.kuaikanmanhua.com/*
+// @match           https://newtoki69.com/webtoon/*
 // @require         https://code.jquery.com/jquery-3.5.1.min.js
 // @require         https://unpkg.com/jszip@3.4.0/dist/jszip.min.js
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
@@ -720,6 +721,48 @@ jQuery(function ($) {
     });
   }
 
+  function getNewToki69() {
+    function html_encoder(s) {
+      var i = 0,
+        out = '';
+      l = s.length;
+      for (; i < l; i += 3) {
+        out += String.fromCharCode(parseInt(s.substr(i, 2), 16));
+      }
+      return out;
+    }
+
+    getSource(function ($data) {
+      var $images = $data.find('img[data-original^="https://"]:not([style])');
+      if (!$images.length) {
+        $images = $data.find('script:not([src]):contains("html_data")');
+        if (!$images.length) {
+          notyImages();
+          return;
+        }
+
+        $images = $images.text();
+        $images = /(var\s+html_data[\s\S]+?)(?=(document\.write|[\s\n]+$))/.exec($images);
+        if (!$images) {
+          notyImages();
+          return;
+        }
+
+        eval($images[1]);
+        $images = html_encoder(html_data);
+        $images = $($images).find('img[data-original^="https://"]:not([style])');
+      }
+
+      var images = [];
+      $images.each(function (i, v) {
+        var $img = $(v);
+        images[i] = $img.data('original');
+      });
+
+      checkImages(images);
+    });
+  }
+
   var configsDefault = {
       reverse: true,
       link: '',
@@ -771,6 +814,25 @@ jQuery(function ($) {
         link: '.title.fl a[href^="/web/comic/"]',
         name: 'h3.title',
         init: getKuaikanManhua,
+      };
+      break;
+    case 'newtoki69.com':
+      configs = {
+        link: '.item-subject',
+        name: function (_this) {
+          return (
+            $('[itemprop="description"] .view-content:first span').text().trim() +
+            ' ' +
+            $(_this)
+              .contents()
+              .filter(function (i, el) {
+                return el.nodeType === 3;
+              })
+              .text()
+              .trim()
+          );
+        },
+        init: getNewToki69,
       };
       break;
     default:
