@@ -13,9 +13,10 @@
 // @match           https://nhentai.net/g/*
 // @require         https://code.jquery.com/jquery-3.5.1.min.js
 // @require         https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
-// @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
 // @require         https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js?version=184529
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
+// @require         https://cdn.jsdelivr.net/npm/web-streams-polyfill@2.0.2/dist/ponyfill.min.js
+// @require         https://cdn.jsdelivr.net/npm/streamsaver@2.0.3/StreamSaver.min.js
 // @noframes
 // @connect         self
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
@@ -173,19 +174,27 @@
         function (blob) {
           var zipName = gallery.title[outputName].replace(/\s+/g, '-') + '.' + comicId + '.' + outputExt;
 
-          if (prevZip) window.URL.revokeObjectURL(prevZip);
-          prevZip = blob;
-
           $download
             .html('<i class="fa fa-check"></i> Complete')
             .css('backgroundColor', hasErr ? 'red' : 'green')
             .attr({
-              href: window.URL.createObjectURL(prevZip),
+              href: 'javascript:void(0);',
               download: zipName,
             });
-
-          saveAs(blob, zipName);
-
+          
+          const fileStream = streamSaver.createWriteStream(zipName, {
+            size: blob.size
+          })
+          const readableStream = blob.stream()
+          
+          window.FSwriter = fileStream.getWriter()
+          const reader = readableStream.getReader()
+          const pump = () => reader.read()
+            .then(res => res.done
+              ? FSwriter.close()
+              : FSwriter.write(res.value).then(pump))
+          pump(); // Firefox does not support pipeTo() yet.
+          
           doc.title = '[⇓] ' + gallery.title[outputName];
           if (debug) console.log('COMPLETE');
           end();
@@ -271,7 +280,6 @@
   if (!gallery) return;
 
   var zip = new JSZip(),
-    prevZip = false,
     current = 0,
     final = 0,
     total = gallery.num_pages,
