@@ -227,7 +227,7 @@
     var url = images[current].url,
       filename = url.replace(/.*\//g, '');
 
-    filename = ('0000' + filename).slice(-8);
+    filename = ('000' + filename).slice(-8);
     if (debug) console.log(filename, 'progress');
 
     GM.xmlHttpRequest({
