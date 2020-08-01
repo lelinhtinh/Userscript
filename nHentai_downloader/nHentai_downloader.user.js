@@ -186,6 +186,7 @@
         function (blob) {
           var filename = gallery.title[outputName] || gallery.title["english"]; // e.g. #321311
           var zipName = filename.replace(/\s+/g, '-') + '.' + comicId + '.' + outputExt;
+          //var zipName = `${filename}[${final}P].${outputExt}`;
           zipName.replace(/・/g, '·'); // compatibility for MangaMeeya
 
           $download
