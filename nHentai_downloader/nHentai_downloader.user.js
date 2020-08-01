@@ -278,7 +278,10 @@
         },
         function (err, filename) {
           hasErr = true;
-          zip.file(filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
+          //zip.file(filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
+          zip.file(filename + '_' + comicId + '_error.gif', 'R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=', {
+            base64: true
+          });
           $download.css('backgroundColor', '#FF7F7F');
 
           if (debug) console.log(filename, 'error');
