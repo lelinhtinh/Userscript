@@ -239,7 +239,7 @@
         success(response, filename);
       },
       onerror: function (err) {
-        if (images[current].attempt <= 0) {
+        if (images[current].attempt < 1) {
           final++;
           error(err, filename);
           return;
