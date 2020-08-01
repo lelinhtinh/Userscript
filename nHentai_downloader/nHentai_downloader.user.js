@@ -289,6 +289,7 @@
     hasErr = false,
     $_download = $('#download-torrent, #download'),
     $download,
+    $config,
     doc = document,
     $win = $(window),
     comicId = gallery.id;
@@ -338,4 +339,19 @@
 
     addZip();
   });
-})(jQuery, unsafeWindow);
+    
+  $("#nHentaiDlConfig").toggle();
+  $config = $_download.clone();
+  $config.removeAttr('id');
+  $config.removeClass('btn-disabled');
+  $config.attr('href', 'javascript:void(0);');
+  $config.css('min-width', '12px');
+  $config.html('<i class="fa fa-cog loader" />');
+
+  $config.insertAfter($download);
+  $config.before('\n');
+  $config.click(function() {
+    $("#nHentaiDlConfig").toggle("fast");
+  });
+
+(jQuery, unsafeWindow);
