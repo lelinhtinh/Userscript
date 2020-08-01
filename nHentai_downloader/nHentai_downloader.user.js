@@ -165,6 +165,7 @@
         {
           type: 'blob',
           compression: 'STORE',
+          streamFiles: true // Less memory but less compatibility, https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html#streamfiles-option
         },
         function updateCallback(metadata) {
           $download.html('<i class="fa fa-file-archive"></i> ' + metadata.percent.toFixed(2) + ' %');
