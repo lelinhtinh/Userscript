@@ -12,7 +12,7 @@
 // @match           http://nhentai.net/g/*
 // @match           https://nhentai.net/g/*
 // @require         https://code.jquery.com/jquery-3.5.1.min.js
-// @require         https://unpkg.com/jszip@3.4.0/dist/jszip.min.js
+// @require         https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
 // @require         https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js?version=184529
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
