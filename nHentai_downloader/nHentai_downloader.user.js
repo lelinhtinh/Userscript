@@ -30,6 +30,7 @@
 // @grant           GM.setValue
 // ==/UserScript==
 
+/* global streamSaver */
 (function ($, window) {
   'use strict';
 
@@ -63,7 +64,7 @@
         label: 'Hide the download torrent button',
         type: 'checkbox',
         default: false,
-      }
+      },
     },
     frame: configFrame,
     events: {
@@ -79,7 +80,7 @@
         } else {
           $_download.show();
         }
-        
+
         var $saveBtn = $('#nHentaiDlConfig_saveBtn');
         $saveBtn.prop('disabled', true).addClass('saved').text('Saved!');
 
@@ -176,7 +177,7 @@
         {
           type: 'blob',
           compression: 'STORE',
-          streamFiles: true // Less memory but less compatibility, https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html#streamfiles-option
+          streamFiles: true, // Less memory but less compatibility, https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html#streamfiles-option
         },
         function updateCallback(metadata) {
           $download.html('<i class="fa fa-file-archive"></i> ' + metadata.percent.toFixed(2) + ' %');
@@ -184,7 +185,7 @@
       )
       .then(
         function (blob) {
-          var filename = gallery.title[outputName] || gallery.title["english"]; // e.g. #321311
+          var filename = gallery.title[outputName] || gallery.title['english']; // e.g. #321311
           var zipName = filename.replace(/\s+/g, '-') + '.' + comicId + '.' + outputExt;
           //var zipName = `${filename}[${final}P].${outputExt}`;
           zipName.replace(/・/g, '·'); // compatibility for MangaMeeya
@@ -196,20 +197,20 @@
               href: 'javascript:void(0);',
               download: zipName,
             });
-          
+
           const fileStream = streamSaver.createWriteStream(zipName, {
-            size: blob.size
-          })
-          const readableStream = blob.stream()
-          
-          window.FSwriter = fileStream.getWriter()
-          const reader = readableStream.getReader()
-          const pump = () => reader.read()
-            .then(res => res.done
-              ? FSwriter.close()
-              : FSwriter.write(res.value).then(pump))
+            size: blob.size,
+          });
+          const readableStream = blob.stream();
+
+          window.FSwriter = fileStream.getWriter();
+          const reader = readableStream.getReader();
+          const pump = () =>
+            reader
+              .read()
+              .then((res) => (res.done ? window.FSwriter.close() : window.FSwriter.write(res.value).then(pump)));
           pump(); // Firefox does not support pipeTo() yet.
-          
+
           doc.title = '[⇓] ' + filename;
           if (debug) console.log('COMPLETE');
           end();
@@ -279,10 +280,14 @@
         },
         function (err, filename) {
           hasErr = true;
-          //zip.file(filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
-          zip.file(filename + '_' + comicId + '_error.gif', 'R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=', {
-            base64: true
-          });
+          // zip.file(filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
+          zip.file(
+            filename + '_' + comicId + '_error.gif',
+            'R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=',
+            {
+              base64: true,
+            }
+          );
           $download.css('backgroundColor', '#FF7F7F');
 
           if (debug) console.log(filename, 'error');
@@ -306,12 +311,14 @@
     $_download = $('#download-torrent, #download'),
     $download,
     $config,
+    $configPanel,
     doc = document,
     $win = $(window),
     comicId = gallery.id;
 
   if (!$_download.length) return;
   GM_config.open();
+  $configPanel = $('#nHentaiDlConfig');
 
   window.URL = window.URL || window.webkitURL;
 
@@ -355,8 +362,8 @@
 
     addZip();
   });
-    
-  $("#nHentaiDlConfig").toggle();
+
+  $configPanel.toggle();
   $config = $_download.clone();
   $config.removeAttr('id');
   $config.removeClass('btn-disabled');
@@ -366,11 +373,9 @@
 
   $config.insertAfter($download);
   $config.before('\n');
-  $config.click(function() {
-    $("#nHentaiDlConfig").toggle("fast");
+  $config.on('click', function () {
+    $configPanel.toggle('fast');
   });
 
-  if (GM_config.get('hideTorrentBtn') == true) {
-    $_download.hide();
-  }
+  if (GM_config.get('hideTorrentBtn') == true) $_download.hide();
 })(jQuery, unsafeWindow);
