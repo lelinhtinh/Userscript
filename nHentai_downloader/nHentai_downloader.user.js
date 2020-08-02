@@ -31,10 +31,10 @@
 // ==/UserScript==
 
 /* global streamSaver */
-(function ($, window) {
+(($, window) => {
   'use strict';
 
-  var configFrame = document.createElement('div');
+  const configFrame = document.createElement('div');
   $('#info-block').append(configFrame);
 
   GM_config.init({
@@ -68,12 +68,12 @@
     },
     frame: configFrame,
     events: {
-      save: function () {
+      save: () => {
         outputExt = GM_config.get('outputExt');
         outputName = GM_config.get('outputName');
         threading = GM_config.get('threading');
 
-        $download.find('span').text(' as ' + outputExt.toUpperCase());
+        $download.find('span').text(` as ${outputExt.toUpperCase()}`);
 
         if (GM_config.get('hideTorrentBtn') == true) {
           $_download.hide();
@@ -81,10 +81,10 @@
           $_download.show();
         }
 
-        var $saveBtn = $('#nHentaiDlConfig_saveBtn');
+        const $saveBtn = $('#nHentaiDlConfig_saveBtn');
         $saveBtn.prop('disabled', true).addClass('saved').text('Saved!');
 
-        setTimeout(function () {
+        setTimeout(() => {
           $saveBtn.prop('disabled', false).removeClass('saved').text('Save');
         }, 1500);
       },
@@ -103,25 +103,25 @@
    * Linux
    * $ rename 's/\.zip$/\.cbz/' *.zip
    */
-  var outputExt = GM_config.get('outputExt') || 'cbz';
+  let outputExt = GM_config.get('outputExt') || 'cbz';
 
   /**
    * File name
    * @type {'pretty'|'english'|'japanese'}
    */
-  var outputName = GM_config.get('outputName') || 'pretty';
+  let outputName = GM_config.get('outputName') || 'pretty';
 
   /**
    * Multithreading
    * @type {Number} [1 -> 32]
    */
-  var threading = GM_config.get('threading') || 4;
+  let threading = GM_config.get('threading') || 4;
 
   /**
    * Logging
    * @type {Boolean}
    */
-  var debug = false;
+  let debug = false;
 
   function end() {
     $win.off('beforeunload');
@@ -130,7 +130,7 @@
   }
 
   function getInfo() {
-    var info = '',
+    let info = '',
       tags = [],
       artists = [],
       groups = [],
@@ -170,8 +170,9 @@
   }
 
   function genZip() {
-    zip.file('info.txt', getInfo());
+    const filename = gallery.title[outputName] || gallery.title['english']; // e.g. #321311
 
+    zip.file('info.txt', getInfo());
     zip
       .generateAsync(
         {
@@ -179,16 +180,13 @@
           compression: 'STORE',
           streamFiles: true, // Less memory but less compatibility, https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html#streamfiles-option
         },
-        function updateCallback(metadata) {
-          $download.html('<i class="fa fa-file-archive"></i> ' + metadata.percent.toFixed(2) + ' %');
+        (metadata) => {
+          $download.html(`<i class="fa fa-file-archive"></i> ${metadata.percent.toFixed(2)} %`);
         }
       )
       .then(
-        function (blob) {
-          var filename = gallery.title[outputName] || gallery.title['english']; // e.g. #321311
-          var zipName = filename.replace(/\s+/g, '-') + '.' + comicId + '.' + outputExt;
-          //var zipName = `${filename}[${final}P].${outputExt}`;
-          zipName.replace(/・/g, '·'); // compatibility for MangaMeeya
+        (blob) => {
+          const zipName = `${filename.replace(/\s+/g, '-').replace(/・/g, '·')}.${comicId}.${outputExt}`;
 
           $download
             .html('<i class="fa fa-check"></i> Complete')
@@ -211,14 +209,14 @@
               .then((res) => (res.done ? window.FSwriter.close() : window.FSwriter.write(res.value).then(pump)));
           pump(); // Firefox does not support pipeTo() yet.
 
-          doc.title = '[⇓] ' + filename;
+          doc.title = `[⇓] ${filename}`;
           if (debug) console.log('COMPLETE');
           end();
         },
-        function (reason) {
+        (reason) => {
           $download.html('<i class="fa fa-exclamation"></i> Fail').css('backgroundColor', 'red');
 
-          doc.title = '[x] ' + gallery.title[outputName];
+          doc.title = `[x] ${filename}`;
           if (debug) console.error(reason, 'ERROR');
           end();
         }
@@ -226,29 +224,29 @@
   }
 
   function dlImg(current, success, error) {
-    var url = images[current].url,
+    let url = images[current].url,
       filename = url.replace(/.*\//g, '');
 
-    filename = ('000' + filename).slice(-8);
+    filename = `000${filename}`.slice(-8);
     if (debug) console.log(filename, 'progress');
 
     GM.xmlHttpRequest({
       method: 'GET',
       url: url,
       responseType: 'arraybuffer',
-      onload: function (response) {
+      onload: (response) => {
         final++;
         success(response, filename);
       },
-      onerror: function (err) {
+      onerror: (err) => {
         if (images[current].attempt < 1) {
           final++;
           error(err, filename);
           return;
         }
 
-        setTimeout(function () {
-          if (debug) console.log(filename, 'retry ' + images[current].attempt);
+        setTimeout(() => {
+          if (debug) console.log(filename, `retry ${images[current].attempt}`);
           dlImg(current, success, error);
           images[current].attempt--;
         }, 2000);
@@ -257,7 +255,7 @@
   }
 
   function next() {
-    $download.html('<i class="fa fa-cog fa-spin"></i> ' + final + '/' + total);
+    $download.find('span').text(`${final}/${total}`);
     if (debug) console.log(final, current);
 
     if (final < current) return;
@@ -265,29 +263,25 @@
   }
 
   function addZip() {
-    var max = current + threading;
+    let max = current + threading;
     if (max > total) max = total;
 
     for (current; current < max; current++) {
       if (debug) console.log(images[current].url, 'download');
       dlImg(
         current,
-        function (response, filename) {
+        (response, filename) => {
           zip.file(filename, response.response);
 
           if (debug) console.log(filename, 'success');
           next();
         },
-        function (err, filename) {
+        (err, filename) => {
           hasErr = true;
           // zip.file(filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
-          zip.file(
-            filename + '_' + comicId + '_error.gif',
-            'R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=',
-            {
-              base64: true,
-            }
-          );
+          zip.file(`${filename}_${comicId}_error.gif`, 'R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=', {
+            base64: true,
+          });
           $download.css('backgroundColor', '#FF7F7F');
 
           if (debug) console.log(filename, 'error');
@@ -298,11 +292,11 @@
     if (debug) console.log(current, 'current');
   }
 
-  var gallery = JSON.parse(JSON.stringify(window._gallery));
+  const gallery = JSON.parse(JSON.stringify(window._gallery));
   if (debug) console.log(gallery, 'gallery');
   if (!gallery) return;
 
-  var zip = new JSZip(),
+  let zip = new JSZip(),
     current = 0,
     final = 0,
     total = gallery.num_pages,
@@ -327,12 +321,12 @@
   $download.removeClass('btn-disabled');
   $download.attr('href', '#download');
   $download.find('.top').html('No login required<br>No sign up required<i></i>');
-  $download.append('<span> as ' + outputExt.toUpperCase() + '</span>');
+  $download.append(`<span> as ${outputExt.toUpperCase()}</span>`);
 
   $download.insertAfter($_download);
   $download.before('\n');
 
-  $download.css('backgroundColor', 'cornflowerblue').one('click', function (e) {
+  $download.css('backgroundColor', 'cornflowerblue').one('click', (e) => {
     e.preventDefault();
     if (debug) console.time('nHentai');
     if (debug) console.log({ outputExt, outputName, threading });
@@ -340,21 +334,17 @@
     if (threading < 1) threading = 1;
     if (threading > 32) threading = 32;
 
-    $win.on('beforeunload', function () {
+    $win.on('beforeunload', () => {
       return 'Progress is running...';
     });
 
-    $download.html('<i class="fa fa-cog fa-spin"></i> Waiting...').css('backgroundColor', 'orange');
+    $download.html('<i class="fa fa-spinner fa-spin"></i> <span>Waiting...</span>').css('backgroundColor', 'orange');
 
-    images = images.map(function (img, index) {
+    images = images.map((img, index) => {
       return {
-        url:
-          'https://i.nhentai.net/galleries/' +
-          gallery.media_id +
-          '/' +
-          (index + 1) +
-          '.' +
-          { j: 'jpg', p: 'png', g: 'gif' }[img.t],
+        url: `https://i.nhentai.net/galleries/${gallery.media_id}/${index + 1}.${
+          { j: 'jpg', p: 'png', g: 'gif' }[img.t]
+        }`,
         attempt: 3,
       };
     });
@@ -368,12 +358,12 @@
   $config.removeAttr('id');
   $config.removeClass('btn-disabled');
   $config.attr('href', 'javascript:void(0);');
-  $config.css('min-width', '12px');
-  $config.html('<i class="fa fa-cog loader" />');
+  $config.css('min-width', '40px');
+  $config.html('<i class="fa fa-cog"></i>');
 
   $config.insertAfter($download);
   $config.before('\n');
-  $config.on('click', function () {
+  $config.on('click', () => {
     $configPanel.toggle('fast');
   });
 
