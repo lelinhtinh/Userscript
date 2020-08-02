@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io/
 // @description     Tải truyện từ TruyenFull định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenFull định dạng EPUB.
-// @version         4.6.7
+// @version         4.6.8
 // @icon            https://i.imgur.com/FQY8btq.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -12,7 +12,7 @@
 // @match           https://truyenfull.vn/*/
 // @match           https://truyenfull.net/*/
 // @require         https://code.jquery.com/jquery-3.5.1.min.js
-// @require         https://unpkg.com/jszip@3.4.0/dist/jszip.min.js
+// @require         https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
 // @require         https://unpkg.com/ejs@2.7.4/ejs.min.js
 // @require         https://unpkg.com/jepub@2.1.4/dist/jepub.min.js

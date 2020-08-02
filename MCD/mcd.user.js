@@ -2,14 +2,14 @@
 // @name            MCD
 // @namespace       https://lelinhtinh.github.io
 // @description     Manga Comic Downloader. Shortcut: Alt+Y.
-// @version         1.2.0
+// @version         1.2.1
 // @icon            https://i.imgur.com/GAM6cCg.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
 // @match           https://www.kuaikanmanhua.com/*
 // @match           https://newtoki69.com/webtoon/*
 // @require         https://code.jquery.com/jquery-3.5.1.min.js
-// @require         https://unpkg.com/jszip@3.4.0/dist/jszip.min.js
+// @require         https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
@@ -721,11 +721,12 @@ jQuery(function ($) {
     });
   }
 
+  /* global html_data */
   function getNewToki69() {
     function html_encoder(s) {
       var i = 0,
-        out = '';
-      l = s.length;
+        out = '',
+        l = s.length;
       for (; i < l; i += 3) {
         out += String.fromCharCode(parseInt(s.substr(i, 2), 16));
       }
