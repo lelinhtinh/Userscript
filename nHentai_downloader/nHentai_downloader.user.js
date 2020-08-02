@@ -1,10 +1,12 @@
 // ==UserScript==
 // @name            nHentai Downloader
 // @name:vi         nHentai Downloader
+// @name:zh         nHentai 下载器
 // @namespace       http://devs.forumvi.com
 // @description     Download manga on nHentai.
 // @description:vi  Tải truyện tranh tại NhệnTái.
-// @version         2.0.0
+// @description:zh  在nHentai上下载漫画。
+// @version         2.1.1
 // @icon            http://i.imgur.com/FAsQ4vZ.png
 // @author          Zzbaivong
 // @oujs:author     baivong
