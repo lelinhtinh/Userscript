@@ -12,10 +12,11 @@
 // @match           http://nhentai.net/g/*
 // @match           https://nhentai.net/g/*
 // @require         https://code.jquery.com/jquery-3.5.1.min.js
-// @require         https://unpkg.com/jszip@3.4.0/dist/jszip.min.js
-// @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
+// @require         https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
 // @require         https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js?version=184529
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
+// @require         https://cdn.jsdelivr.net/npm/web-streams-polyfill@2.0.2/dist/ponyfill.min.js
+// @require         https://cdn.jsdelivr.net/npm/streamsaver@2.0.3/StreamSaver.min.js
 // @noframes
 // @connect         self
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
@@ -58,6 +59,11 @@
         max: 32,
         default: 4,
       },
+      hideTorrentBtn: {
+        label: 'Hide the download torrent button',
+        type: 'checkbox',
+        default: false,
+      }
     },
     frame: configFrame,
     events: {
@@ -68,6 +74,12 @@
 
         $download.find('span').text(' as ' + outputExt.toUpperCase());
 
+        if (GM_config.get('hideTorrentBtn') == true) {
+          $_download.hide();
+        } else {
+          $_download.show();
+        }
+        
         var $saveBtn = $('#nHentaiDlConfig_saveBtn');
         $saveBtn.prop('disabled', true).addClass('saved').text('Saved!');
 
@@ -77,7 +89,7 @@
       },
     },
     css:
-      '#nHentaiDlConfig{width:100%!important;position:initial!important;padding:10px!important;background:#0d0d0d;border:1px solid #313131!important;border-radius:5px;text-align:left}#nHentaiDlConfig *{font-family:"Noto Sans",sans-serif}#nHentaiDlConfig .config_header{text-align:left;font-size:17px;font-weight:700;margin-bottom:20px;color:#999}#nHentaiDlConfig .reset_holder{float:left;height:30px;line-height:30px}#nHentaiDlConfig .reset{color:#4d4d4d;text-align:left}#nHentaiDlConfig .saveclose_buttons{margin:0;padding:4px;min-width:100px;height:30px;line-height:14px;border-radius:2px;border:1px solid;cursor:pointer}#nHentaiDlConfig .saveclose_buttons.saved{background:#ffeb3b;border:1px solid #ffc107}#nHentaiDlConfig #nHentaiDlConfig_closeBtn{display:none}#nHentaiDlConfig_buttons_holder{margin-top:20px;border-top:1px dashed #4d4d4d;padding-top:11px}#nHentaiDlConfig .config_var::after{clear:both;content:"";display:block}#nHentaiDlConfig .config_var{position:relative}#nHentaiDlConfig .field_label{font-size:14px;height:26px;line-height:26px;margin:0;padding:0 10px 0 0;width:30%;display:block;float:left}#nHentaiDlConfig .config_var>[type=text],#nHentaiDlConfig .config_var>div,#nHentaiDlConfig .config_var>select,#nHentaiDlConfig .config_var>textarea{width:70%;border-radius:0;display:block;height:26px;line-height:26px;padding:0 10px;float:left}#nHentaiDlConfig .config_var>textarea{height:auto;line-height:14px;padding:10px;min-height:5em}#nHentaiDlConfig .config_var>select{background:#4d4d4d;color:#d9d9d9;padding:0}#nHentaiDlConfig .config_var>select:hover{background:#666}#nHentaiDlConfig .config_var>select:focus{outline:0 none}#nHentaiDlConfig .config_var>div>label{display:inline-block;vertical-align:top;margin-right:5px}#nHentaiDlConfig .config_var>#nHentaiDlConfig_field_outputName{width:150px;text-transform:capitalize}#nHentaiDlConfig .config_var>#nHentaiDlConfig_field_threading{width:70px}#nHentaiDlConfig .config_var>div{padding:0}#nHentaiDlConfig_field_outputExt{text-transform:uppercase}#nHentaiDlConfig_field_outputExt [value=cbz]{margin-right:20px!important}',
+      '#nHentaiDlConfig{width:100%!important;position:initial!important;padding:10px!important;background:#0d0d0d;border:1px solid #313131!important;border-radius:5px;text-align:left}#nHentaiDlConfig *{font-family:"Noto Sans",sans-serif}#nHentaiDlConfig .config_header{text-align:left;font-size:17px;font-weight:700;margin-bottom:20px;color:#999}#nHentaiDlConfig .reset_holder{float:left;height:30px;line-height:30px}#nHentaiDlConfig .reset{color:#4d4d4d;text-align:left}#nHentaiDlConfig .saveclose_buttons{margin:0;padding:4px;min-width:100px;height:30px;line-height:14px;border-radius:2px;border:1px solid;cursor:pointer}#nHentaiDlConfig .saveclose_buttons.saved{background:#ffeb3b;border:1px solid #ffc107}#nHentaiDlConfig #nHentaiDlConfig_closeBtn{display:none}#nHentaiDlConfig_buttons_holder{margin-top:20px;border-top:1px dashed #4d4d4d;padding-top:11px}#nHentaiDlConfig .config_var::after{clear:both;content:"";display:block}#nHentaiDlConfig .config_var{position:relative}#nHentaiDlConfig .field_label{font-size:14px;height:26px;line-height:26px;margin:0;padding:0 10px 0 0;width:60%;display:block;float:left}#nHentaiDlConfig .config_var>[type=text],#nHentaiDlConfig .config_var>div,#nHentaiDlConfig .config_var>select,#nHentaiDlConfig .config_var>textarea{width:40%;border-radius:0;display:block;height:26px;line-height:26px;padding:0 10px;float:left}#nHentaiDlConfig .config_var>textarea{height:auto;line-height:14px;padding:10px;min-height:5em}#nHentaiDlConfig .config_var>select{background:#4d4d4d;color:#d9d9d9;padding:0}#nHentaiDlConfig .config_var>select:hover{background:#666}#nHentaiDlConfig .config_var>select:focus{outline:0 none}#nHentaiDlConfig .config_var>div>label{display:inline-block;vertical-align:top;margin-right:5px}#nHentaiDlConfig .config_var>#nHentaiDlConfig_field_outputName{width:150px;text-transform:capitalize}#nHentaiDlConfig .config_var>#nHentaiDlConfig_field_threading{width:70px}#nHentaiDlConfig .config_var>div{padding:0}#nHentaiDlConfig_field_outputExt{text-transform:uppercase}#nHentaiDlConfig_field_outputExt [value=cbz]{margin-right:20px!important}',
   });
 
   /**
@@ -164,6 +176,7 @@
         {
           type: 'blob',
           compression: 'STORE',
+          streamFiles: true // Less memory but less compatibility, https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html#streamfiles-option
         },
         function updateCallback(metadata) {
           $download.html('<i class="fa fa-file-archive"></i> ' + metadata.percent.toFixed(2) + ' %');
@@ -171,22 +184,33 @@
       )
       .then(
         function (blob) {
-          var zipName = gallery.title[outputName].replace(/\s+/g, '-') + '.' + comicId + '.' + outputExt;
-
-          if (prevZip) window.URL.revokeObjectURL(prevZip);
-          prevZip = blob;
+          var filename = gallery.title[outputName] || gallery.title["english"]; // e.g. #321311
+          var zipName = filename.replace(/\s+/g, '-') + '.' + comicId + '.' + outputExt;
+          //var zipName = `${filename}[${final}P].${outputExt}`;
+          zipName.replace(/・/g, '·'); // compatibility for MangaMeeya
 
           $download
             .html('<i class="fa fa-check"></i> Complete')
             .css('backgroundColor', hasErr ? 'red' : 'green')
             .attr({
-              href: window.URL.createObjectURL(prevZip),
+              href: 'javascript:void(0);',
               download: zipName,
             });
-
-          saveAs(blob, zipName);
-
-          doc.title = '[⇓] ' + gallery.title[outputName];
+          
+          const fileStream = streamSaver.createWriteStream(zipName, {
+            size: blob.size
+          })
+          const readableStream = blob.stream()
+          
+          window.FSwriter = fileStream.getWriter()
+          const reader = readableStream.getReader()
+          const pump = () => reader.read()
+            .then(res => res.done
+              ? FSwriter.close()
+              : FSwriter.write(res.value).then(pump))
+          pump(); // Firefox does not support pipeTo() yet.
+          
+          doc.title = '[⇓] ' + filename;
           if (debug) console.log('COMPLETE');
           end();
         },
@@ -204,7 +228,7 @@
     var url = images[current].url,
       filename = url.replace(/.*\//g, '');
 
-    filename = ('0000' + filename).slice(-8);
+    filename = ('000' + filename).slice(-8);
     if (debug) console.log(filename, 'progress');
 
     GM.xmlHttpRequest({
@@ -216,7 +240,7 @@
         success(response, filename);
       },
       onerror: function (err) {
-        if (images[current].attempt <= 0) {
+        if (images[current].attempt < 1) {
           final++;
           error(err, filename);
           return;
@@ -255,7 +279,10 @@
         },
         function (err, filename) {
           hasErr = true;
-          zip.file(filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
+          //zip.file(filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
+          zip.file(filename + '_' + comicId + '_error.gif', 'R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=', {
+            base64: true
+          });
           $download.css('backgroundColor', '#FF7F7F');
 
           if (debug) console.log(filename, 'error');
@@ -271,7 +298,6 @@
   if (!gallery) return;
 
   var zip = new JSZip(),
-    prevZip = false,
     current = 0,
     final = 0,
     total = gallery.num_pages,
@@ -279,6 +305,7 @@
     hasErr = false,
     $_download = $('#download-torrent, #download'),
     $download,
+    $config,
     doc = document,
     $win = $(window),
     comicId = gallery.id;
@@ -328,4 +355,22 @@
 
     addZip();
   });
+    
+  $("#nHentaiDlConfig").toggle();
+  $config = $_download.clone();
+  $config.removeAttr('id');
+  $config.removeClass('btn-disabled');
+  $config.attr('href', 'javascript:void(0);');
+  $config.css('min-width', '12px');
+  $config.html('<i class="fa fa-cog loader" />');
+
+  $config.insertAfter($download);
+  $config.before('\n');
+  $config.click(function() {
+    $("#nHentaiDlConfig").toggle("fast");
+  });
+
+  if (GM_config.get('hideTorrentBtn') == true) {
+    $_download.hide();
+  }
 })(jQuery, unsafeWindow);
