@@ -1,43 +1,50 @@
 // ==UserScript==
-// @name            nHentai Downloader
-// @name:vi         nHentai Downloader
-// @name:zh         nHentai 下载器
-// @namespace       http://devs.forumvi.com
-// @description     Download manga on nHentai.
-// @description:vi  Tải truyện tranh tại NhệnTái.
-// @description:zh  在nHentai上下载漫画。
-// @version         2.1.1
-// @icon            http://i.imgur.com/FAsQ4vZ.png
-// @author          Zzbaivong
-// @oujs:author     baivong
-// @license         MIT; https://baivong.mit-license.org/license.txt
-// @match           http://nhentai.net/g/*
-// @match           https://nhentai.net/g/*
-// @require         https://code.jquery.com/jquery-3.5.1.min.js
-// @require         https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
-// @require         https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js?version=184529
-// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
-// @require         https://cdn.jsdelivr.net/npm/web-streams-polyfill@2.0.2/dist/ponyfill.min.js
-// @require         https://cdn.jsdelivr.net/npm/streamsaver@2.0.3/StreamSaver.min.js
+// @name               nHentai Downloader
+// @name:vi            nHentai Downloader
+// @name:zh-CN         nHentai 下载器
+// @name:zh-TW         nHentai 下载器
+// @namespace          http://devs.forumvi.com
+// @description        Download manga on nHentai.
+// @description:vi     Tải truyện tranh tại NhệnTái.
+// @description:zh-CN  在nHentai上下载漫画。
+// @description:zh-TW  在nHentai上下载漫画。
+// @version            3.0.0
+// @icon               http://i.imgur.com/FAsQ4vZ.png
+// @author             Zzbaivong
+// @oujs:author        baivong
+// @license            MIT; https://baivong.mit-license.org/license.txt
+// @match              http://nhentai.net/g/*
+// @match              https://nhentai.net/g/*
+// @require            https://code.jquery.com/jquery-3.5.1.min.js
+// @require            https://cdn.jsdelivr.net/npm/web-streams-polyfill@2.0.2/dist/ponyfill.min.js
+// @require            https://cdn.jsdelivr.net/npm/streamsaver@2.0.3/StreamSaver.min.js
+// @require            https://github.com/jimmywarting/StreamSaver.js/raw/1bce493b16fd51cf313570445e2b9f96045393cb/examples/zip-stream.js
+// @require            https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js?version=184529
+// @require            https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
-// @connect         self
-// @supportURL      https://github.com/lelinhtinh/Userscript/issues
-// @run-at          document-idle
-// @grant           GM.xmlHttpRequest
-// @grant           GM_xmlhttpRequest
-// @grant           unsafeWindow
-// @grant           GM_getValue
-// @grant           GM_setValue
-// @grant           GM.getValue
-// @grant           GM.setValue
+// @connect            self
+// @supportURL         https://github.com/lelinhtinh/Userscript/issues
+// @run-at             document-idle
+// @grant              GM.xmlHttpRequest
+// @grant              GM_xmlhttpRequest
+// @grant              unsafeWindow
+// @grant              GM_getValue
+// @grant              GM_setValue
+// @grant              GM.getValue
+// @grant              GM.setValue
 // ==/UserScript==
 
-/* global streamSaver */
+/* global streamSaver, ZIP */
 (($, window) => {
   'use strict';
 
-  const configFrame = document.createElement('div');
-  $('#info-block').append(configFrame);
+  const configFrame = document.createElement('div'),
+    $infoBlock = $('#info-block');
+
+  $infoBlock.append(configFrame);
+  $infoBlock.append(
+    '<p style="text-align:left;padding:0 10px;color:#ff7600"><i class="fa fa-exclamation-triangle"></i> Enable 3rd-party cookies to allow streaming downloads.</p>'
+  );
 
   GM_config.init({
     id: 'nHentaiDlConfig',
@@ -59,7 +66,7 @@
         label: 'Max. conn. number',
         type: 'unsigned int',
         min: 1,
-        max: 32,
+        max: 16,
         default: 4,
       },
       hideTorrentBtn: {
@@ -74,14 +81,10 @@
         outputExt = GM_config.get('outputExt');
         outputName = GM_config.get('outputName');
         threading = GM_config.get('threading');
+        hideTorrentBtn = GM_config.get('hideTorrentBtn');
 
         $download.find('span').text(` as ${outputExt.toUpperCase()}`);
-
-        if (GM_config.get('hideTorrentBtn') == true) {
-          $_download.hide();
-        } else {
-          $_download.show();
-        }
+        $_download.toggle(!hideTorrentBtn);
 
         const $saveBtn = $('#nHentaiDlConfig_saveBtn');
         $saveBtn.prop('disabled', true).addClass('saved').text('Saved!');
@@ -115,9 +118,15 @@
 
   /**
    * Multithreading
-   * @type {Number} [1 -> 32]
+   * @type {Number} [1 -> 16]
    */
   let threading = GM_config.get('threading') || 4;
+
+  /**
+   * Hide Torrent Download button
+   * @type {Boolean}
+   */
+  let hideTorrentBtn = GM_config.get('hideTorrentBtn') || false;
 
   /**
    * Logging
@@ -125,10 +134,25 @@
    */
   let debug = false;
 
-  function end() {
-    $win.off('beforeunload');
+  function base64toBlob(base64Data, contentType) {
+    contentType = contentType || '';
+    var sliceSize = 1024;
+    var byteCharacters = atob(base64Data);
+    var bytesLength = byteCharacters.length;
+    var slicesCount = Math.ceil(bytesLength / sliceSize);
+    var byteArrays = new Array(slicesCount);
 
-    if (debug) console.timeEnd('nHentai');
+    for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+      var begin = sliceIndex * sliceSize;
+      var end = Math.min(begin + sliceSize, bytesLength);
+
+      var bytes = new Array(end - begin);
+      for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
+        bytes[i] = byteCharacters[offset].charCodeAt(0);
+      }
+      byteArrays[sliceIndex] = new Uint8Array(bytes);
+    }
+    return new Blob(byteArrays, { type: contentType });
   }
 
   function getInfo() {
@@ -171,58 +195,20 @@
     return info;
   }
 
-  function genZip() {
-    const filename = gallery.title[outputName] || gallery.title['english']; // e.g. #321311
+  function end() {
+    $win.off('beforeunload');
+    if (debug) console.timeEnd('nHentai');
+  }
 
-    zip.file('info.txt', getInfo());
-    zip
-      .generateAsync(
-        {
-          type: 'blob',
-          compression: 'STORE',
-          streamFiles: true, // Less memory but less compatibility, https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html#streamfiles-option
-        },
-        (metadata) => {
-          $download.html(`<i class="fa fa-file-archive"></i> ${metadata.percent.toFixed(2)} %`);
-        }
-      )
-      .then(
-        (blob) => {
-          const zipName = `${filename.replace(/\s+/g, '-').replace(/・/g, '·')}.${comicId}.${outputExt}`;
+  function done(filename) {
+    doc.title = `[⇓] ${filename}`;
+    if (debug) console.log('COMPLETE');
+    end();
+  }
 
-          $download
-            .html('<i class="fa fa-check"></i> Complete')
-            .css('backgroundColor', hasErr ? 'red' : 'green')
-            .attr({
-              href: 'javascript:void(0);',
-              download: zipName,
-            });
-
-          const fileStream = streamSaver.createWriteStream(zipName, {
-            size: blob.size,
-          });
-          const readableStream = blob.stream();
-
-          window.FSwriter = fileStream.getWriter();
-          const reader = readableStream.getReader();
-          const pump = () =>
-            reader
-              .read()
-              .then((res) => (res.done ? window.FSwriter.close() : window.FSwriter.write(res.value).then(pump)));
-          pump(); // Firefox does not support pipeTo() yet.
-
-          doc.title = `[⇓] ${filename}`;
-          if (debug) console.log('COMPLETE');
-          end();
-        },
-        (reason) => {
-          $download.html('<i class="fa fa-exclamation"></i> Fail').css('backgroundColor', 'red');
-
-          doc.title = `[x] ${filename}`;
-          if (debug) console.error(reason, 'ERROR');
-          end();
-        }
-      );
+  function genZip(ctrl) {
+    ctrl.close();
+    $download.html('<i class="fa fa-check"></i> Complete').css('backgroundColor', hasErr ? 'red' : 'green');
   }
 
   function dlImg(current, success, error) {
@@ -235,7 +221,7 @@
     GM.xmlHttpRequest({
       method: 'GET',
       url: url,
-      responseType: 'arraybuffer',
+      responseType: 'blob',
       onload: (response) => {
         final++;
         success(response, filename);
@@ -256,15 +242,15 @@
     });
   }
 
-  function next() {
-    $download.find('span').text(`${final}/${total}`);
+  function next(ctrl) {
+    $download.find('strong').text(`${final}/${total}`);
     if (debug) console.log(final, current);
 
     if (final < current) return;
-    final < total ? addZip() : genZip();
+    final < total ? addZip(ctrl) : genZip(ctrl);
   }
 
-  function addZip() {
+  function addZip(ctrl) {
     let max = current + threading;
     if (max > total) max = total;
 
@@ -273,21 +259,21 @@
       dlImg(
         current,
         (response, filename) => {
-          zip.file(filename, response.response);
+          ctrl.enqueue({ name: filename, stream: () => response.response.stream() });
 
           if (debug) console.log(filename, 'success');
-          next();
+          next(ctrl);
         },
         (err, filename) => {
           hasErr = true;
-          // zip.file(filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
-          zip.file(`${filename}_${comicId}_error.gif`, 'R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=', {
-            base64: true,
-          });
+
+          const errGif = base64toBlob('R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=', 'image/gif');
+          ctrl.enqueue({ name: `${filename}_error.gif`, stream: () => errGif.stream() });
+
           $download.css('backgroundColor', '#FF7F7F');
 
-          if (debug) console.log(filename, 'error');
-          next();
+          if (debug) console.log(err, 'error');
+          next(ctrl);
         }
       );
     }
@@ -298,8 +284,7 @@
   if (debug) console.log(gallery, 'gallery');
   if (!gallery) return;
 
-  let zip = new JSZip(),
-    current = 0,
+  let current = 0,
     final = 0,
     total = gallery.num_pages,
     images = gallery.images.pages,
@@ -310,13 +295,16 @@
     $configPanel,
     doc = document,
     $win = $(window),
-    comicId = gallery.id;
+    comicId = gallery.id,
+    filename = gallery.title[outputName] || gallery.title['english'], // e.g. #321311;
+    zipName = `${filename.replace(/\s+/g, '-').replace(/・/g, '·')}.${comicId}.${outputExt}`,
+    readableStream,
+    writableStream,
+    inProgress = false;
 
   if (!$_download.length) return;
   GM_config.open();
   $configPanel = $('#nHentaiDlConfig');
-
-  window.URL = window.URL || window.webkitURL;
 
   $download = $_download.clone();
   $download.removeAttr('id');
@@ -328,19 +316,24 @@
   $download.insertAfter($_download);
   $download.before('\n');
 
-  $download.css('backgroundColor', 'cornflowerblue').one('click', (e) => {
+  $download.css('backgroundColor', 'cornflowerblue').on('click', (e) => {
     e.preventDefault();
+    if (inProgress) return;
+    inProgress = true;
+
     if (debug) console.time('nHentai');
     if (debug) console.log({ outputExt, outputName, threading });
 
     if (threading < 1) threading = 1;
-    if (threading > 32) threading = 32;
+    if (threading > 16) threading = 16;
 
-    $win.on('beforeunload', () => {
-      return 'Progress is running...';
+    $win.on('beforeunload', (e) => {
+      e.originalEvent.returnValue = 'Progress is running...';
     });
 
-    $download.html('<i class="fa fa-spinner fa-spin"></i> <span>Waiting...</span>').css('backgroundColor', 'orange');
+    $download
+      .html('<i class="fa fa-spinner fa-spin"></i> <strong>Waiting...</strong>')
+      .css('backgroundColor', 'orange');
 
     images = images.map((img, index) => {
       return {
@@ -352,22 +345,49 @@
     });
     if (debug) console.log(images, 'images');
 
-    addZip();
+    writableStream = streamSaver.createWriteStream(zipName);
+
+    const info = new Blob([getInfo()]);
+    readableStream = new ZIP({
+      start(ctrl) {
+        ctrl.enqueue({
+          name: 'info.txt',
+          stream: () => info.stream(),
+        });
+      },
+      pull(ctrl) {
+        addZip(ctrl);
+      },
+    });
+
+    if (window.WritableStream && readableStream.pipeTo) {
+      readableStream.pipeTo(writableStream).then(() => {
+        done(filename);
+      });
+      return;
+    }
+
+    const writer = writableStream.getWriter();
+    const reader = readableStream.getReader();
+    const pump = () => reader.read().then((res) => (res.done ? writer.close() : writer.write(res.value).then(pump)));
+    pump();
+
+    done(filename);
   });
 
   $configPanel.toggle();
   $config = $_download.clone();
   $config.removeAttr('id');
   $config.removeClass('btn-disabled');
-  $config.attr('href', 'javascript:void(0);');
+  $config.attr('href', '#settings');
   $config.css('min-width', '40px');
   $config.html('<i class="fa fa-cog"></i>');
 
   $config.insertAfter($download);
-  $config.before('\n');
-  $config.on('click', () => {
+  $config.on('click', (e) => {
+    e.preventDefault();
     $configPanel.toggle('fast');
   });
 
-  if (GM_config.get('hideTorrentBtn') == true) $_download.hide();
+  if (hideTorrentBtn) $_download.hide();
 })(jQuery, unsafeWindow);
