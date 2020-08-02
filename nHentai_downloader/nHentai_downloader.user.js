@@ -8,7 +8,7 @@
 // @description:vi     Tải truyện tranh tại NhệnTái.
 // @description:zh-CN  在nHentai上下载漫画。
 // @description:zh-TW  在nHentai上下载漫画。
-// @version            3.0.0
+// @version            3.0.1
 // @icon               http://i.imgur.com/FAsQ4vZ.png
 // @author             Zzbaivong
 // @oujs:author        baivong
@@ -18,7 +18,7 @@
 // @require            https://code.jquery.com/jquery-3.5.1.min.js
 // @require            https://cdn.jsdelivr.net/npm/web-streams-polyfill@2.0.2/dist/ponyfill.min.js
 // @require            https://cdn.jsdelivr.net/npm/streamsaver@2.0.3/StreamSaver.min.js
-// @require            https://github.com/jimmywarting/StreamSaver.js/raw/1bce493b16fd51cf313570445e2b9f96045393cb/examples/zip-stream.js
+// @require            https://cdn.jsdelivr.net/npm/streamsaver@2.0.4/examples/zip-stream.js
 // @require            https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js?version=184529
 // @require            https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
