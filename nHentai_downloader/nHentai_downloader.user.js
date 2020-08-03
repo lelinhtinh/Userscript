@@ -327,6 +327,7 @@
     if (threading < 1) threading = 1;
     if (threading > 16) threading = 16;
 
+    doc.title = `[⇣] ${filename}`;
     $win.on('beforeunload', (e) => {
       e.originalEvent.returnValue = 'Progress is running...';
     });
