@@ -364,15 +364,14 @@
       readableStream.pipeTo(writableStream).then(() => {
         done(filename);
       });
-      return;
     }
-
-    const writer = writableStream.getWriter();
-    const reader = readableStream.getReader();
-    const pump = () => reader.read().then((res) => (res.done ? writer.close() : writer.write(res.value).then(pump)));
-    pump();
-
-    done(filename);
+    else
+    {
+      const writer = writableStream.getWriter();
+      const reader = readableStream.getReader();
+      const pump = () => reader.read().then((res) => (res.done ? writer.close() : writer.write(res.value).then(pump)));
+      pump().then(() => done(filename));
+    }
   });
 
   $configPanel.toggle();
