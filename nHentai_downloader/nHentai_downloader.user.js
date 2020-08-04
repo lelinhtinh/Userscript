@@ -134,6 +134,18 @@
    */
   let debug = false;
 
+  const _console = window.console;
+  const _time = window.console.time;
+  const _timeEnd = window.console.timeEnd;
+  const log = (...arg) => {
+    if (!debug) return;
+    _console.log(arg);
+  };
+  window.console = {
+    log: () => null,
+    clear: () => null,
+  };
+
   function base64toBlob(base64Data, contentType) {
     contentType = contentType || '';
     var sliceSize = 1024;
@@ -191,18 +203,18 @@
     info += '\r\n\r\n' + 'Pages: ' + total;
     info += '\r\n' + 'Uploaded at: ' + new Date(gallery.upload_date * 1000).toLocaleString() + '\r\n';
 
-    if (debug) console.log(info);
+    log(info);
     return info;
   }
 
   function end() {
     $win.off('beforeunload');
-    if (debug) console.timeEnd('nHentai');
+    if (debug) _timeEnd('nHentai');
   }
 
   function done(filename) {
     doc.title = `[⇓] ${filename}`;
-    if (debug) console.log('COMPLETE');
+    log('COMPLETE');
     end();
   }
 
@@ -216,7 +228,7 @@
       filename = url.replace(/.*\//g, '');
 
     filename = `000${filename}`.slice(-8);
-    if (debug) console.log(filename, 'progress');
+    log(filename, 'progress');
 
     GM.xmlHttpRequest({
       method: 'GET',
@@ -234,7 +246,7 @@
         }
 
         setTimeout(() => {
-          if (debug) console.log(filename, `retry ${images[current].attempt}`);
+          log(filename, `retry ${images[current].attempt}`);
           dlImg(current, success, error);
           images[current].attempt--;
         }, 2000);
@@ -244,7 +256,7 @@
 
   function next(ctrl) {
     $download.find('strong').text(`${final}/${total}`);
-    if (debug) console.log(final, current);
+    log(final, current);
 
     if (final < current) return;
     final < total ? addZip(ctrl) : genZip(ctrl);
@@ -255,13 +267,13 @@
     if (max > total) max = total;
 
     for (current; current < max; current++) {
-      if (debug) console.log(images[current].url, 'download');
+      log(images[current].url, 'download');
       dlImg(
         current,
         (response, filename) => {
           ctrl.enqueue({ name: filename, stream: () => response.response.stream() });
 
-          if (debug) console.log(filename, 'success');
+          log(filename, 'success');
           next(ctrl);
         },
         (err, filename) => {
@@ -272,16 +284,16 @@
 
           $download.css('backgroundColor', '#FF7F7F');
 
-          if (debug) console.log(err, 'error');
+          log(err, 'error');
           next(ctrl);
         }
       );
     }
-    if (debug) console.log(current, 'current');
+    log(current, 'current');
   }
 
   const gallery = JSON.parse(JSON.stringify(window._gallery));
-  if (debug) console.log(gallery, 'gallery');
+  log(gallery, 'gallery');
   if (!gallery) return;
 
   let current = 0,
@@ -321,8 +333,8 @@
     if (inProgress) return;
     inProgress = true;
 
-    if (debug) console.time('nHentai');
-    if (debug) console.log({ outputExt, outputName, threading });
+    if (debug) _time('nHentai');
+    log({ outputExt, outputName, threading });
 
     if (threading < 1) threading = 1;
     if (threading > 16) threading = 16;
@@ -344,7 +356,7 @@
         attempt: 3,
       };
     });
-    if (debug) console.log(images, 'images');
+    log(images, 'images');
 
     writableStream = streamSaver.createWriteStream(zipName);
 
@@ -365,9 +377,7 @@
       readableStream.pipeTo(writableStream).then(() => {
         done(filename);
       });
-    }
-    else
-    {
+    } else {
       const writer = writableStream.getWriter();
       const reader = readableStream.getReader();
       const pump = () => reader.read().then((res) => (res.done ? writer.close() : writer.write(res.value).then(pump)));
