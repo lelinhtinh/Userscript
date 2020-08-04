@@ -2,12 +2,13 @@
 // @name            MCD
 // @namespace       https://lelinhtinh.github.io
 // @description     Manga Comic Downloader. Shortcut: Alt+Y.
-// @version         1.2.1
+// @version         1.3.0
 // @icon            https://i.imgur.com/GAM6cCg.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
 // @match           https://www.kuaikanmanhua.com/*
 // @match           https://newtoki69.com/webtoon/*
+// @match           https://manhwa18.net/*
 // @require         https://code.jquery.com/jquery-3.5.1.min.js
 // @require         https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
@@ -834,6 +835,15 @@ jQuery(function ($) {
           );
         },
         init: getNewToki69,
+      };
+      break;
+    case 'manhwa18.net':
+      configs = {
+        link: '#tab-chapper .chapter',
+        name: '[itemprop="name"]:last',
+        contents: '.chapter-content',
+        imgSrc: 'data-original',
+        filter: true,
       };
       break;
     default:
