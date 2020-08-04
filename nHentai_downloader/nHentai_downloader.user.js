@@ -255,6 +255,7 @@
   }
 
   function next(ctrl) {
+    doc.title = `[${final}/${total}] ${filename}`;
     $download.find('strong').text(`${final}/${total}`);
     log(final, current);
 
@@ -308,7 +309,7 @@
     doc = document,
     $win = $(window),
     comicId = gallery.id,
-    filename = gallery.title[outputName] || gallery.title['english'], // e.g. #321311;
+    filename = gallery.title[outputName] || gallery.title['english'],
     zipName = `${filename.replace(/\s+/g, '-').replace(/・/g, '·')}.${comicId}.${outputExt}`,
     readableStream,
     writableStream,
@@ -340,9 +341,14 @@
     if (threading > 16) threading = 16;
 
     doc.title = `[⇣] ${filename}`;
-    $win.on('beforeunload', (e) => {
-      e.originalEvent.returnValue = 'Progress is running...';
-    });
+    $win
+      .on('beforeunload', (e) => {
+        e.originalEvent.returnValue = 'Progress is running...';
+      })
+      .on('unload', () => {
+        if (writableStream) writableStream.abort();
+        if (writer) writer.abort();
+      });
 
     $download
       .html('<i class="fa fa-spinner fa-spin"></i> <strong>Waiting...</strong>')
