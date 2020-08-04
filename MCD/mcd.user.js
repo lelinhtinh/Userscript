@@ -572,6 +572,8 @@ jQuery(function ($) {
       notyImages();
     } else {
       $.each(images, function (i, v) {
+        v = v.replace(/^[\s\n]+|[\s\n]+$/g, '');
+
         var keep = keepOriginal.some(function (key) {
           return v.indexOf(key) !== -1;
         });
