@@ -8,7 +8,7 @@
 // @description:vi     Tải truyện tranh tại NhệnTái.
 // @description:zh-CN  在nHentai上下载漫画。
 // @description:zh-TW  在nHentai上下载漫画。
-// @version            3.0.1
+// @version            3.1.0
 // @icon               http://i.imgur.com/FAsQ4vZ.png
 // @author             Zzbaivong
 // @oujs:author        baivong
@@ -208,7 +208,7 @@
   }
 
   function end() {
-    $win.off('beforeunload');
+    $win.off('beforeunload').off('unload');
     if (debug) _timeEnd('nHentai');
   }
 
@@ -223,6 +223,20 @@
     $download.html('<i class="fa fa-check"></i> Complete').css('backgroundColor', hasErr ? 'red' : 'green');
   }
 
+  function dlImgError(current, success, error, err, filename) {
+    if (images[current].attempt < 1) {
+      final++;
+      error(err, filename);
+      return;
+    }
+
+    setTimeout(() => {
+      log(filename, `retry ${images[current].attempt}`);
+      dlImg(current, success, error);
+      images[current].attempt--;
+    }, 2000);
+  }
+
   function dlImg(current, success, error) {
     let url = images[current].url,
       filename = url.replace(/.*\//g, '');
@@ -235,21 +249,20 @@
       url: url,
       responseType: 'blob',
       onload: (response) => {
+        if (
+          response.response.type === 'text/html' ||
+          response.response.byteLength < 1000 ||
+          (response.statusText !== 'OK' && response.statusText !== '')
+        ) {
+          dlImgError(current, success, error, response, filename);
+          return;
+        }
+
         final++;
         success(response, filename);
       },
       onerror: (err) => {
-        if (images[current].attempt < 1) {
-          final++;
-          error(err, filename);
-          return;
-        }
-
-        setTimeout(() => {
-          log(filename, `retry ${images[current].attempt}`);
-          dlImg(current, success, error);
-          images[current].attempt--;
-        }, 2000);
+        dlImgError(current, success, error, err, filename);
       },
     });
   }
