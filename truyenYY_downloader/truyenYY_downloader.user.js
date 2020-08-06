@@ -4,7 +4,7 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenYY định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenYY định dạng EPUB.
-// @version         4.7.8
+// @version         4.8.0
 // @icon            https://i.imgur.com/1HkQv2b.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -63,6 +63,43 @@
     if (errorAlert) errorAlert = confirm('Lỗi! ' + mess + '\nBạn có muốn tiếp tục nhận cảnh báo?');
 
     return '<p class="no-indent"><a href="' + referrer + chapId + '">' + mess + '</a></p>';
+  }
+
+  function downloadVip($chapter) {
+    var parts = $chapter.find('#vip-content-placeholder').siblings('script').first().text(),
+      vipContent = '';
+
+    parts = parts.match(/\/web-api\/novel\/chapter-content-get\/\?chap_id=\w+&part=\d+/g);
+    if (!parts.length) return downloadError('Lỗi tải chương VIP');
+
+    return new Promise(function (resolve, reject) {
+      (function getVipContent() {
+        if (!parts.length) {
+          resolve(vipContent);
+          return;
+        }
+
+        var partUrl = parts.shift();
+        $.getJSON(partUrl)
+          .done(function (data) {
+            if (!data.ok) {
+              reject(downloadError('Lỗi lấy nội dung chương VIP'));
+              return;
+            }
+
+            var $content = $(data.content);
+            $content.find('style, [style]').remove();
+            $content.each(function (i, v) {
+              vipContent += '<p>' + v.textContent + '</p>';
+            });
+
+            getVipContent();
+          })
+          .fail(function (err) {
+            reject(downloadError('Lỗi kết nối chương VIP', err));
+          });
+      })();
+    });
   }
 
   function genEbook() {
@@ -153,6 +190,11 @@
             chapContent = downloadError('Chương VIP');
           } else if ($chapter.find('a[href="/register/"]').length) {
             chapContent = downloadError('Chương yêu cầu đăng nhập');
+          } else if ($chapter.find('#vip-content-placeholder').length) {
+            downloadVip($chapter).then(function (chapContent) {
+              handle(cleanHtml(chapContent), $next);
+            });
+            return;
           } else {
             var $img = $chapter.find('img');
             if ($img.length)
@@ -172,29 +214,31 @@
           }
         }
 
-        jepub.add(chapTitle, chapContent);
-
-        if (count === 0) begin = chapTitle;
-        end = chapTitle;
-
-        $download.html(
-          '<i class="iconfont icon-more"></i> Đang tải <strong>' + count + '/' + chapListSize + '</strong>'
-        );
-
-        ++count;
-        document.title = '[' + count + '] ' + pageName;
-
-        if ($next.hasClass('disabled')) {
-          saveEbook();
-        } else {
-          getContent(downloadId($next.attr('href')));
-        }
+        handle(chapContent, $next);
       })
       .fail(function (err) {
         chapTitle = null;
         downloadError('Kết nối không ổn định', err);
         saveEbook();
       });
+
+    function handle(chapContent, $next) {
+      jepub.add(chapTitle, chapContent);
+
+      if (count === 0) begin = chapTitle;
+      end = chapTitle;
+
+      $download.html('<i class="iconfont icon-more"></i> Đang tải <strong>' + count + '/' + chapListSize + '</strong>');
+
+      ++count;
+      document.title = '[' + count + '] ' + pageName;
+
+      if ($next.hasClass('disabled')) {
+        saveEbook();
+      } else {
+        getContent(downloadId($next.attr('href')));
+      }
+    }
   }
 
   var pageName = document.title,
