@@ -4,7 +4,7 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenYY định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenYY định dạng EPUB.
-// @version         4.8.0
+// @version         4.8.1
 // @icon            https://i.imgur.com/1HkQv2b.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -66,13 +66,16 @@
   }
 
   function downloadVip($chapter) {
-    var parts = $chapter.find('#vip-content-placeholder').siblings('script').first().text(),
-      vipContent = '';
-
+    var parts = $chapter.find('#vip-content-placeholder').siblings('script').first().text();
     parts = parts.match(/\/web-api\/novel\/chapter-content-get\/\?chap_id=\w+&part=\d+/g);
-    if (!parts.length) return downloadError('Lỗi tải chương VIP');
 
     return new Promise(function (resolve, reject) {
+      if (!parts.length) {
+        reject('Lỗi truy vấn chương VIP');
+        return;
+      }
+
+      var vipContent = '';
       (function getVipContent() {
         if (!parts.length) {
           resolve(vipContent);
@@ -83,7 +86,7 @@
         $.getJSON(partUrl)
           .done(function (data) {
             if (!data.ok) {
-              reject(downloadError('Lỗi lấy nội dung chương VIP'));
+              reject('Lỗi lấy nội dung chương VIP');
               return;
             }
 
@@ -95,8 +98,8 @@
 
             getVipContent();
           })
-          .fail(function (err) {
-            reject(downloadError('Lỗi kết nối chương VIP', err));
+          .fail(function () {
+            reject('Lỗi kết nối chương VIP');
           });
       })();
     });
@@ -191,9 +194,13 @@
           } else if ($chapter.find('a[href="/register/"]').length) {
             chapContent = downloadError('Chương yêu cầu đăng nhập');
           } else if ($chapter.find('#vip-content-placeholder').length) {
-            downloadVip($chapter).then(function (chapContent) {
-              handle(cleanHtml(chapContent), $next);
-            });
+            downloadVip($chapter)
+              .then(function (chapContent) {
+                handle(cleanHtml(chapContent), $next);
+              })
+              .catch(function (err) {
+                handle(downloadError(err));
+              });
             return;
           } else {
             var $img = $chapter.find('img');
