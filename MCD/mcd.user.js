@@ -2,12 +2,12 @@
 // @name            MCD
 // @namespace       https://lelinhtinh.github.io
 // @description     Manga Comic Downloader. Shortcut: Alt+Y.
-// @version         1.4.0
+// @version         1.4.1
 // @icon            https://i.imgur.com/GAM6cCg.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
 // @match           https://www.kuaikanmanhua.com/*
-// @match           https://newtoki69.com/webtoon/*
+// @match           https://newtoki*.*/webtoon/*
 // @match           https://manhwa18.net/*
 // @match           https://manytoon.com/comic/*
 // @require         https://code.jquery.com/jquery-3.5.1.min.js
@@ -813,64 +813,56 @@ jQuery(function ($) {
     '#baivong_noty_wrap{display:none;background:#fff;position:fixed;z-index:2147483647;right:20px;top:20px;min-width:150px;max-width:100%;padding:15px 25px;border:1px solid #ddd;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 10px rgba(0,0,0,.35);cursor:pointer}#baivong_noty_content{color:#444}#baivong_noty_content strong{font-weight:700}#baivong_noty_content.baivong_info strong{color:#2196f3}#baivong_noty_content.baivong_success strong{color:#4caf50}#baivong_noty_content.baivong_warning strong{color:#ffc107}#baivong_noty_content.baivong_error strong{color:#f44336}#baivong_noty_content strong.centered{display:block;text-align:center}#baivong_noty_close{position:absolute;right:0;top:0;font-size:18px;color:#ddd;height:20px;width:20px;line-height:20px;text-align:center}#baivong_noty_wrap:hover #baivong_noty_close{color:#333}'
   );
 
-  switch (domainName) {
-    case 'www.kuaikanmanhua.com':
-      configs = {
-        link: '.title.fl a[href^="/web/comic/"]',
-        name: 'h3.title',
-        init: getKuaikanManhua,
-      };
-      break;
-    case 'newtoki69.com':
-      configs = {
-        link: '.item-subject',
-        name: function (_this) {
-          return (
-            $('[itemprop="description"] .view-content:first span').text().trim() +
-            ' ' +
-            $(_this)
-              .contents()
-              .filter(function (i, el) {
-                return el.nodeType === 3;
-              })
-              .text()
-              .trim()
-          );
-        },
-        init: getNewToki69,
-      };
-      break;
-    case 'manhwa18.net':
-      configs = {
-        link: '#tab-chapper .chapter',
-        name: '[itemprop="name"]:last',
-        contents: '.chapter-content',
-        imgSrc: 'data-original',
-        filter: true,
-      };
-      break;
-    case 'manytoon.com':
-      configs = {
-        link: '.wp-manga-chapter a',
-        name: function (_this) {
-          return (
-            $('.post-title h3')
-              .contents()
-              .filter(function (i, el) {
-                return el.nodeType === 3;
-              })
-              .text()
-              .trim() +
-            ' ' +
-            $(_this).text().trim()
-          );
-        },
-        contents: '.reading-content',
-      };
-      break;
-    default:
-      configs = {};
-      break;
+  if (/(www\.)?kuaikanmanhua\.com/.test(domainName)) {
+    configs = {
+      link: '.title.fl a[href^="/web/comic/"]',
+      name: 'h3.title',
+      init: getKuaikanManhua,
+    };
+  } else if (/newtoki\d*\.(com|net)/.test(domainName)) {
+    configs = {
+      link: '.item-subject',
+      name: function (_this) {
+        return (
+          $('[itemprop="description"] .view-content:first span').text().trim() +
+          ' ' +
+          $(_this)
+            .contents()
+            .filter(function (i, el) {
+              return el.nodeType === 3;
+            })
+            .text()
+            .trim()
+        );
+      },
+      init: getNewToki69,
+    };
+  } else if (domainName === 'manhwa18.net') {
+    configs = {
+      link: '#tab-chapper .chapter',
+      name: '[itemprop="name"]:last',
+      contents: '.chapter-content',
+      imgSrc: 'data-original',
+      filter: true,
+    };
+  } else if (domainName === 'manytoon.com') {
+    configs = {
+      link: '.wp-manga-chapter a',
+      name: function (_this) {
+        return (
+          $('.post-title h3')
+            .contents()
+            .filter(function (i, el) {
+              return el.nodeType === 3;
+            })
+            .text()
+            .trim() +
+          ' ' +
+          $(_this).text().trim()
+        );
+      },
+      contents: '.reading-content',
+    };
   }
 
   if (Array.isArray(configs)) {
