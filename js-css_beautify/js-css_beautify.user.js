@@ -4,18 +4,19 @@
 // @namespace       http://devs.forumvi.com
 // @description     Beautify and syntax highlighting for source code JavaScript, JSON, CSS.
 // @description:vi  Định dạng và làm đẹp mã nguồn JavaScript, JSON, CSS.
-// @version         3.2.4
+// @version         4.0.0
 // @icon            http://i.imgur.com/kz8nqz1.png
 // @author          Zzbaivong
 // @oujs:author     baivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
 // @match           http://*/*
 // @match           https://*/*
-// @resource        js_beautify https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.10.2/beautify.min.js
-// @resource        css_beautify https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.10.2/beautify-css.min.js
-// @resource        hljs https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js
-// @resource        dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/atom-one-dark.min.css
-// @resource        light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/atom-one-light.min.css
+// @resource        prettier https://unpkg.com/prettier@2.0.5/standalone.js
+// @resource        parser-babel https://unpkg.com/prettier@2.0.5/parser-babel.js
+// @resource        parser-postcss https://unpkg.com/prettier@2.0.5/parser-postcss.js
+// @resource        hljs https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js
+// @resource        dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/atom-one-dark.min.css
+// @resource        light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/atom-one-light.min.css
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
@@ -27,60 +28,57 @@
 // ==/UserScript==
 
 /* eslint-env worker, es6 */
-(function() {
+(() => {
   'use strict';
 
   /**
    * Color themes
-   * @type {String} dark|light
+   * @type {'dark'|'light'}
    */
   const STYLE = 'dark';
 
   /* === DO NOT CHANGE === */
 
-  var doc = document,
-    contenttype = doc.contentType,
+  const doc = document,
+    contentType = doc.contentType,
     pathname = location.pathname;
 
   if (
     !(
-      /^application\/(x-javascript|javascript|json)|text\/css$/.test(contenttype) ||
+      /^application\/(x-javascript|javascript|json)|text\/css$/.test(contentType) ||
       (/.+\.(js|json|css)$/.test(pathname) &&
-        !/^application\/(xhtml+xml|xml|rss+xml)|text\/(html|xml)$/.test(contenttype))
+        !/^application\/(xhtml+xml|xml|rss+xml)|text\/(html|xml)$/.test(contentType))
     )
   )
     return;
 
-  var output = doc.getElementsByTagName('pre')[0],
-    lang = 'javascript',
-    blobURL,
-    worker;
+  let parser;
+  if (contentType === 'text/css' || /.+\.css$/.test(pathname)) {
+    parser = 'css';
+  } else if (contentType === 'application/json' || /.+\.json$/.test(pathname)) {
+    parser = 'json';
+  } else {
+    parser = 'babel';
+  }
 
-  if (contenttype === 'text/css' || /.+\.css$/.test(pathname)) lang = 'css';
-
-  blobURL = URL.createObjectURL(
+  const blobURL = URL.createObjectURL(
     new Blob(
       [
         '(',
-        function() {
-          self.window = {};
+        function () {
+          self.onmessage = (e) => {
+            let source = e.data.content;
 
-          self.onmessage = function(e) {
-            var source = e.data.content,
-              beautify = 'js_beautify';
-
-            if (e.data.lang === 'javascript') {
-              importScripts(e.data.libs[0]);
-            } else {
-              importScripts(e.data.libs[1]);
-              beautify = 'css_beautify';
-            }
-            source = self.window[beautify](source);
+            importScripts(e.data.libs[0]);
+            importScripts(e.data.libs[1]);
+            /* global prettierPlugins */
+            source = prettier.format(source, { parser: e.data.parser, plugins: prettierPlugins });
 
             importScripts(e.data.libs[2]);
-            source = self.window.hljs.highlight(e.data.lang, source, true).value;
+            source = hljs.highlight(e.data.parser === 'babel' ? 'javascript' : e.data.parser, source, true).value;
 
             self.postMessage({
+              theme: e.data.libs[3],
               source: source,
             });
           };
@@ -92,43 +90,41 @@
       }
     )
   );
-  worker = new Worker(blobURL);
 
-  worker.onmessage = function(e) {
+  const output = doc.getElementsByTagName('pre')[0];
+  const worker = new Worker(blobURL);
+
+  worker.onmessage = (e) => {
     if (!e.data) return;
 
-    var fragment = doc.createDocumentFragment(),
+    const fragment = doc.createDocumentFragment(),
       pre = doc.createElement('pre');
 
     pre.innerHTML = e.data.source;
-    pre.className = 'hljs ' + lang;
+    pre.className = 'hljs';
 
     fragment.appendChild(pre);
     doc.body.replaceChild(fragment, output);
+
+    GM_addStyle(
+      `${e.data.theme}*{margin:0;padding:0}html{line-height:1em;background:${
+        STYLE === 'dark' ? '#282c34' : '#fafafa'
+      }}pre{white-space:pre-wrap;word-wrap:break-word;word-break:break-all}`
+    );
   };
 
-  var js_beautify = GM.getResourceUrl('js_beautify'),
-    css_beautify = GM.getResourceUrl('css_beautify'),
-    hljs = GM.getResourceUrl('hljs');
+  const prettier = GM.getResourceUrl('prettier'),
+    parserBabel = GM.getResourceUrl('parser-babel'),
+    parserPostcss = GM.getResourceUrl('parser-postcss'),
+    hljs = GM.getResourceUrl('hljs'),
+    theme = GM.getResourceUrl(STYLE)
+      .then((url) => fetch(url))
+      .then((resp) => resp.text());
 
-  GM.getResourceUrl(STYLE)
-    .then(function(url) {
-      return fetch(url);
-    })
-    .then(function(resp) {
-      return resp.text();
-    })
-    .then(function(style) {
-      GM_addStyle(
-        '*{margin:0;padding:0}html{line-height:1em;background:#1d1f21;color:#c5c8c6}pre{white-space:pre-wrap;word-wrap:break-word;word-break:break-all}' +
-          style
-      );
-    });
-
-  Promise.all([js_beautify, css_beautify, hljs]).then(function(urls) {
+  Promise.all([prettier, parser === 'css' ? parserPostcss : parserBabel, hljs, theme]).then((urls) => {
     worker.postMessage({
       libs: urls,
-      lang: lang,
+      parser: parser,
       content: output.textContent,
     });
   });
