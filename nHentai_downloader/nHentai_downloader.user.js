@@ -8,7 +8,7 @@
 // @description:vi     Tải truyện tranh tại NhệnTái.
 // @description:zh-CN  在nHentai上下载漫画。
 // @description:zh-TW  在nHentai上下载漫画。
-// @version            3.1.0
+// @version            3.1.1
 // @icon               http://i.imgur.com/FAsQ4vZ.png
 // @author             Zzbaivong
 // @oujs:author        baivong
@@ -148,18 +148,18 @@
 
   function base64toBlob(base64Data, contentType) {
     contentType = contentType || '';
-    var sliceSize = 1024;
-    var byteCharacters = atob(base64Data);
-    var bytesLength = byteCharacters.length;
-    var slicesCount = Math.ceil(bytesLength / sliceSize);
-    var byteArrays = new Array(slicesCount);
+    const sliceSize = 1024;
+    const byteCharacters = atob(base64Data);
+    const bytesLength = byteCharacters.length;
+    const slicesCount = Math.ceil(bytesLength / sliceSize);
+    const byteArrays = new Array(slicesCount);
 
-    for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
-      var begin = sliceIndex * sliceSize;
-      var end = Math.min(begin + sliceSize, bytesLength);
+    for (let sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+      const begin = sliceIndex * sliceSize;
+      const end = Math.min(begin + sliceSize, bytesLength);
 
-      var bytes = new Array(end - begin);
-      for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
+      const bytes = new Array(end - begin);
+      for (let offset = begin, i = 0; offset < end; ++i, ++offset) {
         bytes[i] = byteCharacters[offset].charCodeAt(0);
       }
       byteArrays[sliceIndex] = new Uint8Array(bytes);
@@ -326,6 +326,7 @@
     zipName = `${filename.replace(/\s+/g, '-').replace(/・/g, '·')}.${comicId}.${outputExt}`,
     readableStream,
     writableStream,
+    writer,
     inProgress = false;
 
   if (!$_download.length) return;
@@ -377,6 +378,7 @@
     });
     log(images, 'images');
 
+    streamSaver.mitm = 'https://lelinhtinh.github.io/stream/mitm.html';
     writableStream = streamSaver.createWriteStream(zipName);
 
     const info = new Blob([getInfo()]);
@@ -410,7 +412,7 @@
   $config.removeClass('btn-disabled');
   $config.attr('href', '#settings');
   $config.css('min-width', '40px');
-  $config.html('<i class="fa fa-cog"></i>');
+  $config.html('<i class="fa fa-cog"></i><div class="top">Toggle settings<i></i></div>');
 
   $config.insertAfter($download);
   $config.on('click', (e) => {
