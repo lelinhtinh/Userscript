@@ -2,7 +2,7 @@
 // @name            MCD
 // @namespace       https://lelinhtinh.github.io
 // @description     Manga Comic Downloader. Shortcut: Alt+Y.
-// @version         1.4.1
+// @version         1.5.0
 // @icon            https://i.imgur.com/GAM6cCg.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -10,6 +10,7 @@
 // @match           https://newtoki*.*/webtoon/*
 // @match           https://manhwa18.net/*
 // @match           https://manytoon.com/comic/*
+// @match           https://18comic.org/album/*
 // @require         https://code.jquery.com/jquery-3.5.1.min.js
 // @require         https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
@@ -73,11 +74,6 @@ jQuery(function ($) {
   /* === DO NOT CHANGE === */
 
   window.URL = window._URL;
-
-  // eslint-disable-next-line no-unused-vars
-  function isEmpty(el) {
-    return !$.trim(el.html());
-  }
 
   function getImageType(arrayBuffer) {
     if (!arrayBuffer.byteLength)
@@ -183,8 +179,15 @@ jQuery(function ($) {
     if (status !== 'warning' && status !== 'success') autoHide();
   }
 
+  function targetLink(selector) {
+    return configs.link
+      .split(/\s*,\s*/)
+      .map((i) => i + selector)
+      .join(',');
+  }
+
   function linkError() {
-    $(configs.link + '[href="' + configs.href + '"]').css({
+    $(targetLink('[href="' + configs.href + '"]')).css({
       color: 'red',
       textShadow: '0 0 1px red, 0 0 1px red, 0 0 1px red',
     });
@@ -192,7 +195,7 @@ jQuery(function ($) {
   }
 
   function linkSuccess() {
-    var $currLink = $(configs.link + '[href="' + configs.href + '"]');
+    var $currLink = $(targetLink('[href="' + configs.href + '"]'));
     if (!hasDownloadError)
       $currLink.css({
         color: 'green',
@@ -246,7 +249,7 @@ jQuery(function ($) {
       return configs.href.indexOf(l) === -1;
     });
 
-    $(configs.link + '[href="' + configs.href + '"]').css({
+    $(targetLink('[href="' + configs.href + '"]')).css({
       color: 'orange',
       fontWeight: 'bold',
       fontStyle: 'italic',
@@ -280,7 +283,7 @@ jQuery(function ($) {
             return _link.indexOf(l) === -1;
           });
 
-          $(configs.link + '[href="' + _link + '"]').css({
+          $(targetLink('[href="' + _link + '"]')).css({
             color: 'gray',
             fontWeight: 'bold',
             fontStyle: 'italic',
@@ -295,7 +298,7 @@ jQuery(function ($) {
 
           dlAll.push(_link);
 
-          $(configs.link + '[href="' + _link + '"]').css({
+          $(targetLink('[href="' + _link + '"]')).css({
             color: 'violet',
             textDecoration: 'overline',
             textShadow: '0 0 1px violet, 0 0 1px violet, 0 0 1px violet',
@@ -319,7 +322,7 @@ jQuery(function ($) {
     if (!inCustom && !dlAll.length) dlAllGen();
     if (!dlAll.length) return;
     inAuto = true;
-    $(configs.link + '[href*="' + dlAll[0] + '"]').trigger('contextmenu');
+    $(targetLink('[href*="' + dlAll[0] + '"]')).trigger('contextmenu');
   }
 
   function downloadAllOne() {
@@ -330,8 +333,8 @@ jQuery(function ($) {
   function genFileName() {
     chapName = chapName
       .replace(/\s+/g, '_')
-      .replace(/\./g, '-')
-      .replace(/(^[\W_]+|[\W_]+$)/, '');
+      .replace(/・/g, '·')
+      .replace(/(^_+|_+$)/, '');
     if (hasDownloadError) chapName = '__ERROR__' + chapName;
     return chapName;
   }
@@ -352,7 +355,7 @@ jQuery(function ($) {
 
     if (inAuto) {
       if (dlAll.length) {
-        $(configs.link + '[href*="' + dlAll[0] + '"]').trigger('contextmenu');
+        $(targetLink('[href*="' + dlAll[0] + '"]')).trigger('contextmenu');
       } else {
         inAuto = false;
         inCustom = false;
@@ -520,22 +523,6 @@ jQuery(function ($) {
     });
   }
 
-  function protocolUrl(url) {
-    if (url.indexOf('//') === 0) url = location.protocol + url;
-    if (url.search(/https?:\/\//) !== 0) url = 'http://' + url;
-    return url;
-  }
-
-  function redirectSSL(url) {
-    if (
-      url.search(/(i\.imgur\.com|\.blogspot\.com|\.fbcdn\.net|storage\.fshare\.vn)/i) !== -1 &&
-      url.indexOf('http://') === 0
-    )
-      url = url.replace(/^http:\/\//, 'https://');
-
-    return url;
-  }
-
   function decodeUrl(url) {
     var parser = new DOMParser(),
       dom = parser.parseFromString('<!doctype html><body>' + url, 'text/html');
@@ -560,8 +547,6 @@ jQuery(function ($) {
       url = url.replace(/(\?|&).+/, '');
     }
     url = encodeURI(url);
-    url = protocolUrl(url);
-    url = redirectSSL(url);
 
     return url;
   }
@@ -611,8 +596,8 @@ jQuery(function ($) {
     $contents.each(function (i, v) {
       var $img = $(v);
       images[i] = !configs.imgSrc
-        ? $img.data('cdn') || $img.data('src') || $img.data('original')
-        : $img.attr(configs.imgSrc);
+        ? $img.data('src') || $img.data('original')
+        : $img.attr(configs.imgSrc) || $img.attr('src');
     });
 
     checkImages(images);
@@ -862,6 +847,29 @@ jQuery(function ($) {
         );
       },
       contents: '.reading-content',
+    };
+  } else if (domainName === '18comic.org') {
+    configs = {
+      link: '.episode:visible a, .dropdown-toggle.reading:visible',
+      name: function (_this) {
+        var $this = $(_this),
+          mangaName = $('.panel-heading [itemprop="name"]:visible').text().trim();
+        if ($this.hasClass('reading')) return mangaName;
+        return (
+          mangaName +
+          ' ' +
+          $this
+            .find('li')
+            .contents()
+            .filter(function (i, el) {
+              return el.nodeType === 3;
+            })
+            .text()
+            .trim()
+        );
+      },
+      contents: '.panel-body',
+      imgSrc: 'data-original',
     };
   }
 
