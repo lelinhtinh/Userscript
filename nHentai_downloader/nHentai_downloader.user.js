@@ -8,7 +8,7 @@
 // @description:vi     Tải truyện tranh tại NhệnTái.
 // @description:zh-CN  在nHentai上下载漫画。
 // @description:zh-TW  在nHentai上下载漫画。
-// @version            3.1.1
+// @version            3.1.2
 // @icon               http://i.imgur.com/FAsQ4vZ.png
 // @author             Zzbaivong
 // @oujs:author        baivong
@@ -268,7 +268,7 @@
   }
 
   function next(ctrl) {
-    doc.title = `[${final}/${total}] ${filename}`;
+    doc.title = `[${final}/${total}] ${comicName}`;
     $download.find('strong').text(`${final}/${total}`);
     log(final, current);
 
@@ -322,8 +322,11 @@
     doc = document,
     $win = $(window),
     comicId = gallery.id,
-    filename = gallery.title[outputName] || gallery.title['english'],
-    zipName = `${filename.replace(/\s+/g, '-').replace(/・/g, '·')}.${comicId}.${outputExt}`,
+    comicName = gallery.title[outputName] || gallery.title['english'],
+    zipName = `${comicName
+      .replace(/[\s|+=]+/g, '-')
+      .replace(/[:;`'"”“/\\?.,<>[\]{}!@#$%^&*]/g, '')
+      .replace(/・/g, '·')}.${comicId}.${outputExt}`,
     readableStream,
     writableStream,
     writer,
@@ -354,7 +357,7 @@
     if (threading < 1) threading = 1;
     if (threading > 16) threading = 16;
 
-    doc.title = `[⇣] ${filename}`;
+    doc.title = `[⇣] ${comicName}`;
     $win
       .on('beforeunload', (e) => {
         e.originalEvent.returnValue = 'Progress is running...';
@@ -396,13 +399,13 @@
 
     if (window.WritableStream && readableStream.pipeTo) {
       readableStream.pipeTo(writableStream).then(() => {
-        done(filename);
+        done(comicName);
       });
     } else {
       const writer = writableStream.getWriter();
       const reader = readableStream.getReader();
       const pump = () => reader.read().then((res) => (res.done ? writer.close() : writer.write(res.value).then(pump)));
-      pump().then(() => done(filename));
+      pump().then(() => done(comicName));
     }
   });
 
