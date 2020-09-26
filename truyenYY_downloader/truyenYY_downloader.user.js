@@ -4,7 +4,7 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenYY định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenYY định dạng EPUB.
-// @version         4.8.1
+// @version         4.8.2
 // @icon            https://i.imgur.com/1HkQv2b.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -66,8 +66,9 @@
   }
 
   function downloadVip($chapter) {
-    var parts = $chapter.find('#vip-content-placeholder').siblings('script').first().text();
-    parts = parts.match(/\/web-api\/novel\/chapter-content-get\/\?chap_id=\w+&part=\d+/g);
+    var script = $chapter.find('#vip-content-placeholder').siblings('script').first().text(),
+      url = script.match(/var\s+url="(.+?)"/)[1],
+      parts = script.match(/(?<=\(url\s*\+\s*")(\d+)(?="\))/g);
 
     return new Promise(function (resolve, reject) {
       if (!parts.length) {
@@ -82,7 +83,7 @@
           return;
         }
 
-        var partUrl = parts.shift();
+        var partUrl = url + parts.shift();
         $.getJSON(partUrl)
           .done(function (data) {
             if (!data.ok) {
@@ -109,7 +110,7 @@
     jepub
       .generate('blob', function (metadata) {
         $download.html(
-          '<i class="iconfont icon-book"></i> Đang nén <strong>' + metadata.percent.toFixed(2) + '%</strong>'
+          '<i class="iconfont icon-book"></i> Đang nén <strong>' + metadata.percent.toFixed(2) + '%</strong>',
         );
       })
       .then(function (epubZipContent) {
