@@ -4,7 +4,7 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenYY định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenYY định dạng EPUB.
-// @version         4.8.3
+// @version         4.8.4
 // @icon            https://i.imgur.com/1HkQv2b.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -30,18 +30,30 @@
 
   /**
    * Nhận cảnh báo khi có chương bị lỗi
+   *
+   * @type {Boolean}
    */
   var errorAlert = true;
 
   /**
    * Những đoạn ghi chú nguồn truyện
    * Toàn bộ nội dung ghi chú, có phân biệt hoa thường
-   * Ngăn cách các đoạn bằng dấu |
+   *
+   * @type {Array}
    */
-  var citeSources =
-    'Text được lấy tại truyenyy[.c]om|truyện được lấy tại t.r.u.y.ệ.n.y-y|Đọc Truyện Online mới nhất ở truyen/y/y/com|Truyện được copy tại TruyệnYY.com|nguồn t r u y ệ n y_y|Bạn đang xem truyện được sao chép tại: t.r.u.y.e.n.y.y chấm c.o.m|Nguồn tại http://truyenyy[.c]om|xem tại tr.u.y.ệ.n.yy|Bạn đang đọc chuyện tại Truyện.YY';
+  var citeSources = [
+    'Text được lấy tại truyenyy[.c]om',
+    'truyện được lấy tại t.r.u.y.ệ.n.y-y',
+    'Đọc Truyện Online mới nhất ở truyen/y/y/com',
+    'Truyện được copy tại TruyệnYY.com',
+    'nguồn t r u y ệ n y_y',
+    'Bạn đang xem truyện được sao chép tại: t.r.u.y.e.n.y.y chấm c.o.m',
+    'Nguồn tại http://truyenyy[.c]om',
+    'xem tại tr.u.y.ệ.n.yy',
+    'Bạn đang đọc chuyện tại Truyện.YY',
+  ];
 
-  citeSources = citeSources.split('|');
+  /* === DO NOT CHANGE CODE BELOW THIS LINE === */
 
   function cleanHtml(str) {
     citeSources.forEach(function (source) {
@@ -86,12 +98,12 @@
         var partUrl = url + parts.shift();
         $.getJSON(partUrl)
           .done(function (data) {
-            if (!data.ok) {
+            var content = data.content;
+            if (!data.ok || !content) {
               reject('Lỗi lấy nội dung chương VIP');
               return;
             }
 
-            var content = data.content;
             content = content.replace(/<(?!\d)[a-z_\d$]*\s+style=.+?<\/(?!\d)[a-z_\d$]*>/g, '');
             content = content.replace(/<style>.+?<\/style>/g, '');
             content = content.replace(/<\/?([^p]|[^/\\>]{2,})\/?>/g, '');
@@ -249,6 +261,9 @@
     }
   }
 
+  var pathname = location.pathname;
+  if (/\/(danh-sach-chuong|binh-luan|ung-ho|de-cu(\/add)?|kim-phieu|van-de|fans|nhan-vat)\/?$/i.test(pathname)) return;
+
   var pageName = document.title,
     $win = $(window),
     $download = $('<a></a>', {
@@ -280,7 +295,6 @@
     beginEnd = '',
     titleError = [],
     host = location.host,
-    pathname = location.pathname,
     referrer = location.protocol + '//' + host + pathname,
     ebookFilename = pathname.slice(8, -1) + '.epub',
     credits =
