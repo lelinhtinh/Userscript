@@ -4,7 +4,7 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenYY định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenYY định dạng EPUB.
-// @version         4.8.4
+// @version         4.8.5
 // @icon            https://i.imgur.com/1HkQv2b.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -79,8 +79,8 @@
 
   function downloadVip($chapter) {
     var script = $chapter.find('#vip-content-placeholder').siblings('script').first().text(),
-      url = script.match(/var\s+url="(.+?)"/)[1],
-      parts = script.match(/(?<=\(url\s*\+\s*")(\d+)(?="\))/g);
+      url = script.match(/var\s+url\s*=\s*("|')([^'"]+?)("|')/i)[2],
+      parts = script.match(/(?<=\(url\s*\+\s*("|'))(\d+)(?=("|')\))/gi);
 
     return new Promise(function (resolve, reject) {
       if (!parts.length) {
