@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.11.7
+// @version         2.11.8
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -1485,23 +1485,35 @@ jQuery(function ($) {
         method: 'GET',
         url: '/load-post-data?thread_id=' + threadId + '&is_backup=false',
         onload: function (response) {
-          var $attachment = $(response.response).filter('.load-attachment');
-          $attachment = $attachment
-            .map(function () {
-              return $(this).data('url');
-            })
-            .toArray();
+          var $data = cleanSource(response),
+            $entry = $data.find('img');
 
-          var images = [];
-          getAttachmentUrl(
-            $attachment,
-            function (img) {
-              images.push(img);
-            },
-            function () {
-              checkImages(images);
-            },
-          );
+          if (!$entry.length) {
+            var $attachment = $(response.response).filter('.load-attachment');
+            if (!$attachment.length) {
+              notyImages();
+              return;
+            }
+
+            $attachment = $attachment
+              .map(function () {
+                return $(this).data('url');
+              })
+              .toArray();
+
+            var images = [];
+            getAttachmentUrl(
+              $attachment,
+              function (img) {
+                images.push(img);
+              },
+              function () {
+                checkImages(images);
+              },
+            );
+          } else {
+            getImages($entry);
+          }
         },
         onerror: function () {
           notyError();
