@@ -30,6 +30,7 @@
     "chapid",
     "chuc",
     "comicvn",
+    "csrf",
     "dataip",
     "fbcdn",
     "forumnt",
@@ -106,5 +107,8 @@
     "vnsharing",
     "vnvl",
     "vungdoc"
-  ]
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
 }
