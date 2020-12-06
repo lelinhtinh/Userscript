@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.11.6
+// @version         2.11.7
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -282,7 +282,7 @@ jQuery(function ($) {
         },
         function () {
           autoHide();
-        }
+        },
       );
     if (status !== 'warning' && status !== 'success') autoHide();
   }
@@ -484,7 +484,7 @@ jQuery(function ($) {
         },
         function updateCallback(metadata) {
           noty('Đang nén file <strong>' + metadata.percent.toFixed(2) + '%</strong>', 'warning');
-        }
+        },
       )
       .then(
         function (blob) {
@@ -499,7 +499,7 @@ jQuery(function ($) {
               '" download="' +
               zipName +
               '"><strong>Click vào đây</strong></a> nếu trình duyệt không tự tải xuống',
-            'success'
+            'success',
           );
           linkSuccess();
 
@@ -515,7 +515,7 @@ jQuery(function ($) {
 
           document.title = '[x] ' + tit;
           endZip();
-        }
+        },
       );
   }
 
@@ -782,7 +782,7 @@ jQuery(function ($) {
           linkError();
 
           next();
-        }
+        },
       );
     }
   }
@@ -1003,7 +1003,7 @@ jQuery(function ($) {
             ')\n{{ chap_id }}: ID chương (' +
             chap_id +
             ')',
-          recentPassword ? recentPassword : '{{ chap_index }}ltn'
+          recentPassword ? recentPassword : '{{ chap_index }}ltn',
         );
 
         if (!pass || !pass.trim()) {
@@ -1444,6 +1444,31 @@ jQuery(function ($) {
     var $link = $(configs.link);
     if (!$link.length) return;
 
+    var csrfToken = $('#j-csrf').val();
+    function getAttachmentUrl(arr, output, done) {
+      if (!arr.length) return done();
+
+      $.getJSON(
+        '/get-attachment-url?csrfToken=' +
+          csrfToken +
+          '&url=' +
+          encodeURIComponent(arr.shift()) +
+          '&_' +
+          new Date().getTime(),
+      )
+        .done(function (response) {
+          if (response.status === 'success') {
+            output(response.data.url);
+            getAttachmentUrl(arr, output, done);
+          } else {
+            notyImages();
+          }
+        })
+        .fail(function () {
+          notyError();
+        });
+    }
+
     $link.on('contextmenu', function (e) {
       e.preventDefault();
       hasDownloadError = false;
@@ -1460,14 +1485,23 @@ jQuery(function ($) {
         method: 'GET',
         url: '/load-post-data?thread_id=' + threadId + '&is_backup=false',
         onload: function (response) {
-          var $data = cleanSource(response),
-            $entry = $data.find('img');
+          var $attachment = $(response.response).filter('.load-attachment');
+          $attachment = $attachment
+            .map(function () {
+              return $(this).data('url');
+            })
+            .toArray();
 
-          if (!$entry.length) {
-            notyImages();
-          } else {
-            getImages($entry);
-          }
+          var images = [];
+          getAttachmentUrl(
+            $attachment,
+            function (img) {
+              images.push(img);
+            },
+            function () {
+              checkImages(images);
+            },
+          );
         },
         onerror: function () {
           notyError();
@@ -1497,7 +1531,7 @@ jQuery(function ($) {
               checkImages(
                 res.mes.map(function (img) {
                   return img.url;
-                })
+                }),
               );
             } else {
               notyImages();
@@ -1554,7 +1588,7 @@ jQuery(function ($) {
   });
 
   GM_addStyle(
-    '#baivong_noty_wrap{display:none;background:#fff;position:fixed;z-index:2147483647;right:20px;top:20px;min-width:150px;max-width:100%;padding:15px 25px;border:1px solid #ddd;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 10px rgba(0,0,0,.35);cursor:pointer}#baivong_noty_content{color:#444}#baivong_noty_content strong{font-weight:700}#baivong_noty_content.baivong_info strong{color:#2196f3}#baivong_noty_content.baivong_success strong{color:#4caf50}#baivong_noty_content.baivong_warning strong{color:#ffc107}#baivong_noty_content.baivong_error strong{color:#f44336}#baivong_noty_content strong.centered{display:block;text-align:center}#baivong_noty_close{position:absolute;right:0;top:0;font-size:18px;color:#ddd;height:20px;width:20px;line-height:20px;text-align:center}#baivong_noty_wrap:hover #baivong_noty_close{color:#333}'
+    '#baivong_noty_wrap{display:none;background:#fff;position:fixed;z-index:2147483647;right:20px;top:20px;min-width:150px;max-width:100%;padding:15px 25px;border:1px solid #ddd;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 10px rgba(0,0,0,.35);cursor:pointer}#baivong_noty_content{color:#444}#baivong_noty_content strong{font-weight:700}#baivong_noty_content.baivong_info strong{color:#2196f3}#baivong_noty_content.baivong_success strong{color:#4caf50}#baivong_noty_content.baivong_warning strong{color:#ffc107}#baivong_noty_content.baivong_error strong{color:#f44336}#baivong_noty_content strong.centered{display:block;text-align:center}#baivong_noty_close{position:absolute;right:0;top:0;font-size:18px;color:#ddd;height:20px;width:20px;line-height:20px;text-align:center}#baivong_noty_wrap:hover #baivong_noty_close{color:#333}',
   );
 
   switch (domainName) {
