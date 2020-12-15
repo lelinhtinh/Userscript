@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.11.8
+// @version         2.11.9
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -1636,11 +1636,11 @@ jQuery(function ($) {
     case 'www.truyentranh.net':
       configs = {
         reverse: false,
-        link: '.content a',
+        link: '.chapter-list-item-box a',
         name: function (_this) {
-          return _this.title;
+          return $('h1').text().trim() + ' ' + $(_this).text().trim();
         },
-        contents: '.paddfixboth-mobile',
+        contents: '.manga-reading-box',
       };
       break;
     case 'comicvn.net':
