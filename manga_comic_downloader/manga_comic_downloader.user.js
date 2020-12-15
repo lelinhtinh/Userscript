@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.11.9
+// @version         2.11.10
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -37,6 +37,7 @@
 // @match           https://otakusan.net/*
 // @match           https://ngonphongcomics.com/*
 // @match           https://*.nettruyen.com/*
+// @match           http://*.nettruyen.com/*
 // @match           http://nhattruyen.com/*
 // @match           http://*.hamtruyentranh.net/*
 // @match           https://ttmanga.com/*
@@ -147,6 +148,7 @@ jQuery(function ($) {
     'truyen.cloud': 'http://www.nettruyen.com',
     'proxy.truyen.cloud': 'http://www.nettruyen.com',
     'i.netsnippet.com': 'http://www.nettruyen.com/',
+    'forumnt.com': 'http://www.nettruyen.com/',
     'upload.forumnt.com': 'http://www.nettruyen.com/',
     'upload2.forumnt.com': 'http://www.nettruyen.com/',
     'upload.upanhmoi.net': 'https://upanhmoi.net',
@@ -694,9 +696,13 @@ jQuery(function ($) {
   function dlImg(current, success, error) {
     var url = dlImages[current].url,
       filename = ('0000' + dlCurrent).slice(-4),
-      urlObj = new URL(url),
-      urlHost = urlObj.hostname,
+      urlObj,
+      urlHost,
       headers = {};
+
+    if (url.indexOf('//') === 0) url = location.protocol + url;
+    urlObj = new URL(url);
+    urlHost = urlObj.hostname;
 
     if (referer[urlHost]) {
       headers.referer = referer[urlHost];
@@ -883,9 +889,7 @@ jQuery(function ($) {
     var images = [];
     $contents.each(function (i, v) {
       var $img = $(v);
-      images[i] = !configs.imgSrc
-        ? $img.data('cdn') || $img.data('src') || $img.data('original')
-        : $img.attr(configs.imgSrc);
+      images[i] = !configs.imgSrc ? $img.data('src') || $img.data('original') : $img.attr(configs.imgSrc);
     });
 
     checkImages(images);
@@ -905,10 +909,10 @@ jQuery(function ($) {
 
   function cleanSource(response) {
     var responseText = response.responseText;
-    if (configs.imgSrc) return $(responseText);
-
     responseText = responseText.replace(/[\s\n]+src[\s\n]*=[\s\n]*/gi, ' data-src=');
     responseText = responseText.replace(/^[^<]*/, '');
+
+    if (configs.imgSrc) return $(responseText);
     return $(responseText);
   }
 
@@ -1776,9 +1780,10 @@ jQuery(function ($) {
     case 'www.nettruyen.com':
     case 'nhattruyen.com':
       configs = {
-        link: '#nt_listchapter .row a',
+        link: '#nt_listchapter .chapter a',
         name: '.title-detail',
         contents: '.reading-detail.box_doc',
+        imgSrc: 'data-original',
       };
       break;
     case 'www.hamtruyentranh.net':
