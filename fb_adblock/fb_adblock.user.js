@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Block all ads in Facebook News Feed.
 // @description:vi  Chặn quảng cáo được tài trợ trên trang chủ Facebook.
-// @version         1.1.3
+// @version         1.2.0
 // @icon            https://i.imgur.com/F8ai0jB.png
 // @author          lelinhtinh
 // @oujs:author     baivong
@@ -17,7 +17,7 @@
 // @grant           none
 // ==/UserScript==
 
-(function() {
+(function () {
   'use strict';
 
   /**
@@ -35,19 +35,18 @@
     subtree: true,
   };
 
-  const removeAds = wrap => {
+  const removeAds = (wrap, isWatch) => {
     if (DEBUG >= 2) console.log(wrap, 'wrapNode');
+    if (DEBUG >= 2) console.log(isWatch, 'isWatch');
 
-    const subtiltes = wrap.querySelectorAll('[data-testid*="story"]:not([role]) a');
-    if (!subtiltes.length) return;
+    const subtitles = wrap.querySelectorAll('[aria-label="Sponsored"], [aria-label="Được tài trợ"]');
+    if (!subtitles.length) return;
 
-    Array.from(subtiltes).forEach(v => {
-      if (v.textContent.trim().search(/Được tài trợ|Bài viết được đề xuất|Sponsor|Suggest|Recommend/i) !== -1) {
-        v = v.closest('[data-testid="fbfeed_story"]');
-        if (DEBUG) console.log(++countAds, 'countAds');
-        if (DEBUG >= 3) console.log(v.innerHTML, 'htmlAds');
-        v.remove();
-      }
+    subtitles.forEach((v) => {
+      v = v.closest(isWatch ? '[data-pagelet="MainFeed"]>div>div>div>div' : '[data-pagelet^="FeedUnit"]');
+      if (DEBUG) console.log(++countAds, 'countAds');
+      if (DEBUG >= 3) console.log(v.innerHTML, 'htmlAds');
+      v.remove();
     });
   };
 
@@ -56,16 +55,15 @@
 
   const init = () => {
     if (DEBUG) console.log('Facebook Adblocker');
-    countAds = 0;
 
-    const newsFeed = document.querySelector('[data-testid="newsFeedStream"]');
+    const newsFeed = document.querySelector('[role="feed"], [data-pagelet="MainFeed"]');
     if (DEBUG >= 2) console.log(newsFeed, 'newsFeedNode');
     if (!newsFeed) return;
 
     if (observerStory) observerStory.disconnect();
-    observerStory = new MutationObserver(mutationsList => {
+    observerStory = new MutationObserver((mutationsList) => {
       for (let mutation of mutationsList) {
-        removeAds(mutation.target);
+        removeAds(mutation.target, !newsFeed.getAttribute('role'));
       }
     });
     observerStory.observe(newsFeed, config);
