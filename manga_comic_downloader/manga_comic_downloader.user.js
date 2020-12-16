@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.11.10
+// @version         2.11.11
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -23,6 +23,9 @@
 // @match           https://*.a3manga.com/*
 // @match           http://truyentranhtuan.com/*
 // @match           http://mangak.info/*
+// @match           http://mangak.net/*
+// @match           http://mangak.com/*
+// @match           https://truyendep.com/*
 // @match           https://truyentranhlh.net/*
 // @match           https://truyentranhlh.com/*
 // @match           https://hocvientruyentranh.net/*
@@ -1149,14 +1152,32 @@ jQuery(function ($) {
 
   function getMangaK() {
     getSource(function ($data) {
-      var $entry = $data.find('#content-chap script');
+      var $entry = $data.find('#content-chap script'),
+        $vungDoc = $data.find('.vung_doc');
+
       if (!$entry.length) {
         notyImages();
       } else {
         $data = $entry.text().match(/var\s+content\s*=\s*(.+?);/)[1];
         $data = $data.trim().replace(/,[\s\n]*\]$/, ']');
         $data = JSON.parse($data);
-        checkImages($data);
+
+        var images = $data.map(function (val, i) {
+          var ext = val.match(/\.\w{3,4}$/);
+          ext = ext ? ext[0].toLowerCase() : '.jpg';
+
+          return (
+            'https://1.truyentranhmanga.com/images/' +
+            $vungDoc.data('manga') +
+            '/' +
+            $vungDoc.data('chapter') +
+            '/' +
+            i +
+            ext
+          );
+        });
+
+        checkImages(images);
       }
     });
   }
@@ -1579,7 +1600,7 @@ jQuery(function ($) {
     tit = document.title,
     $win = $(window),
     $doc = $(document),
-    dlZip = new JSZip(),
+    dlZip = new JSZip(), // TODO: https://github.com/101arrowz/fflate
     dlPrevZip = false,
     dlCurrent = 0,
     dlFinal = 0,
@@ -1693,7 +1714,10 @@ jQuery(function ($) {
         init: getTruyenTranhTuan,
       };
       break;
+    case 'mangak.net':
+    case 'mangak.com':
     case 'mangak.info':
+    case 'truyendep.com':
       configs = {
         link: '.chapter-list a',
         init: getMangaK,
