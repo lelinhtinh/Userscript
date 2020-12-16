@@ -37,7 +37,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 1. <https://ntruyen.info/>
 1. <https://www.a3manga.com/>
 1. <http://truyentranhtuan.com/>
-1. <http://mangak.info/>
+1. <http://mangak.info/>, <http://mangak.com/>, <http://mangak.net/>, <https://truyendep.com/>
 1. <https://truyentranhlh.com/>, <https://truyentranhlh.net/>
 1. <http://hocvientruyentranh.com/>, <https://hocvientruyentranh.net/>
 1. <https://truyenhay24h.com/>
