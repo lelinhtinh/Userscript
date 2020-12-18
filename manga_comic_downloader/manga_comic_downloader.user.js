@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.11.11
+// @version         2.11.12
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -36,6 +36,8 @@
 // @match           http://truyentranh1.info/*
 // @match           http://*.hentailxx.com/*
 // @match           https://*.hentailxx.com/*
+// @match           http://lxhentai.com/*
+// @match           https://lxhentai.com/*
 // @match           https://hentaivn.net/*
 // @match           https://otakusan.net/*
 // @match           https://ngonphongcomics.com/*
@@ -1765,6 +1767,9 @@ jQuery(function ($) {
     case 'hentailxx.com':
     case 'www.hentailxx.com':
     case 'm.hentailxx.com':
+    case 'lxhentai.com':
+    case 'www.lxhentai.com':
+    case 'm.lxhentai.com':
       configs = {
         link: '#listChuong .col-5 a',
         name: 'h1.title-detail',
