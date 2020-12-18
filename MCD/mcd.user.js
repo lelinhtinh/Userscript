@@ -2,7 +2,7 @@
 // @name            MCD
 // @namespace       https://lelinhtinh.github.io
 // @description     Manga Comic Downloader. Shortcut: Alt+Y.
-// @version         1.5.0
+// @version         1.5.1
 // @icon            https://i.imgur.com/GAM6cCg.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -174,7 +174,7 @@ jQuery(function ($) {
         },
         function () {
           autoHide();
-        }
+        },
       );
     if (status !== 'warning' && status !== 'success') autoHide();
   }
@@ -203,9 +203,14 @@ jQuery(function ($) {
       });
   }
 
+  function beforeleaving(e) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+
   function cancelProgress() {
     linkError();
-    $win.off('beforeunload');
+    window.removeEventListener('beforeunload', beforeleaving);
   }
 
   function notyError() {
@@ -234,10 +239,7 @@ jQuery(function ($) {
     addZip();
 
     noty('Start downloading <strong>' + chapName + '</strong>', 'warning');
-
-    $win.on('beforeunload', function () {
-      return 'Progress is running...';
-    });
+    window.addEventListener('beforeunload', beforeleaving);
   }
 
   function notyWait() {
@@ -374,7 +376,7 @@ jQuery(function ($) {
         },
         function updateCallback(metadata) {
           noty('Zipping <strong>' + metadata.percent.toFixed(2) + '%</strong>', 'warning');
-        }
+        },
       )
       .then(
         function (blob) {
@@ -389,11 +391,11 @@ jQuery(function ($) {
               '" download="' +
               zipName +
               '"><strong>Click here</strong></a> if not automatically download',
-            'success'
+            'success',
           );
           linkSuccess();
 
-          $win.off('beforeunload');
+          window.removeEventListener('beforeunload', beforeleaving);
           saveAs(blob, zipName);
 
           document.title = '[⇓] ' + tit;
@@ -405,7 +407,7 @@ jQuery(function ($) {
 
           document.title = '[x] ' + tit;
           endZip();
-        }
+        },
       );
   }
 
@@ -512,7 +514,7 @@ jQuery(function ($) {
           linkError();
 
           next();
-        }
+        },
       );
     }
   }
@@ -768,7 +770,6 @@ jQuery(function ($) {
     notyTimeout,
     domainName = location.host,
     tit = document.title,
-    $win = $(window),
     $doc = $(document),
     dlZip = new JSZip(),
     dlPrevZip = false,
@@ -795,7 +796,7 @@ jQuery(function ($) {
   });
 
   GM_addStyle(
-    '#baivong_noty_wrap{display:none;background:#fff;position:fixed;z-index:2147483647;right:20px;top:20px;min-width:150px;max-width:100%;padding:15px 25px;border:1px solid #ddd;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 10px rgba(0,0,0,.35);cursor:pointer}#baivong_noty_content{color:#444}#baivong_noty_content strong{font-weight:700}#baivong_noty_content.baivong_info strong{color:#2196f3}#baivong_noty_content.baivong_success strong{color:#4caf50}#baivong_noty_content.baivong_warning strong{color:#ffc107}#baivong_noty_content.baivong_error strong{color:#f44336}#baivong_noty_content strong.centered{display:block;text-align:center}#baivong_noty_close{position:absolute;right:0;top:0;font-size:18px;color:#ddd;height:20px;width:20px;line-height:20px;text-align:center}#baivong_noty_wrap:hover #baivong_noty_close{color:#333}'
+    '#baivong_noty_wrap{display:none;background:#fff;position:fixed;z-index:2147483647;right:20px;top:20px;min-width:150px;max-width:100%;padding:15px 25px;border:1px solid #ddd;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 10px rgba(0,0,0,.35);cursor:pointer}#baivong_noty_content{color:#444}#baivong_noty_content strong{font-weight:700}#baivong_noty_content.baivong_info strong{color:#2196f3}#baivong_noty_content.baivong_success strong{color:#4caf50}#baivong_noty_content.baivong_warning strong{color:#ffc107}#baivong_noty_content.baivong_error strong{color:#f44336}#baivong_noty_content strong.centered{display:block;text-align:center}#baivong_noty_close{position:absolute;right:0;top:0;font-size:18px;color:#ddd;height:20px;width:20px;line-height:20px;text-align:center}#baivong_noty_wrap:hover #baivong_noty_close{color:#333}',
   );
 
   if (/(www\.)?kuaikanmanhua\.com/.test(domainName)) {

@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io/
 // @description     Tải truyện từ TruyenFull định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenFull định dạng EPUB.
-// @version         4.6.8
+// @version         4.6.9
 // @icon            https://i.imgur.com/FQY8btq.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -71,6 +71,11 @@
     return '<p class="no-indent"><a href="' + referrer + chapId + '">' + mess + '</a></p>';
   }
 
+  function beforeleaving(e) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+
   function genEbook() {
     jepub
       .generate('blob', function (metadata) {
@@ -78,7 +83,7 @@
       })
       .then(function (epubZipContent) {
         document.title = '[⇓] ' + ebookTitle;
-        $win.off('beforeunload');
+        window.removeEventListener('beforeunload', beforeleaving);
 
         $download
           .attr({
@@ -193,7 +198,6 @@
   }
 
   var pageName = document.title,
-    $win = $(window),
     $download = $('<a>', {
       class: 'btn btn-primary',
       href: '#download',
@@ -258,7 +262,7 @@
     $.when(
       $.get('/ajax.php', {
         type: 'hash',
-      })
+      }),
     )
       .done(function (res) {
         $.get('/ajax.php', {
@@ -284,9 +288,7 @@
 
             chapListSize = chapList.length;
             if (chapListSize > 0) {
-              $win.on('beforeunload', function () {
-                return 'Truyện đang được tải xuống...';
-              });
+              window.removeEventListener('beforeunload', beforeleaving);
 
               $download.one('click', function (e) {
                 e.preventDefault();

@@ -4,7 +4,7 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenCV định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenCV định dạng EPUB.
-// @version         4.6.7
+// @version         4.6.8
 // @icon            http://i.imgur.com/o5cmtkU.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -67,6 +67,11 @@
     return '<p class="no-indent"><a href="' + referrer + chapId + '">' + mess + '</a></p>';
   }
 
+  function beforeleaving(e) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+
   function genEbook() {
     jepub
       .generate('blob', function (metadata) {
@@ -74,7 +79,7 @@
       })
       .then(function (epubZipContent) {
         document.title = '[⇓] ' + ebookTitle;
-        $win.off('beforeunload');
+        window.removeEventListener('beforeunload', beforeleaving);
 
         $download
           .attr({
@@ -203,7 +208,6 @@
   }
 
   var pageName = document.title,
-    $win = $(window),
     $download = $('<a>', {
       class: 'btn btn-info',
       href: '#download',
@@ -307,9 +311,7 @@
 
         chapListSize = chapList.length;
         if (chapListSize > 0) {
-          $win.on('beforeunload', function () {
-            return 'Truyện đang được tải xuống...';
-          });
+          window.removeEventListener('beforeunload', beforeleaving);
 
           $download.one('click', function (e) {
             e.preventDefault();

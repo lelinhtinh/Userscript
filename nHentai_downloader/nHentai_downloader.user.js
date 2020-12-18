@@ -8,7 +8,7 @@
 // @description:vi     Tải truyện tranh tại NhệnTái.
 // @description:zh-CN  在nHentai上下载漫画。
 // @description:zh-TW  在nHentai上下载漫画。
-// @version            3.1.2
+// @version            3.1.3
 // @icon               http://i.imgur.com/FAsQ4vZ.png
 // @author             Zzbaivong
 // @oujs:author        baivong
@@ -43,7 +43,7 @@
 
   $infoBlock.append(configFrame);
   $infoBlock.append(
-    '<p style="text-align:left;padding:0 10px;color:#ff7600"><i class="fa fa-exclamation-triangle"></i> Enable 3rd-party cookies to allow streaming downloads.</p>'
+    '<p style="text-align:left;padding:0 10px;color:#ff7600"><i class="fa fa-exclamation-triangle"></i> Enable 3rd-party cookies to allow streaming downloads.</p>',
   );
 
   GM_config.init({
@@ -207,8 +207,13 @@
     return info;
   }
 
+  function beforeleaving(e) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+
   function end() {
-    $win.off('beforeunload').off('unload');
+    window.removeEventListener('beforeunload', beforeleaving);
     if (debug) _timeEnd('nHentai');
   }
 
@@ -300,7 +305,7 @@
 
           log(err, 'error');
           next(ctrl);
-        }
+        },
       );
     }
     log(current, 'current');
@@ -320,7 +325,6 @@
     $config,
     $configPanel,
     doc = document,
-    $win = $(window),
     comicId = gallery.id,
     comicName = gallery.title[outputName] || gallery.title['english'],
     zipName = `${comicName
@@ -329,7 +333,6 @@
       .replace(/・/g, '·')}.${comicId}.${outputExt}`,
     readableStream,
     writableStream,
-    writer,
     inProgress = false;
 
   if (!$_download.length) return;
@@ -358,14 +361,7 @@
     if (threading > 16) threading = 16;
 
     doc.title = `[⇣] ${comicName}`;
-    $win
-      .on('beforeunload', (e) => {
-        e.originalEvent.returnValue = 'Progress is running...';
-      })
-      .on('unload', () => {
-        if (writableStream) writableStream.abort();
-        if (writer) writer.abort();
-      });
+    window.addEventListener('beforeunload', beforeleaving);
 
     $download
       .html('<i class="fa fa-spinner fa-spin"></i> <strong>Waiting...</strong>')

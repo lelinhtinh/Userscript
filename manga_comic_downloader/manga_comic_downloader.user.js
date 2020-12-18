@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.11.12
+// @version         2.11.13
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -320,9 +320,14 @@ jQuery(function ($) {
       });
   }
 
+  function beforeleaving(e) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+
   function cancelProgress() {
     linkError();
-    $win.off('beforeunload');
+    window.removeEventListener('beforeunload', beforeleaving);
   }
 
   function notyError() {
@@ -351,10 +356,7 @@ jQuery(function ($) {
     addZip();
 
     noty('Bắt đầu tải <strong>' + chapName + '</strong>', 'warning');
-
-    $win.on('beforeunload', function () {
-      return 'Progress is running...';
-    });
+    window.addEventListener('beforeunload', beforeleaving);
   }
 
   function notyWait() {
@@ -510,7 +512,7 @@ jQuery(function ($) {
           );
           linkSuccess();
 
-          $win.off('beforeunload');
+          window.removeEventListener('beforeunload', beforeleaving);
           saveAs(blob, zipName);
 
           document.title = '[⇓] ' + tit;
@@ -1600,7 +1602,6 @@ jQuery(function ($) {
     notyTimeout,
     domainName = location.host,
     tit = document.title,
-    $win = $(window),
     $doc = $(document),
     dlZip = new JSZip(), // TODO: https://github.com/101arrowz/fflate
     dlPrevZip = false,

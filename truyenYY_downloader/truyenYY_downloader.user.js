@@ -4,7 +4,7 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenYY định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenYY định dạng EPUB.
-// @version         4.8.5
+// @version         4.8.6
 // @icon            https://i.imgur.com/1HkQv2b.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -118,6 +118,11 @@
     });
   }
 
+  function beforeleaving(e) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+
   function genEbook() {
     jepub
       .generate('blob', function (metadata) {
@@ -127,7 +132,7 @@
       })
       .then(function (epubZipContent) {
         document.title = '[⇓] ' + ebookTitle;
-        $win.off('beforeunload');
+        window.removeEventListener('beforeunload', beforeleaving);
 
         $download
           .attr({
@@ -265,7 +270,6 @@
   if (/\/(danh-sach-chuong|binh-luan|ung-ho|de-cu(\/add)?|kim-phieu|van-de|fans|nhan-vat)\/?$/i.test(pathname)) return;
 
   var pageName = document.title,
-    $win = $(window),
     $download = $('<a></a>', {
       href: '#download',
       class: 'btn btn-warning',
@@ -339,9 +343,7 @@
       $download.off('contextmenu');
     }
 
-    $win.on('beforeunload', function () {
-      return 'Truyện đang được tải xuống...';
-    });
+    window.removeEventListener('beforeunload', beforeleaving);
 
     $download.one('click', function (e) {
       e.preventDefault();
