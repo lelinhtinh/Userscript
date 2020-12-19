@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         2.11.13
+// @version         3.0.0
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -62,7 +62,7 @@
 // @match           https://hoitruyentranh.com/*
 // @match           https://truyenvn.com/*
 // @require         https://code.jquery.com/jquery-3.5.1.min.js
-// @require         https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
+// @require         https://unpkg.com/fflate@0.4.2/umd/index.js
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @require         https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js
@@ -78,6 +78,7 @@
 // @grant           GM_registerMenuCommand
 // ==/UserScript==
 
+/* global fflate */
 window._URL = window.URL || window.webkitURL;
 
 jQuery(function ($) {
@@ -460,8 +461,8 @@ jQuery(function ($) {
 
   function endZip() {
     if (!inMerge) {
-      dlZip = new JSZip();
-      dlPrevZip = false;
+      zipObj = {};
+      recentZip = null;
     }
 
     dlCurrent = 0;
@@ -485,26 +486,29 @@ jQuery(function ($) {
   function genZip() {
     noty('Tạo file nén của <strong>' + chapName + '</strong>', 'warning');
 
-    dlZip
-      .generateAsync(
-        {
-          type: 'blob',
-          compression: 'STORE',
-        },
-        function updateCallback(metadata) {
-          noty('Đang nén file <strong>' + metadata.percent.toFixed(2) + '%</strong>', 'warning');
-        },
-      )
-      .then(
-        function (blob) {
+    fflate.zip(
+      zipObj,
+      {
+        level: 6,
+        mtime: 0,
+      },
+      function (err, out) {
+        if (err) {
+          noty('Lỗi tạo file nén của <strong>' + chapName + '</strong>', 'error');
+          cancelProgress();
+
+          document.title = '[x] ' + tit;
+          endZip();
+        } else {
+          var blob = new Blob([out]);
           var zipName = genFileName() + '.' + outputExt;
 
-          if (dlPrevZip) URL.revokeObjectURL(dlPrevZip);
-          dlPrevZip = blob;
+          if (recentZip) URL.revokeObjectURL(recentZip);
+          recentZip = blob;
 
           noty(
             '<a href="' +
-              URL.createObjectURL(dlPrevZip) +
+              URL.createObjectURL(recentZip) +
               '" download="' +
               zipName +
               '"><strong>Click vào đây</strong></a> nếu trình duyệt không tự tải xuống',
@@ -517,15 +521,9 @@ jQuery(function ($) {
 
           document.title = '[⇓] ' + tit;
           endZip();
-        },
-        function () {
-          noty('Lỗi tạo file nén của <strong>' + chapName + '</strong>', 'error');
-          cancelProgress();
-
-          document.title = '[x] ' + tit;
-          endZip();
-        },
-      );
+        }
+      },
+    );
   }
 
   /* global CryptoJS, chapterHTML */
@@ -784,12 +782,22 @@ jQuery(function ($) {
       dlImg(
         dlCurrent,
         function (response, filename) {
-          dlZip.file(path + filename, response.response);
+          zipObj[filename] = [
+            new Uint8Array(response.response),
+            {
+              level: 0,
+            },
+          ];
 
           next();
         },
         function (err, filename) {
-          dlZip.file(path + filename + '_error.txt', err.statusText + '\r\n' + err.finalUrl);
+          zipObj[path + filename + '_error.txt'] = [
+            fflate.strToU8(err.statusText + '\r\n' + err.finalUrl),
+            {
+              level: 6,
+            },
+          ];
 
           noty(err.statusText, 'error');
           linkError();
@@ -1603,8 +1611,8 @@ jQuery(function ($) {
     domainName = location.host,
     tit = document.title,
     $doc = $(document),
-    dlZip = new JSZip(), // TODO: https://github.com/101arrowz/fflate
-    dlPrevZip = false,
+    zipObj = {},
+    recentZip = null,
     dlCurrent = 0,
     dlFinal = 0,
     dlTotal = 0,
