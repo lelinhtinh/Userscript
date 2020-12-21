@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Block all ads in Facebook News Feed.
 // @description:vi  Chặn quảng cáo được tài trợ trên trang chủ Facebook.
-// @version         1.3.0
+// @version         1.3.1
 // @icon            https://i.imgur.com/F8ai0jB.png
 // @author          lelinhtinh
 // @oujs:author     baivong
@@ -21,28 +21,38 @@
   'use strict';
 
   let adsCount = 0;
-  let labelStore = [];
+  let labelStore = null;
   let observerLabel;
   let observerStory;
   let observerHead;
   let isWatch;
 
+  const removeAd = (adsLabel) => {
+    const adsWrap = adsLabel.closest(isWatch ? 'div:not([class*=" "])' : '[data-pagelet^="FeedUnit"]');
+    // adsWrap.style.opacity = 0.1;
+    adsWrap.remove();
+    console.log(++adsCount, 'adsCount');
+  };
+
   const findAds = (wrapper) => {
-    function removeAds() {
-      if (!labelStore.length) return;
-      const labelId = labelStore.pop();
+    function pickAds() {
+      if (labelStore instanceof Array) {
+        if (!labelStore.length) return;
+        const labelId = labelStore.pop();
 
-      const adsLabel = wrapper.querySelector('span[aria-labelledby="' + labelId + '"][class]');
-      if (adsLabel === null) return;
+        const adsLabel = wrapper.querySelector('span[aria-labelledby="' + labelId + '"][class]');
+        if (adsLabel === null) return;
 
-      const adsWrap = adsLabel.closest(isWatch ? 'div:not([class*=" "])' : '[data-pagelet^="FeedUnit"]');
-      adsWrap.remove();
-      // adsWrap.style.opacity = 0.1;
+        removeAd(adsLabel);
+        pickAds();
+      } else {
+        const adsLabels = wrapper.querySelectorAll('a[aria-label="Sponsored"], a[aria-label="Được tài trợ"]');
+        if (!adsLabels.length) return;
 
-      console.log(++adsCount, 'adsCount');
-      removeAds();
+        adsLabels.forEach(removeAd);
+      }
     }
-    removeAds();
+    pickAds();
 
     const watchLabel = (labelHidden) => {
       if (observerLabel) return;
@@ -54,7 +64,7 @@
             /(Được\s+tài\s+trợ|Sponsored)/i.test(mutation.target.textContent.trim())
           ) {
             labelStore.push(mutation.target.id);
-            removeAds();
+            pickAds();
           }
         }
       });
@@ -67,11 +77,13 @@
 
     const labelHidden = document.querySelector('[hidden="true"]');
     if (labelHidden === null) {
+      labelStore = null;
       if (observerLabel) {
         observerLabel.disconnect();
         observerLabel = null;
       }
     } else {
+      labelStore = [];
       watchLabel(labelHidden);
     }
   };
