@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.0.0
+// @version         3.0.1
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -418,19 +418,20 @@ jQuery(function ($) {
 
           dlAll.push(_link);
 
+          var color = e.shiftKey ? 'violet' : 'purple';
           $(targetLink('[href="' + _link + '"]')).css({
-            color: 'violet',
+            color: color,
             textDecoration: 'overline',
-            textShadow: '0 0 1px violet, 0 0 1px violet, 0 0 1px violet',
+            textShadow: '0 0 1px ' + color + ', 0 0 1px ' + color + ', 0 0 1px ' + color,
           });
         }
       })
       .on('keyup', function (e) {
-        if (e.which === 17 || e.which === 16) {
+        if (e.key === 'Control' || e.key === 'Shift') {
           e.preventDefault();
 
           if (dlAll.length && inCustom) {
-            if (e.which === 16) inMerge = true;
+            if (e.key === 'Shift') inMerge = true;
             downloadAll();
           }
         }
@@ -462,6 +463,7 @@ jQuery(function ($) {
   function endZip() {
     if (!inMerge) {
       zipObj = {};
+      if (recentZip) URL.revokeObjectURL(recentZip);
       recentZip = null;
     }
 
@@ -782,7 +784,7 @@ jQuery(function ($) {
       dlImg(
         dlCurrent,
         function (response, filename) {
-          zipObj[filename] = [
+          zipObj[path + filename] = [
             new Uint8Array(response.response),
             {
               level: 0,
@@ -1628,7 +1630,7 @@ jQuery(function ($) {
   GM_registerMenuCommand('Download All To One File', downloadAllOne);
 
   $doc.on('keydown', function (e) {
-    if (e.which === 89 && e.altKey) {
+    if (e.code === 'KeyY' && e.altKey) {
       // Alt+Y
       e.preventDefault();
       e.shiftKey ? downloadAllOne() : downloadAll();
