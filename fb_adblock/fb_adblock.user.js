@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Block all ads in Facebook News Feed.
 // @description:vi  Chặn quảng cáo được tài trợ trên trang chủ Facebook.
-// @version         1.3.1
+// @version         1.3.2
 // @icon            https://i.imgur.com/F8ai0jB.png
 // @author          lelinhtinh
 // @oujs:author     baivong
@@ -25,10 +25,9 @@
   let observerLabel;
   let observerStory;
   let observerHead;
-  let isWatch;
 
   const removeAd = (adsLabel) => {
-    const adsWrap = adsLabel.closest(isWatch ? 'div:not([class*=" "])' : '[data-pagelet^="FeedUnit"]');
+    const adsWrap = adsLabel.closest(location.pathname.startsWith('/watch') ? '._6x84' : '[data-pagelet^="FeedUnit"]');
     // adsWrap.style.opacity = 0.1;
     adsWrap.remove();
     console.log(++adsCount, 'adsCount');
@@ -89,7 +88,6 @@
   };
 
   const init = () => {
-    isWatch = location.pathname === '/watch';
     const newsFeed = document.querySelector('[role="feed"], [data-pagelet="MainFeed"]');
     if (newsFeed === null) return;
 
