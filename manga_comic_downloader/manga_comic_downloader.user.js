@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.0.1
+// @version         3.0.2
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -1688,8 +1688,7 @@ jQuery(function ($) {
         name: function (_this) {
           return $('.detail h4').text().trim() + ' ' + $(_this).find('.titleComic').text().trim();
         },
-        contents: '#lightgallery',
-        imgSrc: 'data-src',
+        contents: '#lightgallery2',
       };
       break;
     case 'hamtruyen.com':
