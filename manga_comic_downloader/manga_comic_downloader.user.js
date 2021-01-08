@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.0.2
+// @version         3.1.0
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -61,6 +61,9 @@
 // @match           https://hoihentai.com/*
 // @match           https://hoitruyentranh.com/*
 // @match           https://truyenvn.com/*
+// @match           https://*.saytruyen.net/*
+// @match           https://*.saytruyen.com/*
+// @match           https://*.sayhentai.net/*
 // @require         https://code.jquery.com/jquery-3.5.1.min.js
 // @require         https://unpkg.com/fflate@0.4.2/umd/index.js
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
@@ -1946,6 +1949,18 @@ jQuery(function ($) {
           return $('h1.name').text().trim() + ' ' + $(_this).find('span:first').text().trim();
         },
         init: getTruyenVn,
+      };
+      break;
+    case 'saytruyen.net':
+    case 'www.saytruyen.net':
+    case 'saytruyen.com':
+    case 'www.saytruyen.com':
+    case 'sayhentai.net':
+    case 'www.sayhentai.net':
+      configs = {
+        link: '#list-chapter a',
+        name: 'h1.title',
+        contents: '#lst_content',
       };
       break;
     default:
