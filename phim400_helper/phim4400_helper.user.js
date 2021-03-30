@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Xem online và tải phim trực tiếp tại Phim4400, bỏ qua quảng cáo.
 // @description:vi  Xem online và tải phim trực tiếp tại Phim4400, bỏ qua quảng cáo.
-// @version         1.3.0
+// @version         1.3.1
 // @icon            https://i.imgur.com/wRRkkqr.png
 // @author          lelinhtinh
 // @oujs:author     baivong
@@ -12,6 +12,7 @@
 // @match           https://phim440.cf/*
 // @match           https://phim4400.cf/*
 // @match           https://phim4400.tv/*
+// @match           https://xemphimnao.com/*
 // @require         https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
@@ -73,7 +74,7 @@
         `
           height: 450px;
           width: 100%;
-        `
+        `,
       );
       $video.addEventListener('error', () => {
         $content.innerHTML = `
@@ -204,7 +205,7 @@
       border: 1px solid #6fb429;
       border-top: 0px solid #0000;
       box-sizing: border-box;
-    `
+    `,
   );
   $contents.appendChild($content);
 
