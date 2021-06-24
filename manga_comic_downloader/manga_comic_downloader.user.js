@@ -4,7 +4,7 @@
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
 // @description:vi  Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.1.0
+// @version         3.1.1
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -43,6 +43,12 @@
 // @match           https://ngonphongcomics.com/*
 // @match           https://*.nettruyen.com/*
 // @match           http://*.nettruyen.com/*
+// @match           https://*.nettruyentop.com/*
+// @match           http://*.nettruyentop.com/*
+// @match           http://*.nettruyenonline.com/*
+// @match           https://*.nettruyenonline.com/*
+// @match           http://*.nettruyenapp.com/*
+// @match           https://*.nettruyenapp.com/*
 // @match           http://nhattruyen.com/*
 // @match           http://*.hamtruyentranh.net/*
 // @match           https://ttmanga.com/*
@@ -64,9 +70,9 @@
 // @match           https://*.saytruyen.net/*
 // @match           https://*.saytruyen.com/*
 // @match           https://*.sayhentai.net/*
-// @require         https://code.jquery.com/jquery-3.5.1.min.js
-// @require         https://unpkg.com/fflate@0.4.2/umd/index.js
-// @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
+// @require         https://code.jquery.com/jquery-3.6.0.min.js
+// @require         https://unpkg.com/fflate@0.4.8/umd/index.js
+// @require         https://unpkg.com/file-saver@2.0.4/dist/FileSaver.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @require         https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js
 // @require         https://cdn.jsdelivr.net/npm/selector-set@1.1.5/selector-set.js
@@ -544,7 +550,9 @@ jQuery(function ($) {
       keySize: 64 / 8,
       iterations: 999,
     });
-    var decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: iv });
+    var decrypted = CryptoJS.AES.decrypt(encrypted, key, {
+      iv: iv,
+    });
     return decrypted.toString(CryptoJS.enc.Utf8);
   }
 
@@ -553,6 +561,7 @@ jQuery(function ($) {
       var i = this;
       return i.replace(new RegExp(n, 'g'), t);
     };
+
     function encode(n) {
       return n.indexOf('%3A') > 0 || n.indexOf('%2F') > 0 ? n : encodeURIComponent(n);
     }
@@ -646,16 +655,16 @@ jQuery(function ($) {
           url.indexOf('chancanvas') > 0 ||
           url.indexOf('ff.cdnimg.club') > 0 ||
           url.indexOf('bato.to') > 0
-          ? url.indexOf('googleusercontent') < 0 &&
+        ? url.indexOf('googleusercontent') < 0 &&
           url.indexOf('otakusan') < 0 &&
           url.indexOf('otakuscan') < 0 &&
           url.indexOf('shopotaku') < 0 &&
           (url =
             'https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=' +
             encode(url))
-          : url.indexOf('imageinstant.com') > 0
-            ? (url = 'https://images.weserv.nl/?url=' + encode(url))
-            : url.indexOf('hiperdex') > 0 && level > 1 && (url = 'loading error page'),
+        : url.indexOf('imageinstant.com') > 0
+        ? (url = 'https://images.weserv.nl/?url=' + encode(url))
+        : url.indexOf('hiperdex') > 0 && level > 1 && (url = 'loading error page'),
       (pattern = /http:\/[^/]/g),
       (matched = pattern.exec(url)),
       matched != null && matched.length > 0 && (url = url.replace('http:/', 'http://')),
@@ -1146,20 +1155,37 @@ jQuery(function ($) {
       if (!$entry.length) {
         notyImages();
       } else {
-        $data = $entry.text().match(/var\s+slides_page_path\s*=\s*(.+?);/)[1];
+        $data = $entry.text().match(/var\s+slides_page_url_path\s*=\s*(.+?);/)[1];
         $data = JSON.parse($data);
 
-        var slides_page = $data,
-          length_chapter = slides_page.length - 1;
+        var type_server = 1;
+        var number = 0;
+        var slides_page;
+        var slides_page_path = [];
+        var use_server_gg = true;
+        var slides_page_url_path = $data;
 
-        for (var i = 0; i < length_chapter; i++) {
-          for (var j = i + 1; j < slides_page.length; j++) {
-            if (slides_page[j] < slides_page[i]) {
-              var temp = slides_page[j];
-              slides_page[j] = slides_page[i];
-              slides_page[i] = temp;
-            }
-          }
+        if (slides_page_url_path.length > 0) {
+          type_server = 2;
+        } else {
+          type_server = 1;
+        }
+
+        if (!use_server_gg) {
+          type_server = 1;
+        }
+        if (type_server != 1) {
+          slides_page = slides_page_url_path;
+        } else {
+          slides_page = slides_page_path;
+          length_chapter = slides_page.length - 1;
+          for (i = 0; i < length_chapter; i++)
+            for (j = i + 1; j < slides_page.length; j++)
+              if (slides_page[j] < slides_page[i]) {
+                temp = slides_page[j];
+                slides_page[j] = slides_page[i];
+                slides_page[i] = temp;
+              }
         }
 
         checkImages(slides_page);
@@ -1691,7 +1717,8 @@ jQuery(function ($) {
         name: function (_this) {
           return $('.detail h4').text().trim() + ' ' + $(_this).find('.titleComic').text().trim();
         },
-        contents: '#lightgallery2',
+        contents: '#lightgallery',
+        imgSrc: 'data-src',
       };
       break;
     case 'hamtruyen.com':
@@ -1821,6 +1848,7 @@ jQuery(function ($) {
       break;
     case 'www.nettruyen.com':
     case 'nhattruyen.com':
+    case 'www.nettruyenapp.com':
       configs = {
         link: '#nt_listchapter .chapter a',
         name: '.title-detail',
@@ -1828,6 +1856,15 @@ jQuery(function ($) {
         imgSrc: 'data-original',
       };
       break;
+    case 'www.nettruyentop.com':
+    case 'www.nettruyenonline.com':
+      configs = {
+        link: '#nt_listchapter .chapter a',
+        name: '.title-detail',
+        contents: '.readimg,.reading-detail.box_doc',
+      };
+      break;
+
     case 'www.hamtruyentranh.net':
       configs = {
         link: '#examples a',
