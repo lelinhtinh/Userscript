@@ -4,7 +4,7 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenYY định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenYY định dạng EPUB.
-// @version         4.8.7
+// @version         4.9.0
 // @icon            https://i.imgur.com/1HkQv2b.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -12,10 +12,10 @@
 // @match           https://truyenyy.com/truyen/*/
 // @match           https://truyenyy.vn/truyen/*/
 // @match           https://truyenyy.vip/truyen/*/
-// @require         https://code.jquery.com/jquery-3.5.1.min.js
+// @require         https://code.jquery.com/jquery-3.6.0.min.js
 // @require         https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
-// @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
-// @require         https://unpkg.com/ejs@2.7.4/ejs.min.js
+// @require         https://unpkg.com/file-saver@2.0.4/dist/FileSaver.min.js
+// @require         https://unpkg.com/ejs@3.1.6/ejs.min.js
 // @require         https://unpkg.com/jepub@2.1.4/dist/jepub.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
@@ -79,43 +79,51 @@
   }
 
   function downloadVip($chapter) {
-    var script = $chapter.find('#vip-content-placeholder').siblings('script').first().text(),
-      url = script.match(/var\s+url\s*=\s*("|')([^'"]+?)("|')/i)[2],
-      parts = script.match(/(?<=\(url\s*\+\s*("|'))(\d+)(?=("|')\))/gi);
+    var $recaptcha = $chapter.find('script[src^="https://www.google.com/recaptcha/api.js"]'),
+      recaptchaUrl = $recaptcha.attr('src'),
+      script = $recaptcha.next('script').text(),
+      widgetId = script.match(/grecaptcha\.execute\(("|')([^\1]+?)?\1/i)[2],
+      url = script.match(/var\s+url\s*=\s*("|')([^\1]+?)(\1)/i)[2],
+      vipContent = '';
 
     return new Promise(function (resolve, reject) {
-      if (!parts.length) {
-        reject('Lỗi truy vấn chương VIP');
-        return;
-      }
+      /* global grecaptcha */
+      $.getScript(recaptchaUrl).done(function () {
+        grecaptcha.ready(function () {
+          grecaptcha.execute(widgetId, { action: 'validate_captcha' }).then(function (token) {
+            $.get(url + '0' + '&grc=' + token).done(function (data) {
+              if (data.ok) {
+                vipContent += data.content;
+                $.get(url + '1').done(function (data) {
+                  if (data.ok) {
+                    vipContent += data.content;
+                    $.get(url + '2').done(function (data) {
+                      if (data.ok) {
+                        vipContent += data.content;
 
-      var vipContent = '';
-      (function getVipContent() {
-        if (!parts.length) {
-          resolve(vipContent);
-          return;
-        }
-
-        var partUrl = url + parts.shift();
-        $.getJSON(partUrl)
-          .done(function (data) {
-            var content = data.content;
-            if (!data.ok || !content) {
-              reject('Lỗi lấy nội dung chương VIP');
-              return;
-            }
-
-            content = content.replace(/<(?!\d)[a-z_\d$]*\s+style=.+?<\/(?!\d)[a-z_\d$]*>/g, '');
-            content = content.replace(/<style>.+?<\/style>/g, '');
-            content = content.replace(/<\/?([^p]|[^/\\>]{2,})\/?>/g, '');
-
-            vipContent += content;
-            getVipContent();
-          })
-          .fail(function () {
-            reject('Lỗi kết nối chương VIP');
+                        vipContent = vipContent.replace(/<(?!\d)[a-z_\d$]*\s+style=.+?<\/(?!\d)[a-z_\d$]*>/g, '');
+                        vipContent = vipContent.replace(/<style>.+?<\/style>/g, '');
+                        vipContent = vipContent.replace(/<\/?([^p]|[^/\\>]{2,})\/?>/g, '');
+                        resolve(vipContent);
+                      } else {
+                        reject('Lỗi lấy nội dung chương VIP (2)');
+                      }
+                    });
+                  } else {
+                    reject('Lỗi lấy nội dung chương VIP (1)');
+                  }
+                });
+              } else {
+                if (data.msg) {
+                  reject(data.msg);
+                } else {
+                  reject('Lỗi lấy nội dung chương VIP');
+                }
+              }
+            });
           });
-      })();
+        });
+      });
     });
   }
 
