@@ -4,7 +4,7 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenYY định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenYY định dạng EPUB.
-// @version         4.9.0
+// @version         4.9.1
 // @icon            https://i.imgur.com/1HkQv2b.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -79,51 +79,61 @@
   }
 
   function downloadVip($chapter) {
-    var $recaptcha = $chapter.find('script[src^="https://www.google.com/recaptcha/api.js"]'),
-      recaptchaUrl = $recaptcha.attr('src'),
-      script = $recaptcha.next('script').text(),
-      widgetId = script.match(/grecaptcha\.execute\(("|')([^\1]+?)?\1/i)[2],
-      url = script.match(/var\s+url\s*=\s*("|')([^\1]+?)(\1)/i)[2],
-      vipContent = '';
-
     return new Promise(function (resolve, reject) {
-      /* global grecaptcha */
-      $.getScript(recaptchaUrl).done(function () {
-        grecaptcha.ready(function () {
-          grecaptcha.execute(widgetId, { action: 'validate_captcha' }).then(function (token) {
-            $.get(url + '0' + '&grc=' + token).done(function (data) {
+      var $recaptcha = $chapter.find('script[src^="https://www.google.com/recaptcha/api.js"]'),
+        vipScript = $chapter.find('#vip-content-placeholder-2').next('script').text(),
+        vipUrl = vipScript.match(/var\s+url\s*=\s*("|')([^\1]+?)(\1)/i)[2],
+        vipContent = '';
+
+      var getVipContent = function (token) {
+        $.get(vipUrl + '0' + '&grc=' + token).done(function (data) {
+          if (data.ok) {
+            vipContent += data.content;
+            $.get(vipUrl + '1').done(function (data) {
               if (data.ok) {
                 vipContent += data.content;
-                $.get(url + '1').done(function (data) {
+                $.get(vipUrl + '2').done(function (data) {
                   if (data.ok) {
                     vipContent += data.content;
-                    $.get(url + '2').done(function (data) {
-                      if (data.ok) {
-                        vipContent += data.content;
 
-                        vipContent = vipContent.replace(/<(?!\d)[a-z_\d$]*\s+style=.+?<\/(?!\d)[a-z_\d$]*>/g, '');
-                        vipContent = vipContent.replace(/<style>.+?<\/style>/g, '');
-                        vipContent = vipContent.replace(/<\/?([^p]|[^/\\>]{2,})\/?>/g, '');
-                        resolve(vipContent);
-                      } else {
-                        reject('Lỗi lấy nội dung chương VIP (2)');
-                      }
-                    });
+                    vipContent = vipContent.replace(/<(?!\d)[a-z_\d$]*\s+style=.+?<\/(?!\d)[a-z_\d$]*>/g, '');
+                    vipContent = vipContent.replace(/<style>.+?<\/style>/g, '');
+                    vipContent = vipContent.replace(/<\/?([^p]|[^/\\>]{2,})\/?>/g, '');
+                    resolve(vipContent);
                   } else {
-                    reject('Lỗi lấy nội dung chương VIP (1)');
+                    reject('Lỗi lấy nội dung chương VIP (2)');
                   }
                 });
               } else {
-                if (data.msg) {
-                  reject(data.msg);
-                } else {
-                  reject('Lỗi lấy nội dung chương VIP');
-                }
+                reject('Lỗi lấy nội dung chương VIP (1)');
               }
+            });
+          } else {
+            if (data.msg) {
+              reject(data.msg);
+            } else {
+              reject('Lỗi lấy nội dung chương VIP');
+            }
+          }
+        });
+      };
+
+      if ($recaptcha.length) {
+        var recaptchaUrl = $recaptcha.attr('src'),
+          recaptchaScript = $recaptcha.next('script').text(),
+          widgetId = recaptchaScript.match(/grecaptcha\.execute\(("|')([^\1]+?)?\1/i)[2];
+
+        $.getScript(recaptchaUrl).done(function () {
+          /* global grecaptcha */
+          grecaptcha.ready(function () {
+            grecaptcha.execute(widgetId, { action: 'validate_captcha' }).then(function (token) {
+              getVipContent(token);
             });
           });
         });
-      });
+      } else {
+        getVipContent('');
+      }
     });
   }
 
