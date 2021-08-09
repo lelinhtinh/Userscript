@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.1.2
+// @version         3.1.4
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -16,6 +16,7 @@
 // @match           https://*.truyentranh.net/*
 // @match           https://comicvn.net/*
 // @match           https://beeng.net/*
+// @match           https://beeng.org/*
 // @match           https://*.hamtruyen.com/*
 // @match           https://ntruyen.info/*
 // @match           https://*.a3manga.com/*
@@ -57,6 +58,7 @@
 // @match           https://truyensieuhay.com/*
 // @match           http://truyenchon.com/*
 // @match           http://truyenqq.com/*
+// @match           http://truyenqq.net/*
 // @match           https://sachvui.com/*
 // @match           https://hentaicube.net/*
 // @match           http://*.tuthienbao.com/*
@@ -140,11 +142,13 @@ jQuery(function ($) {
     'mangaqq.net',
     'mangaqq.com',
     'truyenqq.net',
+    'truyenqq.com',
     '.upanhmoi.net',
     'qqtaku.com',
     'qqtaku.net',
     'trangshop.net',
     '.beeng.net',
+    '.beeng.org',
     'forumnt.com',
     'hoitruyentranh.com',
     'hoihentai.com',
@@ -185,7 +189,7 @@ jQuery(function ($) {
     'www.ocumeo.com': 'https://www.a3manga.com/',
     'mangaqq.net': 'http://truyenqq.com/',
     'mangaqq.com': 'http://truyenqq.com/',
-    'truyenqq.net': 'http://truyenqq.com/',
+    'truyenqq.net': 'http://truyenqq.net/',
     'i02.hentaivn.net': 'https://hentaivn.net/',
     'i1.hentaivn.net': 'https://hentaivn.net/',
   };
@@ -1710,13 +1714,13 @@ jQuery(function ($) {
       break;
     case 'comicvn.net':
     case 'beeng.net':
+    case 'beeng.org':
       configs = {
         link: '#scrollbar a',
         name: function (_this) {
-          return $('.detail h4').text().trim() + ' ' + $(_this).find('.titleComic').text().trim();
+          return $('.detailComic h1').text().trim() + ' ' + $(_this).find('.titleComic').text().trim();
         },
-        contents: '#lightgallery',
-        imgSrc: 'data-src',
+        contents: '#lightgallery2',
       };
       break;
     case 'hamtruyen.com':
@@ -1920,6 +1924,7 @@ jQuery(function ($) {
       };
       break;
     case 'truyenqq.com':
+    case 'truyenqq.net':
       configs = {
         link: '.works-chapter-list a',
         name: 'h1',

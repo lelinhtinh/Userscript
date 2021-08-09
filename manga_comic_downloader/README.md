@@ -32,7 +32,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 1. <http://truyentranh8.com/>, <http://truyentranh8.net/>, <http://truyentranh8.org/>, <http://truyentranhtam.com/>, <http://truyentranh869.com/>, <http://truyentranh86.com/>
 1. <http://iutruyentranh.com/>
 1. <https://truyentranh.net/>
-1. <https://comicvn.net/>, <https://beeng.net/>
+1. <https://comicvn.net/>, <https://beeng.net/>, <https://beeng.org/>
 1. <https://hamtruyen.com/>
 1. <https://ntruyen.info/>
 1. <https://www.a3manga.com/>
@@ -54,7 +54,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 1. <https://blogtruyen.com/>, <https://blogtruyen.vn/>, <https://blogtruyen.top/>
 1. <https://truyensieuhay.com/>
 1. <http://truyenchon.com/>
-1. <http://truyenqq.com/>
+1. <http://truyenqq.com/>, <http://truyenqq.net/>
 1. <https://sachvui.com/the-loai/doc-truyen-tranh-online.html>
 1. <https://hentaicube.net/>
 1. <http://tuthienbao.com/>
