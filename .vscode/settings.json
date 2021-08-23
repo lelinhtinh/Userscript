@@ -89,6 +89,7 @@
     "sachvui",
     "shopotaku",
     "tentruyen",
+    "thach",
     "trangshop",
     "truyen",
     "truyenchon",
@@ -112,7 +113,8 @@
     "vietcomic",
     "vnsharing",
     "vnvl",
-    "vungdoc"
+    "vungdoc",
+    "weui"
   ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true

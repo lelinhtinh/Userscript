@@ -4,7 +4,7 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenYY định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenYY định dạng EPUB.
-// @version         4.9.1
+// @version         4.10.0
 // @icon            https://i.imgur.com/1HkQv2b.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -80,9 +80,9 @@
 
   function downloadVip($chapter) {
     return new Promise(function (resolve, reject) {
-      var $recaptcha = $chapter.find('script[src^="https://www.google.com/recaptcha/api.js"]'),
-        vipScript = $chapter.find('#vip-content-placeholder-2').next('script').text(),
-        vipUrl = vipScript.match(/var\s+url\s*=\s*("|')([^\1]+?)(\1)/i)[2],
+      var $recaptcha = $chapter.siblings('script[src^="https://www.google.com/recaptcha/api.js"]'),
+        vipScript = $chapter.next('script').text(),
+        vipUrl = vipScript.match(/const\s+url\s*=\s*("|')([^\1]+?)(\1)/i)[2],
         vipContent = '';
 
       var getVipContent = function (token) {
@@ -210,13 +210,13 @@
     $.get(pathname + chapId)
       .done(function (response) {
         var $data = $(response),
-          $chapter = $data.find('#id_chap_content'),
+          $chapter = $data.find('#inner_chap_content_1'),
           $notContent = $chapter.find('iframe, script, style, a'),
           $referrer = $chapter.find('[style]').filter(function () {
             return this.style.fontSize === '1px' || this.style.fontSize === '0px' || this.style.color === 'white';
           }),
           chapContent,
-          $next = $data.find('.buttons .btn-primary');
+          $next = $data.find('.weui-btn.weui-btn_primary');
 
         if (endDownload) return;
 
@@ -224,13 +224,15 @@
         if (chapTitle === '') chapTitle = 'Chương ' + chapId.match(/\d+/)[0];
 
         if (!$chapter.length) {
-          chapContent = downloadError('Không có nội dung');
-        } else {
-          if ($chapter.find('#btn_buy').length) {
+          if ($data.find('.chapter a[href="/page/tu-linh-thach/"]').length) {
             chapContent = downloadError('Chương VIP');
-          } else if ($chapter.find('a[href="/register/"]').length) {
+          } else if ($data.find('.chapter a[href="/register/"]').length) {
             chapContent = downloadError('Chương yêu cầu đăng nhập');
-          } else if ($chapter.find('#vip-content-placeholder').length) {
+          } else {
+            chapContent = downloadError('Không có nội dung');
+          }
+        } else {
+          if ($chapter.find('#vip-content-placeholder').length) {
             downloadVip($chapter)
               .then(function (chapContent) {
                 handle(cleanHtml(chapContent), $next);
@@ -253,7 +255,7 @@
               chapContent = downloadError('Nội dung không có');
             } else {
               if (!$download.hasClass('btn-danger')) downloadStatus('warning');
-              chapContent = cleanHtml($chapter.find('.inner').html());
+              chapContent = cleanHtml($chapter.html());
             }
           }
         }
