@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.1.4
+// @version         3.1.5
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -48,6 +48,8 @@
 // @match           https://*.nettruyenonline.com/*
 // @match           http://*.nettruyenapp.com/*
 // @match           https://*.nettruyenapp.com/*
+// @match           http://*.nettruyenpro.com/*
+// @match           https://*.nettruyenpro.com/*
 // @match           http://nhattruyen.com/*
 // @match           http://*.hamtruyentranh.net/*
 // @match           https://ttmanga.com/*
@@ -59,6 +61,7 @@
 // @match           http://truyenchon.com/*
 // @match           http://truyenqq.com/*
 // @match           http://truyenqq.net/*
+// @match           http://truyenqqtop.com/*
 // @match           https://sachvui.com/*
 // @match           https://hentaicube.net/*
 // @match           http://*.tuthienbao.com/*
@@ -143,6 +146,7 @@ jQuery(function ($) {
     'mangaqq.com',
     'truyenqq.net',
     'truyenqq.com',
+    'truyenqqtop.com',
     '.upanhmoi.net',
     'qqtaku.com',
     'qqtaku.net',
@@ -154,6 +158,8 @@ jQuery(function ($) {
     'hoihentai.com',
     'i02.hentaivn.net',
     'truyentop1.com',
+    'anhnhanh.org',
+    'truyenvua.xyz',
   ];
 
   /**
@@ -187,9 +193,10 @@ jQuery(function ($) {
     'storage.fshare.vn': 'https://truyentranh.net',
     'ocumeo.com': 'https://www.a3manga.com/',
     'www.ocumeo.com': 'https://www.a3manga.com/',
-    'mangaqq.net': 'http://truyenqq.com/',
-    'mangaqq.com': 'http://truyenqq.com/',
-    'truyenqq.net': 'http://truyenqq.net/',
+    'mangaqq.net': 'http://truyenqqtop.com/',
+    'mangaqq.com': 'http://truyenqqtop.com/',
+    'truyenqq.net': 'http://truyenqqtop.com/',
+    'truyenvua.xyz': 'http://truyenqqtop.com/',
     'i02.hentaivn.net': 'https://hentaivn.net/',
     'i1.hentaivn.net': 'https://hentaivn.net/',
   };
@@ -657,16 +664,16 @@ jQuery(function ($) {
           url.indexOf('chancanvas') > 0 ||
           url.indexOf('ff.cdnimg.club') > 0 ||
           url.indexOf('bato.to') > 0
-        ? url.indexOf('googleusercontent') < 0 &&
+          ? url.indexOf('googleusercontent') < 0 &&
           url.indexOf('otakusan') < 0 &&
           url.indexOf('otakuscan') < 0 &&
           url.indexOf('shopotaku') < 0 &&
           (url =
             'https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=' +
             encode(url))
-        : url.indexOf('imageinstant.com') > 0
-        ? (url = 'https://images.weserv.nl/?url=' + encode(url))
-        : url.indexOf('hiperdex') > 0 && level > 1 && (url = 'loading error page'),
+          : url.indexOf('imageinstant.com') > 0
+            ? (url = 'https://images.weserv.nl/?url=' + encode(url))
+            : url.indexOf('hiperdex') > 0 && level > 1 && (url = 'loading error page'),
       (pattern = /http:\/[^/]/g),
       (matched = pattern.exec(url)),
       matched != null && matched.length > 0 && (url = url.replace('http:/', 'http://')),
@@ -1161,7 +1168,6 @@ jQuery(function ($) {
         $data = JSON.parse($data);
 
         var type_server = 1;
-        var number = 0;
         var slides_page;
         var slides_page_path = [];
         var use_server_gg = true;
@@ -1180,11 +1186,11 @@ jQuery(function ($) {
           slides_page = slides_page_url_path;
         } else {
           slides_page = slides_page_path;
-          length_chapter = slides_page.length - 1;
+          var i,j,length_chapter = slides_page.length - 1;
           for (i = 0; i < length_chapter; i++)
             for (j = i + 1; j < slides_page.length; j++)
               if (slides_page[j] < slides_page[i]) {
-                temp = slides_page[j];
+                var temp = slides_page[j];
                 slides_page[j] = slides_page[i];
                 slides_page[i] = temp;
               }
@@ -1851,6 +1857,7 @@ jQuery(function ($) {
     case 'www.nettruyen.com':
     case 'nhattruyen.com':
     case 'www.nettruyenapp.com':
+    case 'www.nettruyenpro.com':
       configs = {
         link: '#nt_listchapter .chapter a',
         name: '.title-detail',
@@ -1925,6 +1932,7 @@ jQuery(function ($) {
       break;
     case 'truyenqq.com':
     case 'truyenqq.net':
+    case 'truyenqqtop.com':
       configs = {
         link: '.works-chapter-list a',
         name: 'h1',

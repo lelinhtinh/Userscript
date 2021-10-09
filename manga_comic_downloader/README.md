@@ -47,14 +47,14 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 1. <https://hentaivn.net/>
 1. <https://otakusan.net/Manga>
 1. <https://ngonphongcomics.com/>
-1. <http://www.nettruyen.com/>, <http://nhattruyen.com/>, <http://nettruyenapp.com/>, <http://nettruyentop.com/>, <http://nettruyenonline.com/>
+1. <http://www.nettruyen.com/>, <http://nhattruyen.com/>, <http://nettruyenapp.com/>, <http://nettruyentop.com/>, <http://nettruyenonline.com/>, <http://www.nettruyenpro.com/>
 1. <http://www.hamtruyentranh.net/>
 1. <https://ttmanga.com/>
 1. <http://truyen.vnsharing.site/>
 1. <https://blogtruyen.com/>, <https://blogtruyen.vn/>, <https://blogtruyen.top/>
 1. <https://truyensieuhay.com/>
 1. <http://truyenchon.com/>
-1. <http://truyenqq.com/>, <http://truyenqq.net/>
+1. <http://truyenqq.com/>, <http://truyenqq.net/>, <http://truyenqqtop.com/>
 1. <https://sachvui.com/the-loai/doc-truyen-tranh-online.html>
 1. <https://hentaicube.net/>
 1. <http://tuthienbao.com/>
