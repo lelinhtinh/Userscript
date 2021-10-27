@@ -77,6 +77,14 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 
 Nhấp vào ảnh để xem video hướng dẫn
 
+## PC
+
+[![Hướng dẫn tải truyện tranh bằng PC](https://img.youtube.com/vi/Aw9c5pqRYGk/0.jpg)](https://www.youtube.com/watch?v=Aw9c5pqRYGk)
+
 ### Điện thoại Android
 
 [![Hướng dẫn tải truyện tranh bằng điện thoại](https://img.youtube.com/vi/3bdvW3FCpak/0.jpg)](https://www.youtube.com/watch?v=3bdvW3FCpak)
+
+- Kể từ bản [cập nhật 27/08/2020](https://blog.mozilla.org/blog/2020/08/25/introducing-a-new-firefox-for-android-experience/), Firefox Mobile đã thay đổi engine khiến các addon không còn sử dụng được, bao gồm userscript manager như Greasemonkey.
+- Kích hoạt [chế độ thử nghiệm trong Firefox Nightly](https://blog.mozilla.org/addons/2020/09/29/expanded-extension-support-in-firefox-for-android-nightly/) có thể làm cho addon hoạt động.
+- Có một phiên bản rẽ nhánh của Firefox Mobile cũ, gọi là [Iceraven](https://github.com/fork-maintainers/iceraven-browser), có thể cài đặt script này thông qua addon Violentmonkey.
