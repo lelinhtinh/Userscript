@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.1.5
+// @version         3.1.6
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -78,8 +78,6 @@
 // @require         https://unpkg.com/file-saver@2.0.4/dist/FileSaver.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @require         https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js
-// @require         https://cdn.jsdelivr.net/npm/selector-set@1.1.5/selector-set.js
-// @require         https://cdn.jsdelivr.net/npm/selector-observer@2.1.6/dist/index.umd.js
 // @noframes
 // @connect         *
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
@@ -664,16 +662,16 @@ jQuery(function ($) {
           url.indexOf('chancanvas') > 0 ||
           url.indexOf('ff.cdnimg.club') > 0 ||
           url.indexOf('bato.to') > 0
-          ? url.indexOf('googleusercontent') < 0 &&
+        ? url.indexOf('googleusercontent') < 0 &&
           url.indexOf('otakusan') < 0 &&
           url.indexOf('otakuscan') < 0 &&
           url.indexOf('shopotaku') < 0 &&
           (url =
             'https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=' +
             encode(url))
-          : url.indexOf('imageinstant.com') > 0
-            ? (url = 'https://images.weserv.nl/?url=' + encode(url))
-            : url.indexOf('hiperdex') > 0 && level > 1 && (url = 'loading error page'),
+        : url.indexOf('imageinstant.com') > 0
+        ? (url = 'https://images.weserv.nl/?url=' + encode(url))
+        : url.indexOf('hiperdex') > 0 && level > 1 && (url = 'loading error page'),
       (pattern = /http:\/[^/]/g),
       (matched = pattern.exec(url)),
       matched != null && matched.length > 0 && (url = url.replace('http:/', 'http://')),
@@ -947,7 +945,9 @@ jQuery(function ($) {
 
   function cleanSource(response) {
     var responseText = response.responseText;
-    responseText = responseText.replace(/[\s\n]+src[\s\n]*=[\s\n]*/gi, ' data-src=');
+    if (!configs.imgSrc) {
+      responseText = responseText.replace(/[\s\n]+src[\s\n]*=[\s\n]*/gi, ' data-src=');
+    }
     responseText = responseText.replace(/^[^<]*/, '');
 
     if (configs.imgSrc) return $(responseText);
@@ -1186,7 +1186,9 @@ jQuery(function ($) {
           slides_page = slides_page_url_path;
         } else {
           slides_page = slides_page_path;
-          var i,j,length_chapter = slides_page.length - 1;
+          var i,
+            j,
+            length_chapter = slides_page.length - 1;
           for (i = 0; i < length_chapter; i++)
             for (j = i + 1; j < slides_page.length; j++)
               if (slides_page[j] < slides_page[i]) {
@@ -1477,25 +1479,6 @@ jQuery(function ($) {
     });
   }
 
-  /* global SelectorObserver, SelectorSet */
-  function getHentaiCube() {
-    const observer = new SelectorObserver.default($('#manga-chapters-holder').get(0), SelectorSet);
-    observer.observe('.listing-chapters_wrap', function () {
-      var $link = $(configs.link);
-      if (!$link.length) return;
-
-      $link.on('contextmenu', function (e) {
-        e.preventDefault();
-        hasDownloadError = false;
-        if (!oneProgress()) return;
-
-        rightClickEvent(this);
-      });
-
-      notyReady();
-    });
-  }
-
   function getVietComic() {
     getSource(function ($data) {
       var data = $data.filter('script:not([src]):contains("Loadimage(i)")');
@@ -1521,6 +1504,7 @@ jQuery(function ($) {
     if (!$link.length) return;
 
     var csrfToken = $('#j-csrf').val();
+
     function getAttachmentUrl(arr, output, done) {
       if (!arr.length) return done();
 
@@ -1953,7 +1937,6 @@ jQuery(function ($) {
         name: '.post-title',
         contents: '.reading-content',
         imgSrc: 'data-src',
-        init: getHentaiCube,
       };
       break;
     case 'tuthienbao.com':
