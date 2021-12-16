@@ -64,6 +64,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 1. <https://hoitruyentranh.com/>
 1. <https://truyenvn.com/>
 1. <https://saytruyen.net/>, <https://saytruyen.com/>, <https://sayhentai.net/>
+1. <https://cocomic.net/>
 
 ### Mobile
 

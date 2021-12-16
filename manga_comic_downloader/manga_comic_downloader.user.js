@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.1.6
+// @version         3.2.0
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -73,6 +73,7 @@
 // @match           https://*.saytruyen.net/*
 // @match           https://*.saytruyen.com/*
 // @match           https://*.sayhentai.net/*
+// @match           https://cocomic.net/truyen-tranh/*
 // @require         https://code.jquery.com/jquery-3.6.0.min.js
 // @require         https://unpkg.com/fflate@0.4.8/umd/index.js
 // @require         https://unpkg.com/file-saver@2.0.4/dist/FileSaver.min.js
@@ -1992,6 +1993,13 @@ jQuery(function ($) {
         link: '#list-chapter a',
         name: 'h1.title',
         contents: '#lst_content',
+      };
+      break;
+    case 'cocomic.net':
+      configs = {
+        link: '.chapter-list .citem a',
+        name: 'h1',
+        contents: '.chapter-content',
       };
       break;
     default:
