@@ -4,7 +4,7 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenYY định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenYY định dạng EPUB.
-// @version         4.10.1
+// @version         4.10.2
 // @icon            https://i.imgur.com/1HkQv2b.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -20,10 +20,13 @@
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect         vnvl.net
+// @connect         codeprime.net
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
 // @run-at          document-end
 // @grant           GM_xmlhttpRequest
 // @grant           GM.xmlHttpRequest
+// @grant           GM_addStyle
+// @inject-into     content
 // ==/UserScript==
 
 (function ($, window, document) {
@@ -126,9 +129,13 @@
         $.getScript(recaptchaUrl).done(function () {
           /* global grecaptcha */
           grecaptcha.ready(function () {
-            grecaptcha.execute(widgetId, { action: 'validate_captcha' }).then(function (token) {
-              getVipContent(token);
-            });
+            grecaptcha
+              .execute(widgetId, {
+                action: 'validate_captcha',
+              })
+              .then(function (token) {
+                getVipContent(token);
+              });
           });
         });
       } else {
@@ -145,9 +152,7 @@
   function genEbook() {
     jepub
       .generate('blob', function (metadata) {
-        $download.html(
-          '<i class="iconfont icon-book"></i> Đang nén <strong>' + metadata.percent.toFixed(2) + '%</strong>',
-        );
+        $download.html('Đang nén <strong>' + metadata.percent.toFixed(2) + '%</strong>');
       })
       .then(function (epubZipContent) {
         document.title = '[⇓] ' + ebookTitle;
@@ -158,7 +163,7 @@
             href: window.URL.createObjectURL(epubZipContent),
             download: ebookFilename,
           })
-          .html('<i class="iconfont icon-save"></i> Hoàn thành')
+          .text('Hoàn thành')
           .off('click');
         if (!$download.hasClass('btn-danger')) downloadStatus('success');
 
@@ -173,7 +178,7 @@
   function saveEbook() {
     if (endDownload) return;
     endDownload = true;
-    $download.html('<i class="iconfont icon-layer"></i> Bắt đầu tạo EPUB');
+    $download.text('Bắt đầu tạo EPUB');
 
     if (titleError.length) {
       titleError = '<p class="no-indent"><strong>Các chương lỗi: </strong>' + titleError.join(', ') + '</p>';
@@ -274,7 +279,7 @@
       if (count === 0) begin = chapTitle;
       end = chapTitle;
 
-      $download.html('<i class="iconfont icon-more"></i> Đang tải <strong>' + count + '/' + chapListSize + '</strong>');
+      $download.html('Đang tải <strong>' + count + '/' + chapListSize + '</strong>');
 
       ++count;
       document.title = '[' + count + '] ' + pageName;
@@ -289,12 +294,13 @@
 
   var pathname = location.pathname;
   if (/\/(danh-sach-chuong|binh-luan|ung-ho|de-cu(\/add)?|kim-phieu|van-de|fans|nhan-vat)\/?$/i.test(pathname)) return;
+  $('#summary_markdown').css('max-height', 1000).find('button, p.font-italic').remove();
 
   var pageName = document.title,
     $download = $('<a></a>', {
       href: '#download',
-      class: 'btn btn-warning',
-      html: '<i class="iconfont icon-download"></i> Tải xuống',
+      class: 'btn btn-warning weui-btn weui-btn_inline',
+      text: 'Tải xuống',
     }),
     downloadStatus = function (status) {
       $download
@@ -304,18 +310,18 @@
     downloadId = function (url) {
       return url.trim().replace(/^.*\//, '');
     },
-    $novelInfo = $('.novel-info'),
-    chapListSize = $('.info .numbers li:first').text().replace(/[^\d]/g, ''),
+    $novelInfo = $('.novel-info, .novel-meta'),
+    chapListSize = $('.info .numbers li:first, .novel-meta td:contains("Số chương")+td').text().replace(/[^\d]/g, ''),
     chapId = '',
     chapTitle = '',
     count = 0,
     begin = '',
     end = '',
     endDownload = false,
-    ebookTitle = $('h1.name').text().trim(),
-    ebookAuthor = $('h2.author').text().trim(),
-    ebookCover = $('.novel-info .cover img').data('src'),
-    ebookDesc = $('#id_novel_summary').html(),
+    ebookTitle = $('h1.name, h1.title').text().trim(),
+    ebookAuthor = $('h2.author, .info a[href^="/tac-gia/"]').text().trim(),
+    ebookCover = $('.novel-info .cover img, .novel-cover img').data('src'),
+    ebookDesc = $('#id_novel_summary, #summary_markdown').html(),
     ebookType = [],
     beginEnd = '',
     titleError = [],
@@ -330,7 +336,11 @@
 
   if (!$novelInfo.length) return;
 
-  var $ebookType = $('a', '.tag-list.list-unstyled.mt-2');
+  GM_addStyle(
+    '.text-light{color:#f8f9fa!important}.text-dark{color:#343a40!important}.btn-primary{color:#fff;background-color:#4497f8;border-color:#4497f8}.btn-primary:hover{color:#fff;background-color:#69acf9;border-color:#69acf9;box-shadow:none}.btn-primary:active{color:#fff;background-color:#418fec;border-color:#418fec}.btn-info{color:#fff;background-color:#17a2b8;border-color:#17a2b8}.btn-info:hover,.btn-info:focus{color:#fff;background-color:#138496;border-color:#117a8b}.btn-info:active{color:#fff;background-color:#117a8b;border-color:#10707f}.btn-success{color:#fff;background-color:#29bf4a;border-color:#29bf4a}.btn-success:hover,.btn-success:focus{color:#fff;background-color:#54cc6e;border-color:#54cc6e;box-shadow:none}.btn-success:active{color:#fff;background-color:#27b546;border-color:#27b546}.btn-danger{color:#fff;background-color:#f5222d;border-color:#f5222d}.btn-danger:hover,.btn-danger:focus{color:#fff;background-color:#f74e57;border-color:#f74e57;box-shadow:none}.btn-danger:active{color:#fff;background-color:#e9202b;border-color:#e9202b}.btn-warning{color:#212529;background-color:#ffc107;border-color:#ffc107}.btn-warning:hover,.btn-warning:focus{color:#212529;background-color:#ffcd39;border-color:#ffcd39;box-shadow:none}.btn-warning:active{color:#212529;background-color:#f2b707;border-color:#f2b707}',
+  );
+
+  var $ebookType = $('.tag-list.list-unstyled.mt-2 a, .novel-meta td:contains("Thể loại")+td a');
   if ($ebookType.length)
     $ebookType.each(function () {
       ebookType.push($(this).text().trim());
@@ -347,13 +357,13 @@
     })
     .uuid(referrer);
 
-  $download.insertAfter('#react-root_novel-base-buttons');
+  $download.insertAfter('#react-root_novel-base-buttons, #root_novel_stars');
   $download.before('\r\n');
   $download.one('click contextmenu', function (e) {
     e.preventDefault();
     document.title = '[...] Vui lòng chờ trong giây lát';
 
-    var firstChap = $('.info .btn:contains("Đọc Từ Đầu")');
+    var firstChap = $('.info .btn:contains("Đọc Từ Đầu"), #root_novel_buttons .weui-btn:contains("Đọc Từ Đầu")');
     firstChap = downloadId(firstChap.attr('href'));
     var startFrom = firstChap;
 
