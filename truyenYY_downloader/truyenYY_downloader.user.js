@@ -26,7 +26,7 @@
 // @grant           GM_xmlhttpRequest
 // @grant           GM.xmlHttpRequest
 // @grant           GM_addStyle
-// @inject-into     content
+// @inject-into     auto
 // ==/UserScript==
 
 (function ($, window, document) {
@@ -363,7 +363,7 @@
     e.preventDefault();
     document.title = '[...] Vui lòng chờ trong giây lát';
 
-    var firstChap = $('.info .btn:contains("Đọc Từ Đầu"), #root_novel_buttons .weui-btn:contains("Đọc Từ Đầu")');
+    var firstChap = $('.info .btn:contains("Đọc Từ Đầu"), #root_novel_buttons .weui-btn:contains("Đọc Từ Đầu"), .weui-btn:contains("Đọc Tiếp")');
     firstChap = downloadId(firstChap.attr('href'));
     var startFrom = firstChap;
 
