@@ -928,7 +928,7 @@ jQuery(function ($) {
     var images = [];
     $contents.each(function (i, v) {
       var $img = $(v);
-      images[i] = !configs.imgSrc ? $img.data('src') || $img.data('original') : $img.attr(configs.imgSrc);
+      images[i] = !configs.imgSrc ? $img.data('src') || $img.data('original') : $img.attr(configs.imgSrc) || $img.attr('src');
     });
 
     checkImages(images);
