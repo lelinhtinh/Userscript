@@ -65,7 +65,7 @@
 // @match           http://truyenqq.net/*
 // @match           http://truyenqqtop.com/*
 // @match           https://sachvui.com/*
-// @match           https://hentaicube.net/*
+// @match           https://hentaicb.top/*
 // @match           http://*.tuthienbao.com/*
 // @match           https://vietcomic.net/*
 // @match           https://hamtruyentranh.com/*
@@ -1935,7 +1935,7 @@ jQuery(function ($) {
         contents: '.noi_dung_online',
       };
       break;
-    case 'hentaicube.net':
+    case 'hentaicb.top':
       configs = {
         link: '.wp-manga-chapter a',
         name: '.post-title',
