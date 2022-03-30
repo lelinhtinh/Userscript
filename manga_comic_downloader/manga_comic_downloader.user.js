@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.2.1
+// @version         3.2.2
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -65,6 +65,7 @@
 // @match           http://truyenqq.net/*
 // @match           http://truyenqqtop.com/*
 // @match           https://sachvui.com/*
+// @match           https://hentaicube.net/*
 // @match           https://hentaicb.top/*
 // @match           http://*.tuthienbao.com/*
 // @match           https://vietcomic.net/*
@@ -1935,6 +1936,7 @@ jQuery(function ($) {
         contents: '.noi_dung_online',
       };
       break;
+    case 'hentaicube.net':
     case 'hentaicb.top':
       configs = {
         link: '.wp-manga-chapter a',
