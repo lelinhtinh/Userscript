@@ -38,6 +38,7 @@
 // @match           http://lxhentai.com/*
 // @match           https://lxhentai.com/*
 // @match           https://hentaivn.net/*
+// @match           https://hentaivn.moe/*
 // @match           https://otakusan.net/*
 // @match           https://ngonphongcomics.com/*
 // @match           https://*.nettruyen.com/*
@@ -1813,6 +1814,20 @@ jQuery(function ($) {
       };
       break;
     case 'hentaivn.net':
+    case 'hentaivn.moe':
+      var href = window.location.href;
+      if (href.indexOf('doc') > -1) {
+        if (href.indexOf('list-showchapter.php') === -1) {
+          var idName = href.split('.html')[0].split('/')[3];
+          var [id, ...name] = idName.split('-');
+          name = name.join('-');
+          var url = `https://{domainName}/list-showchapter.php?idchapshow=${id}&idlinkanime=${name}`;
+          var con = confirm('Nhấn cancel để tải truyện');
+          if (con) {
+            window.open(url, '_blank');
+          }
+        }
+      }
       configs = [
         {
           link: '.listing a',
