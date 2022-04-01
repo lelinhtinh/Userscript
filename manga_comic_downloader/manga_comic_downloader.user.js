@@ -1821,7 +1821,7 @@ jQuery(function ($) {
           var idName = href.split('.html')[0].split('/')[3];
           var [id, ...name] = idName.split('-');
           name = name.join('-');
-          var url = `https://{domainName}/list-showchapter.php?idchapshow=${id}&idlinkanime=${name}`;
+          var url = `https://${domainName}/list-showchapter.php?idchapshow=${id}&idlinkanime=${name}`;
           var con = confirm('Nhấn cancel để tải truyện');
           if (con) {
             window.open(url, '_blank');
