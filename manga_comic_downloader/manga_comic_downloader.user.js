@@ -968,6 +968,11 @@ jQuery(function ($) {
 
     if (typeof name === 'function') {
       chapName = name(_this, chapName);
+      if (domainName === 'hentaivn.moe') {
+        chapName = chapName.split('- ')[1];
+        chapName = chapName.replace('Chap ', 'Chapter_');
+        chapName = tit + '_' + chapName;
+      }
     } else if (typeof name === 'string') {
       chapName = $(name).text().trim() + ' ' + chapName;
     }
@@ -1666,6 +1671,31 @@ jQuery(function ($) {
   GM_addStyle(
     '#baivong_noty_wrap{display:none;background:#fff;position:fixed;z-index:2147483647;right:20px;top:20px;min-width:150px;max-width:100%;padding:15px 25px;border:1px solid #ddd;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 10px rgba(0,0,0,.35);cursor:pointer}#baivong_noty_content{color:#444}#baivong_noty_content strong{font-weight:700}#baivong_noty_content.baivong_info strong{color:#2196f3}#baivong_noty_content.baivong_success strong{color:#4caf50}#baivong_noty_content.baivong_warning strong{color:#ffc107}#baivong_noty_content.baivong_error strong{color:#f44336}#baivong_noty_content strong.centered{display:block;text-align:center}#baivong_noty_close{position:absolute;right:0;top:0;font-size:18px;color:#ddd;height:20px;width:20px;line-height:20px;text-align:center}#baivong_noty_wrap:hover #baivong_noty_close{color:#333}',
   );
+  
+  function listOfChapterHentaiVN() {
+    var href = window.location.href;
+    if (href.indexOf('doc') > -1) {
+      if (href.indexOf('list-showchapter.php') === -1) {
+        var idName = href.split('.html')[0].split('/')[3];
+        var [id, ...name] = idName.split('-doc-truyen-');
+        name = name.join('-');
+        var url = `https://${domainName}/list-showchapter.php?idchapshow=${id}&idlinkanime=${name}`;
+        var con = confirm('Nhấn OK để tải truyện');
+        if (con) {
+          window.open(url, '_blank');
+        }
+      }
+    }
+    if (tit === '') {
+      var [first, name] = href.split('&idlinkanime=');
+      name = name.split('-');
+      name = name.map(function (item) {
+        return item.charAt(0).toUpperCase() + item.slice(1);
+      })
+      name = name.join('_');
+      tit = name;
+    }
+  }
 
   switch (domainName) {
     case 'truyentranhtam.com':
@@ -1815,19 +1845,7 @@ jQuery(function ($) {
       break;
     case 'hentaivn.net':
     case 'hentaivn.moe':
-      var href = window.location.href;
-      if (href.indexOf('doc') > -1) {
-        if (href.indexOf('list-showchapter.php') === -1) {
-          var idName = href.split('.html')[0].split('/')[3];
-          var [id, ...name] = idName.split('-');
-          name = name.join('-');
-          var url = `https://${domainName}/list-showchapter.php?idchapshow=${id}&idlinkanime=${name}`;
-          var con = confirm('Nhấn cancel để tải truyện');
-          if (con) {
-            window.open(url, '_blank');
-          }
-        }
-      }
+      listOfChapterHentaiVN();
       configs = [
         {
           link: '.listing a',
