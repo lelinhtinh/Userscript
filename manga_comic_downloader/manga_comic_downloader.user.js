@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.2.2
+// @version         3.2.3
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -38,6 +38,7 @@
 // @match           http://lxhentai.com/*
 // @match           https://lxhentai.com/*
 // @match           https://hentaivn.net/*
+// @match           https://hentaivn.moe/*
 // @match           https://otakusan.net/*
 // @match           https://ngonphongcomics.com/*
 // @match           https://*.nettruyen.com/*
@@ -276,8 +277,8 @@ jQuery(function ($) {
 
     if (!$noty.length) {
       var $wrap = $('<div>', {
-          id: 'baivong_noty_wrap',
-        }),
+        id: 'baivong_noty_wrap',
+      }),
         $content = $('<div>', {
           id: 'baivong_noty_content',
           class: 'baivong_' + status,
@@ -530,10 +531,10 @@ jQuery(function ($) {
 
           noty(
             '<a href="' +
-              URL.createObjectURL(recentZip) +
-              '" download="' +
-              zipName +
-              '"><strong>Click vào đây</strong></a> nếu trình duyệt không tự tải xuống',
+            URL.createObjectURL(recentZip) +
+            '" download="' +
+            zipName +
+            '"><strong>Click vào đây</strong></a> nếu trình duyệt không tự tải xuống',
             'success',
           );
           linkSuccess();
@@ -587,103 +588,103 @@ jQuery(function ($) {
     if (url.indexOf('[GDP]') === 0 || url.indexOf('drive.google.com') > 0)
       return level > 1
         ? '/api/Value/ImageSyncing?ip=34512351&url=' +
-            encode(url.replace('[GDP]', 'https://drive.google.com/uc?export=view&id='))
+        encode(url.replace('[GDP]', 'https://drive.google.com/uc?export=view&id='))
         : url.replace('[GDP]', 'https://drive.google.com/uc?export=view&id=');
     if (
       (url.indexOf('[IS1]') >= 0 && (url = url.replace('[IS1]', 'https://imagepi.otakuscan.net/')),
-      url.indexOf('[IS3]') >= 0 && (url = url.replace('[IS3]', 'http://image3.otakuscan.net/')),
-      url.indexOf('[IO3]') >= 0 && (url = url.replace('[IO3]', 'http://image3.shopotaku.net/')),
-      url.indexOf('/Content/Workshop/') >= 0)
+        url.indexOf('[IS3]') >= 0 && (url = url.replace('[IS3]', 'http://image3.otakuscan.net/')),
+        url.indexOf('[IO3]') >= 0 && (url = url.replace('[IO3]', 'http://image3.shopotaku.net/')),
+        url.indexOf('/Content/Workshop/') >= 0)
     )
       return url;
     if (url.indexOf('/Content/Workshop/') >= 0) return url;
     if (
       (url.indexOf('i.blogtruyen') > 0 && level > 9 && (url = url.replace('i.blogtruyen', 'i2.blogtruyen')),
-      url.indexOf('file-bato-orig.anyacg.co') > 0 &&
+        url.indexOf('file-bato-orig.anyacg.co') > 0 &&
         (url = url.replace('file-bato-orig.anyacg.co', 'file-bato-orig.bato.to')),
-      url.indexOf('file-comic') > 0 &&
+        url.indexOf('file-comic') > 0 &&
         (url.indexOf('file-comic-1') > 0 && (url = url.replace('file-comic-1.anyacg.co', 'z-img-01.mangapark.net')),
-        url.indexOf('file-comic-2') > 0 && (url = url.replace('file-comic-2.anyacg.co', 'z-img-02.mangapark.net')),
-        url.indexOf('file-comic-3') > 0 && (url = url.replace('file-comic-3.anyacg.co', 'z-img-03.mangapark.net')),
-        url.indexOf('file-comic-4') > 0 && (url = url.replace('file-comic-4.anyacg.co', 'z-img-04.mangapark.net')),
-        url.indexOf('file-comic-5') > 0 && (url = url.replace('file-comic-5.anyacg.co', 'z-img-05.mangapark.net')),
-        url.indexOf('file-comic-6') > 0 && (url = url.replace('file-comic-6.anyacg.co', 'z-img-06.mangapark.net')),
-        url.indexOf('file-comic-9') > 0 && (url = url.replace('file-comic-9.anyacg.co', 'z-img-09.mangapark.net')),
-        url.indexOf('file-comic-10') > 0 && (url = url.replace('file-comic-10.anyacg.co', 'z-img-10.mangapark.net')),
-        url.indexOf('file-comic-99') > 0 &&
+          url.indexOf('file-comic-2') > 0 && (url = url.replace('file-comic-2.anyacg.co', 'z-img-02.mangapark.net')),
+          url.indexOf('file-comic-3') > 0 && (url = url.replace('file-comic-3.anyacg.co', 'z-img-03.mangapark.net')),
+          url.indexOf('file-comic-4') > 0 && (url = url.replace('file-comic-4.anyacg.co', 'z-img-04.mangapark.net')),
+          url.indexOf('file-comic-5') > 0 && (url = url.replace('file-comic-5.anyacg.co', 'z-img-05.mangapark.net')),
+          url.indexOf('file-comic-6') > 0 && (url = url.replace('file-comic-6.anyacg.co', 'z-img-06.mangapark.net')),
+          url.indexOf('file-comic-9') > 0 && (url = url.replace('file-comic-9.anyacg.co', 'z-img-09.mangapark.net')),
+          url.indexOf('file-comic-10') > 0 && (url = url.replace('file-comic-10.anyacg.co', 'z-img-10.mangapark.net')),
+          url.indexOf('file-comic-99') > 0 &&
           (url = url.replace('file-comic-99.anyacg.co/uploads', 'file-bato-0001.bato.to'))),
-      url.indexOf('cdn.nettruyen.com') > 0 &&
+        url.indexOf('cdn.nettruyen.com') > 0 &&
         (url = url.replace('cdn.nettruyen.com/Data/Images/', 'truyen.cloud/data/images/')),
-      url.indexOf('http') >= 30 && (url = url.substr(url.indexOf('http'))),
-      (url.indexOf('%2f%2f') > 0 || url.indexOf('%2F%2F') > 0) && (url = decodeURIComponent(url)),
-      url.indexOf('url=') >= 1 && (url = url.substr(url.indexOf('url=') + 4)),
-      (url.indexOf('blogspot') >= 1 || url.indexOf('fshare') >= 1) && (url = url.replace('http:', 'https:')),
-      url.indexOf('blogspot') >= 0 && url.indexOf('http') < 0 && (url = 'https://' + url),
-      url.indexOf('app/manga/uploads/') >= 0 && (url = 'https://lhscan.net/' + url),
-      (url = url.replace('//cdn.adtrue.com/rtb/async.js', '')),
-      url.indexOf('[ON2]') >= 0 ||
-      url.indexOf('[OSN]') >= 0 ||
-      url.indexOf('[TT3]') >= 0 ||
-      url.indexOf('[GDT]') >= 0 ||
-      url.indexOf('truyen.cloud') > 0 ||
-      url.indexOf('fshare.vn') > 0 ||
-      url.indexOf('[GDT]') === 0 ||
-      url.indexOf('lhmanga') > 0 ||
-      url.indexOf('blogtruyen') > 0 ||
-      url.indexOf('lhscanlation') > 0 ||
-      url.indexOf('hako') > 0 ||
-      url.indexOf('manhwahentai.com') > 0 ||
-      url.indexOf('uptruyen.com') > 0 ||
-      url.indexOf('mangaqq') > 0 ||
-      url.indexOf('otakuqq') > 0 ||
-      url.indexOf('qqtaku') > 0 ||
-      url.indexOf('trangshop') > 0 ||
-      url.indexOf('ocumeo') > 0 ||
-      url.indexOf('hamtruyen') > 0 ||
-      url.indexOf('beeng.net') > 0 ||
-      url.indexOf('rawdevart.com') > 0 ||
-      url.indexOf('mangasy.com') > 0 ||
-      url.indexOf('cdnqq.xyz') > 0 ||
-      url.indexOf('imgmirror.club') > 0 ||
-      url.indexOf('cdnimg.club') > 0 ||
-      url.indexOf('forumnt') > 0 ||
-      (url.indexOf('hiperdex') > 0 && level <= 1) ||
-      url.indexOf('netsnippet') > 0 ||
-      url.indexOf('mangakakalot') > 0 ||
-      (url.indexOf('mangapark') > 0 && level > 1)
-        ? (index == null && (index = 1), (url = '/api/Value/ImageSyncing?ip=34512351&url=' + encode(url)))
-        : url.indexOf('merakiscans') > 0 ||
-          url.indexOf('mangazuki') > 0 ||
-          url.indexOf('ninjascans') > 0 ||
-          url.indexOf('anyacg.co') > 0 ||
-          url.indexOf('mangakatana') > 0 ||
-          url.indexOf('zeroscans') > 0 ||
-          url.indexOf('mangapark') > 0 ||
-          url.indexOf('mangadex') > 0 ||
-          url.indexOf('uptruyen') > 0 ||
-          url.indexOf('hocvientruyentranh') > 0 ||
-          url.indexOf('ntruyen.info') > 0 ||
-          url.indexOf('chancanvas') > 0 ||
-          url.indexOf('ff.cdnimg.club') > 0 ||
-          url.indexOf('bato.to') > 0
-        ? url.indexOf('googleusercontent') < 0 &&
-          url.indexOf('otakusan') < 0 &&
-          url.indexOf('otakuscan') < 0 &&
-          url.indexOf('shopotaku') < 0 &&
-          (url =
-            'https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=' +
-            encode(url))
-        : url.indexOf('imageinstant.com') > 0
-        ? (url = 'https://images.weserv.nl/?url=' + encode(url))
-        : url.indexOf('hiperdex') > 0 && level > 1 && (url = 'loading error page'),
-      (pattern = /http:\/[^/]/g),
-      (matched = pattern.exec(url)),
-      matched != null && matched.length > 0 && (url = url.replace('http:/', 'http://')),
-      (pattern = /https:\/[^/]/g),
-      (matched = pattern.exec(url)),
-      matched != null && matched.length > 0 && (url = url.replace('https:/', 'http://')),
-      (dataip = 'err'),
-      url.indexOf('otakusan.net_') > 0 && url.indexOf('vi=') < 0)
+        url.indexOf('http') >= 30 && (url = url.substr(url.indexOf('http'))),
+        (url.indexOf('%2f%2f') > 0 || url.indexOf('%2F%2F') > 0) && (url = decodeURIComponent(url)),
+        url.indexOf('url=') >= 1 && (url = url.substr(url.indexOf('url=') + 4)),
+        (url.indexOf('blogspot') >= 1 || url.indexOf('fshare') >= 1) && (url = url.replace('http:', 'https:')),
+        url.indexOf('blogspot') >= 0 && url.indexOf('http') < 0 && (url = 'https://' + url),
+        url.indexOf('app/manga/uploads/') >= 0 && (url = 'https://lhscan.net/' + url),
+        (url = url.replace('//cdn.adtrue.com/rtb/async.js', '')),
+        url.indexOf('[ON2]') >= 0 ||
+          url.indexOf('[OSN]') >= 0 ||
+          url.indexOf('[TT3]') >= 0 ||
+          url.indexOf('[GDT]') >= 0 ||
+          url.indexOf('truyen.cloud') > 0 ||
+          url.indexOf('fshare.vn') > 0 ||
+          url.indexOf('[GDT]') === 0 ||
+          url.indexOf('lhmanga') > 0 ||
+          url.indexOf('blogtruyen') > 0 ||
+          url.indexOf('lhscanlation') > 0 ||
+          url.indexOf('hako') > 0 ||
+          url.indexOf('manhwahentai.com') > 0 ||
+          url.indexOf('uptruyen.com') > 0 ||
+          url.indexOf('mangaqq') > 0 ||
+          url.indexOf('otakuqq') > 0 ||
+          url.indexOf('qqtaku') > 0 ||
+          url.indexOf('trangshop') > 0 ||
+          url.indexOf('ocumeo') > 0 ||
+          url.indexOf('hamtruyen') > 0 ||
+          url.indexOf('beeng.net') > 0 ||
+          url.indexOf('rawdevart.com') > 0 ||
+          url.indexOf('mangasy.com') > 0 ||
+          url.indexOf('cdnqq.xyz') > 0 ||
+          url.indexOf('imgmirror.club') > 0 ||
+          url.indexOf('cdnimg.club') > 0 ||
+          url.indexOf('forumnt') > 0 ||
+          (url.indexOf('hiperdex') > 0 && level <= 1) ||
+          url.indexOf('netsnippet') > 0 ||
+          url.indexOf('mangakakalot') > 0 ||
+          (url.indexOf('mangapark') > 0 && level > 1)
+          ? (index == null && (index = 1), (url = '/api/Value/ImageSyncing?ip=34512351&url=' + encode(url)))
+          : url.indexOf('merakiscans') > 0 ||
+            url.indexOf('mangazuki') > 0 ||
+            url.indexOf('ninjascans') > 0 ||
+            url.indexOf('anyacg.co') > 0 ||
+            url.indexOf('mangakatana') > 0 ||
+            url.indexOf('zeroscans') > 0 ||
+            url.indexOf('mangapark') > 0 ||
+            url.indexOf('mangadex') > 0 ||
+            url.indexOf('uptruyen') > 0 ||
+            url.indexOf('hocvientruyentranh') > 0 ||
+            url.indexOf('ntruyen.info') > 0 ||
+            url.indexOf('chancanvas') > 0 ||
+            url.indexOf('ff.cdnimg.club') > 0 ||
+            url.indexOf('bato.to') > 0
+            ? url.indexOf('googleusercontent') < 0 &&
+            url.indexOf('otakusan') < 0 &&
+            url.indexOf('otakuscan') < 0 &&
+            url.indexOf('shopotaku') < 0 &&
+            (url =
+              'https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=' +
+              encode(url))
+            : url.indexOf('imageinstant.com') > 0
+              ? (url = 'https://images.weserv.nl/?url=' + encode(url))
+              : url.indexOf('hiperdex') > 0 && level > 1 && (url = 'loading error page'),
+        (pattern = /http:\/[^/]/g),
+        (matched = pattern.exec(url)),
+        matched != null && matched.length > 0 && (url = url.replace('http:/', 'http://')),
+        (pattern = /https:\/[^/]/g),
+        (matched = pattern.exec(url)),
+        matched != null && matched.length > 0 && (url = url.replace('https:/', 'http://')),
+        (dataip = 'err'),
+        url.indexOf('otakusan.net_') > 0 && url.indexOf('vi=') < 0)
     )
       try {
         dataip = window.otakusanVi;
@@ -962,6 +963,7 @@ jQuery(function ($) {
     var $this = $(_this),
       name = configs.name;
 
+
     configs.href = $this.attr('href');
     chapName = $this.text().trim();
 
@@ -1036,19 +1038,19 @@ jQuery(function ($) {
           chap_index = matched[2];
           chap_id = matched[3];
           // eslint-disable-next-line no-empty
-        } catch (error) {}
+        } catch (error) { }
 
         var recentPassword = sessionStorage.getItem('recent-password');
         var pass = prompt(
           'Truyện yêu cầu nhập mật khẩu, gợi ý là:\n\n' +
-            $goiy.text() +
-            '\n\nSử dụng mã gõ tắt để nhập nhanh:\n{{ comic_id }}: ID truyện (' +
-            comic_id +
-            ')\n{{ chap_index }}: Thứ tự chương (' +
-            chap_index +
-            ')\n{{ chap_id }}: ID chương (' +
-            chap_id +
-            ')',
+          $goiy.text() +
+          '\n\nSử dụng mã gõ tắt để nhập nhanh:\n{{ comic_id }}: ID truyện (' +
+          comic_id +
+          ')\n{{ chap_index }}: Thứ tự chương (' +
+          chap_index +
+          ')\n{{ chap_id }}: ID chương (' +
+          chap_id +
+          ')',
           recentPassword ? recentPassword : '{{ chap_index }}ltn',
         );
 
@@ -1514,11 +1516,11 @@ jQuery(function ($) {
 
       $.getJSON(
         '/get-attachment-url?csrfToken=' +
-          csrfToken +
-          '&url=' +
-          encodeURIComponent(arr.shift()) +
-          '&_' +
-          new Date().getTime(),
+        csrfToken +
+        '&url=' +
+        encodeURIComponent(arr.shift()) +
+        '&_' +
+        new Date().getTime(),
       )
         .done(function (response) {
           if (response.status === 'success') {
@@ -1623,14 +1625,14 @@ jQuery(function ($) {
   }
 
   var configsDefault = {
-      reverse: true,
-      link: '',
-      name: '',
-      contents: '',
-      imgSrc: '',
-      filter: false,
-      init: getSource,
-    },
+    reverse: true,
+    link: '',
+    name: '',
+    contents: '',
+    imgSrc: '',
+    filter: false,
+    init: getSource,
+  },
     configs,
     chapName,
     $noty = [],
@@ -1665,6 +1667,30 @@ jQuery(function ($) {
   GM_addStyle(
     '#baivong_noty_wrap{display:none;background:#fff;position:fixed;z-index:2147483647;right:20px;top:20px;min-width:150px;max-width:100%;padding:15px 25px;border:1px solid #ddd;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 10px rgba(0,0,0,.35);cursor:pointer}#baivong_noty_content{color:#444}#baivong_noty_content strong{font-weight:700}#baivong_noty_content.baivong_info strong{color:#2196f3}#baivong_noty_content.baivong_success strong{color:#4caf50}#baivong_noty_content.baivong_warning strong{color:#ffc107}#baivong_noty_content.baivong_error strong{color:#f44336}#baivong_noty_content strong.centered{display:block;text-align:center}#baivong_noty_close{position:absolute;right:0;top:0;font-size:18px;color:#ddd;height:20px;width:20px;line-height:20px;text-align:center}#baivong_noty_wrap:hover #baivong_noty_close{color:#333}',
   );
+
+  function getHentaiVN() {
+    var listChap = $('#inner-listshowchapter')[0]
+    if (listChap) {
+      listChap.scrollIntoView({ behavior: 'smooth' });
+      // Wait for the list of chapters to be loaded
+      let observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          let oldValue = mutation.oldValue;
+          let newValue = mutation.target.textContent;
+          if (oldValue !== newValue) {
+            getSource();
+          }
+        });
+      });
+
+      observer.observe(listChap, {
+        characterDataOldValue: true,
+        subtree: true,
+        childList: true,
+        characterData: true
+      });
+    }
+  }
 
   switch (domainName) {
     case 'truyentranhtam.com':
@@ -1813,13 +1839,19 @@ jQuery(function ($) {
       };
       break;
     case 'hentaivn.net':
+    case 'hentaivn.moe':
       configs = [
         {
           link: '.listing a',
           name: function (_this) {
-            return $(_this).find('.chuong_t').attr('title');
+            var title = $('h1[itemprop="name"]').find('a').text()
+            title = title.split('-')[0].trim()
+            var chapTitle = $(_this).find('.chuong_t').attr('title');
+            chapTitle = chapTitle.split('-')[1].trim()
+            return `${title} ${chapTitle}`;
           },
           contents: '#image',
+          init: getHentaiVN,
         },
         {
           link: '.episodes a',
