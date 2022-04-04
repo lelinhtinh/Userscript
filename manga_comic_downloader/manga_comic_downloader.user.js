@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.2.3
+// @version         3.2.4
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -18,6 +18,7 @@
 // @match           https://beeng.net/*
 // @match           https://beeng.org/*
 // @match           https://*.hamtruyen.com/*
+// @match           https://*.hamtruyenmoi.com/*
 // @match           https://ntruyen.info/*
 // @match           https://*.a3manga.com/*
 // @match           http://truyentranhtuan.com/*
@@ -1702,7 +1703,8 @@ jQuery(function ($) {
         name: function (_this) {
           return $('.breadcrumb li:last').text().trim() + ' ' + $(_this).find('span, strong, h2').text().trim();
         },
-        init: getTruyenTranh8,
+        contents: '#reading-detail'
+        // init: getTruyenTranh8,
       };
       break;
     case 'm.truyentranhtam.com':
@@ -1745,10 +1747,11 @@ jQuery(function ($) {
       break;
     case 'hamtruyen.com':
     case 'www.hamtruyen.com':
+    case 'hamtruyenmoi.com':
       configs = {
-        link: '.tenChapter a',
-        name: '.tentruyen',
-        contents: '#content_chap',
+        link: '.list-chaps a',
+        name: 'h3.story-name',
+        contents: '.list-images',
       };
       break;
     case 'm.hamtruyen.com':
