@@ -1338,6 +1338,32 @@ jQuery(function ($) {
     notyReady();
   }
 
+  function getHentaiVN() {
+    var chapterList = document.querySelector('#inner-listshowchapter');
+    if (chapterList === null) return;
+
+    noty('wait a moment...', 'warning');
+    setTimeout(() => {
+      chapterList.scrollIntoView();
+    }, 0);
+
+    const observer = new MutationObserver(function (mutations_list) {
+      mutations_list.forEach(function (mutation) {
+        if (mutation.type !== 'childList') return;
+        if (!mutation.target.querySelector(configs.link)) return;
+
+        getSource();
+        observer.disconnect();
+      });
+    });
+
+    observer.observe(chapterList, {
+      attributes: false,
+      childList: true,
+      subtree: false,
+    });
+  }
+
   function getOtakuSan() {
     var $link = $(configs.link);
     if (!$link.length) return;
@@ -1670,30 +1696,6 @@ jQuery(function ($) {
   GM_addStyle(
     '#mcd_noty_wrap{display:none;background:#fff;position:fixed;z-index:2147483647;right:20px;top:20px;min-width:150px;max-width:100%;padding:15px 25px;border:1px solid #ddd;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 10px rgba(0,0,0,.35);cursor:pointer}#mcd_noty_content{color:#444}#mcd_noty_content strong{font-weight:700}#mcd_noty_content.mcd_info strong{color:#2196f3}#mcd_noty_content.mcd_success strong{color:#4caf50}#mcd_noty_content.mcd_warning strong{color:#ffc107}#mcd_noty_content.mcd_error strong{color:#f44336}#mcd_noty_content strong.centered{display:block;text-align:center}#mcd_noty_close{position:absolute;right:0;top:0;font-size:18px;color:#ddd;height:20px;width:20px;line-height:20px;text-align:center}#mcd_noty_wrap:hover #mcd_noty_close{color:#333}',
   );
-
-  function getHentaiVN() {
-    var listChap = $('#inner-listshowchapter')[0]
-    if (listChap) {
-      listChap.scrollIntoView({ behavior: 'smooth' });
-      // Wait for the list of chapters to be loaded
-      let observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          let oldValue = mutation.oldValue;
-          let newValue = mutation.target.textContent;
-          if (oldValue !== newValue) {
-            getSource();
-          }
-        });
-      });
-
-      observer.observe(listChap, {
-        characterDataOldValue: true,
-        subtree: true,
-        childList: true,
-        characterData: true
-      });
-    }
-  }
 
   switch (domainName) {
     case 'truyentranhtam.com':
