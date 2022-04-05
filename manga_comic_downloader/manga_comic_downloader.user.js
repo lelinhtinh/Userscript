@@ -278,15 +278,15 @@ jQuery(function ($) {
 
     if (!$noty.length) {
       var $wrap = $('<div>', {
-        id: 'baivong_noty_wrap',
-      }),
+          id: 'mcd_noty_wrap',
+        }),
         $content = $('<div>', {
-          id: 'baivong_noty_content',
-          class: 'baivong_' + status,
+          id: 'mcd_noty_content',
+          class: 'mcd_' + status,
           html: txt,
         }),
         $close = $('<div>', {
-          id: 'baivong_noty_close',
+          id: 'mcd_noty_close',
           html: '&times;',
         });
 
@@ -294,8 +294,8 @@ jQuery(function ($) {
       $noty.appendTo('body').fadeIn(300);
     } else {
       $noty
-        .find('#baivong_noty_content')
-        .attr('class', 'baivong_' + status)
+        .find('#mcd_noty_content')
+        .attr('class', 'mcd_' + status)
         .html(txt);
 
       $noty.show();
@@ -1666,7 +1666,7 @@ jQuery(function ($) {
   });
 
   GM_addStyle(
-    '#baivong_noty_wrap{display:none;background:#fff;position:fixed;z-index:2147483647;right:20px;top:20px;min-width:150px;max-width:100%;padding:15px 25px;border:1px solid #ddd;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 10px rgba(0,0,0,.35);cursor:pointer}#baivong_noty_content{color:#444}#baivong_noty_content strong{font-weight:700}#baivong_noty_content.baivong_info strong{color:#2196f3}#baivong_noty_content.baivong_success strong{color:#4caf50}#baivong_noty_content.baivong_warning strong{color:#ffc107}#baivong_noty_content.baivong_error strong{color:#f44336}#baivong_noty_content strong.centered{display:block;text-align:center}#baivong_noty_close{position:absolute;right:0;top:0;font-size:18px;color:#ddd;height:20px;width:20px;line-height:20px;text-align:center}#baivong_noty_wrap:hover #baivong_noty_close{color:#333}',
+    '#mcd_noty_wrap{display:none;background:#fff;position:fixed;z-index:2147483647;right:20px;top:20px;min-width:150px;max-width:100%;padding:15px 25px;border:1px solid #ddd;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 10px rgba(0,0,0,.35);cursor:pointer}#mcd_noty_content{color:#444}#mcd_noty_content strong{font-weight:700}#mcd_noty_content.mcd_info strong{color:#2196f3}#mcd_noty_content.mcd_success strong{color:#4caf50}#mcd_noty_content.mcd_warning strong{color:#ffc107}#mcd_noty_content.mcd_error strong{color:#f44336}#mcd_noty_content strong.centered{display:block;text-align:center}#mcd_noty_close{position:absolute;right:0;top:0;font-size:18px;color:#ddd;height:20px;width:20px;line-height:20px;text-align:center}#mcd_noty_wrap:hover #mcd_noty_close{color:#333}',
   );
 
   function getHentaiVN() {
