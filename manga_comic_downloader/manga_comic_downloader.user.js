@@ -1356,27 +1356,28 @@ jQuery(function ($) {
       GM.xmlHttpRequest({
         method: 'GET',
         url: configs.href,
-        onload: function (data) {
-          var $data = cleanSource(data);
-          window.otakusanVi = $data.find('#dataip').val();
-
+        withCredentials: true,
+        headers: {
+          host: 'otakusan.net',
+        },
+        onload: function () {
           GM.xmlHttpRequest({
             method: 'POST',
             url: '/Manga/UpdateView',
             responseType: 'json',
+            withCredentials: true,
+            headers: {
+              host: 'otakusan.net',
+              'content-length': 14,
+              'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            },
+            data: 'chapId=' + configs.href.match(/\/(\d+)\/.+$/)[1],
             onload: function (response) {
               var res = response.response;
               if (!res.chapid) {
                 notyImages();
               } else {
-                window.otakusanKey = res.key;
-                window.otakusanSuccess = res.isSuccess;
-
-                var images = JSON.parse(res.view);
-                $.each(images, function (i, v) {
-                  images[i] = otakuSanFilter(v, 1, i);
-                });
-                notySuccess(images);
+                notySuccess(JSON.parse(res.view));
               }
             },
           });
