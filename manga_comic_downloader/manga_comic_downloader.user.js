@@ -80,8 +80,8 @@
 // @match           https://*.sayhentai.net/*
 // @match           https://cocomic.net/truyen-tranh/*
 // @require         https://code.jquery.com/jquery-3.6.0.min.js
-// @require         https://unpkg.com/fflate@0.4.8/umd/index.js
-// @require         https://unpkg.com/file-saver@2.0.4/dist/FileSaver.min.js
+// @require         https://greasyfork.org/scripts/442805-fflate-umd/code/fflateumd.js?version=1036436
+// @require         https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @require         https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js
 // @noframes
