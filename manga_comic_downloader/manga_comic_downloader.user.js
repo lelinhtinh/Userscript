@@ -2,38 +2,25 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.3.0
+// @version         3.3.1
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
-// @match           http://*.truyentranhtam.com/*
-// @match           http://*.truyentranh8.org/*
-// @match           http://*.truyentranh8.com/*
-// @match           http://*.truyentranh869.com/*
-// @match           http://*.truyentranh86.com/*
-// @match           http://iutruyentranh.com/*
-// @match           https://iutruyentranh.com/*
+// @match           http*://*.truyentranhtam.com/*
+// @match           http*://*.truyentranh8.org/*
+// @match           http*://*.truyentranh8.com/*
+// @match           http*://*.truyentranh869.com/*
+// @match           http*://*.truyentranh86.com/*
+// @match           https://mangaxy.com/*
 // @match           https://*.truyentranh.net/*
-// @match           https://comicvn.net/*
-// @match           https://beeng.net/*
-// @match           https://beeng.org/*
 // @match           https://*.hamtruyen.com/*
 // @match           https://*.hamtruyenmoi.com/*
-// @match           https://ntruyen.info/*
 // @match           https://*.a3manga.com/*
+// @match           https://*.a3mnga.com/*
 // @match           http://truyentranhtuan.com/*
-// @match           http://mangak.info/*
-// @match           http://mangak.net/*
-// @match           http://mangak.com/*
-// @match           https://truyendep.com/*
 // @match           https://truyentranhlh.net/*
-// @match           https://truyentranhlh.com/*
-// @match           https://hocvientruyentranh.net/*
-// @match           https://hocvientruyentranh.com/*
 // @match           https://truyenhay24h.com/*
 // @match           https://thichtruyentranh.com/*
-// @match           http://truyen1.net/*
-// @match           http://truyentranh1.info/*
 // @match           http://*.hentailxx.com/*
 // @match           https://*.hentailxx.com/*
 // @match           http://lxhentai.com/*
@@ -41,7 +28,7 @@
 // @match           https://hentaivn.net/*
 // @match           https://hentaivn.moe/*
 // @match           https://otakusan.net/*
-// @match           https://ngonphongcomics.com/*
+// @match           https://*.ngonphong.com/*
 // @match           https://*.nettruyen.com/*
 // @match           http://*.nettruyen.com/*
 // @match           https://*.nettruyentop.com/*
@@ -54,7 +41,9 @@
 // @match           https://*.nettruyenpro.com/*
 // @match           http://*.nettruyengo.com/*
 // @match           https://*.nettruyengo.com/*
+// @match           http://*.nettruyenmoi.com/*
 // @match           http://nhattruyen.com/*
+// @match           http://nhattruyengo.com/*
 // @match           http://*.hamtruyentranh.net/*
 // @match           https://ttmanga.com/*
 // @match           http://truyen.vnsharing.site/*
@@ -62,19 +51,19 @@
 // @match           https://blogtruyen.vn/*
 // @match           https://blogtruyen.top/*
 // @match           https://truyensieuhay.com/*
-// @match           http://truyenchon.com/*
 // @match           http://truyenqq.com/*
 // @match           http://truyenqq.net/*
 // @match           http://truyenqqtop.com/*
+// @match           http://truyenqqpro.com/*
 // @match           https://sachvui.com/*
 // @match           https://hentaicube.net/*
 // @match           https://hentaicb.top/*
 // @match           http://*.tuthienbao.com/*
 // @match           https://vietcomic.net/*
 // @match           https://hamtruyentranh.com/*
-// @match           https://hoihentai.com/*
-// @match           https://hoitruyentranh.com/*
+// @match           https://khotruyentranhz.com/*
 // @match           https://truyenvn.com/*
+// @match           https://truyenvn.vip/*
 // @match           https://*.saytruyen.net/*
 // @match           https://*.saytruyen.com/*
 // @match           https://*.sayhentai.net/*
@@ -151,6 +140,7 @@ jQuery(function ($) {
     'truyenqq.net',
     'truyenqq.com',
     'truyenqqtop.com',
+    'truyenqqpro.com',
     '.upanhmoi.net',
     'qqtaku.com',
     'qqtaku.net',
@@ -197,10 +187,10 @@ jQuery(function ($) {
     'storage.fshare.vn': 'https://truyentranh.net',
     'ocumeo.com': 'https://www.a3manga.com/',
     'www.ocumeo.com': 'https://www.a3manga.com/',
-    'mangaqq.net': 'http://truyenqqtop.com/',
-    'mangaqq.com': 'http://truyenqqtop.com/',
-    'truyenqq.net': 'http://truyenqqtop.com/',
-    'truyenvua.xyz': 'http://truyenqqtop.com/',
+    'mangaqq.net': 'http://truyenqqpro.com/',
+    'mangaqq.com': 'http://truyenqqpro.com/',
+    'truyenqq.net': 'http://truyenqqpro.com/',
+    'truyenvua.xyz': 'http://truyenqqpro.com/',
     'i02.hentaivn.net': 'https://hentaivn.net/',
     'i1.hentaivn.net': 'https://hentaivn.net/',
   };
@@ -278,8 +268,8 @@ jQuery(function ($) {
 
     if (!$noty.length) {
       var $wrap = $('<div>', {
-          id: 'mcd_noty_wrap',
-        }),
+        id: 'mcd_noty_wrap',
+      }),
         $content = $('<div>', {
           id: 'mcd_noty_content',
           class: 'mcd_' + status,
@@ -533,10 +523,10 @@ jQuery(function ($) {
 
           noty(
             '<a href="' +
-              URL.createObjectURL(zipFile) +
-              '" download="' +
-              zipName +
-              '"><strong>Click vào đây</strong></a> nếu trình duyệt không tự tải xuống',
+            URL.createObjectURL(zipFile) +
+            '" download="' +
+            zipName +
+            '"><strong>Click vào đây</strong></a> nếu trình duyệt không tự tải xuống',
             'success',
           );
           linkSuccess();
@@ -875,111 +865,6 @@ jQuery(function ($) {
     notyReady();
   }
 
-  function getIuTruyenTranh($data) {
-    function init($data) {
-      var $goiy = $data.find('.goiy');
-
-      if ($goiy.length) {
-        var comic_id, chap_index, chap_id;
-        try {
-          var matched = configs.href.match(/(\d+)-.*?\/c([\d.\-a-z]+)\.html\?id=(\d+)$/i);
-          comic_id = matched[1];
-          chap_index = matched[2];
-          chap_id = matched[3];
-          // eslint-disable-next-line no-empty
-        } catch (error) {}
-
-        var recentPassword = sessionStorage.getItem('recent-password');
-        var pass = prompt(
-          'Truyện yêu cầu nhập mật khẩu, gợi ý là:\n\n' +
-            $goiy.text() +
-            '\n\nSử dụng mã gõ tắt để nhập nhanh:\n{{ comic_id }}: ID truyện (' +
-            comic_id +
-            ')\n{{ chap_index }}: Thứ tự chương (' +
-            chap_index +
-            ')\n{{ chap_id }}: ID chương (' +
-            chap_id +
-            ')',
-          recentPassword ? recentPassword : '{{ chap_index }}ltn',
-        );
-
-        if (!pass || !pass.trim()) {
-          notyError();
-          return;
-        }
-        pass = pass.trim();
-        sessionStorage.setItem('recent-password', pass);
-
-        pass = pass.replace(/\{\{\s*comic_id\s*\}\}/, comic_id);
-        pass = pass.replace(/\{\{\s*chap_index\s*\}\}/, chap_index);
-        pass = pass.replace(/\{\{\s*chap_id\s*\}\}/, chap_id);
-
-        GM.xmlHttpRequest({
-          method: 'POST',
-          url: configs.href,
-          data: 'act=doUnclock&pass=' + pass,
-          headers: {
-            withCredentials: true,
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          onload: function (response) {
-            getIuTruyenTranh(cleanSource(response));
-          },
-          onerror: function () {
-            notyError();
-          },
-        });
-        return;
-      }
-
-      var packer = $data.filter('div.wrapper').find('script:first').text().trim().split('eval')[1],
-        lstImages = [];
-
-      eval(eval(packer));
-      checkImages(lstImages);
-    }
-
-    !$data ? getSource(init) : init($data);
-  }
-
-  function getNtruyen() {
-    getSource(function ($data) {
-      var $entry = $data.find('#containerListPage');
-      if (!$entry.length) {
-        notyImages();
-      } else {
-        if (isEmpty($entry)) {
-          var id = configs.href.match(/\/(\d+)\/[\w\d-]+$/i)[1];
-          $.ajax({
-            type: 'post',
-            url: '/MainHandler.ashx',
-            data: JSON.stringify({
-              id: 3,
-              method: 'getChapter',
-              params: [id],
-            }),
-            contentType: 'application/json',
-            dataType: 'json',
-          }).done(function (data) {
-            var input = data.result.data.listPages,
-              regex = /src="([^"]+)"/gi,
-              matches,
-              output = [];
-
-            // eslint-disable-next-line no-cond-assign
-            while ((matches = regex.exec(input))) {
-              output.push(decodeURIComponent(matches[1]));
-            }
-            checkImages(output);
-          });
-        } else {
-          configs.contents = '#containerListPage';
-          getContents($data);
-        }
-      }
-    });
-  }
-
   function getA3Manga() {
     getSource(function ($data) {
       var $entry = $data.find('#chapter-content script');
@@ -1019,7 +904,7 @@ jQuery(function ($) {
       if (!$entry.length) {
         notyImages();
       } else {
-        $data = $entry.text().match(/var\s+slides_page_url_path\s*=\s*(.+?);/)[1];
+        $data = $entry.text().match(/var\s+slides_page_path\s*=\s*(.+?);/)[1];
         $data = JSON.parse($data);
 
         var type_server = 1;
@@ -1054,38 +939,6 @@ jQuery(function ($) {
         }
 
         checkImages(slides_page);
-      }
-    });
-  }
-
-  function getMangaK() {
-    getSource(function ($data) {
-      var $entry = $data.find('#content-chap script'),
-        $vungDoc = $data.find('.vung_doc');
-
-      if (!$entry.length) {
-        notyImages();
-      } else {
-        $data = $entry.text().match(/var\s+content\s*=\s*(.+?);/)[1];
-        $data = $data.trim().replace(/,[\s\n]*\]$/, ']');
-        $data = JSON.parse($data);
-
-        var images = $data.map(function (val, i) {
-          var ext = val.match(/\.\w{3,4}$/);
-          ext = ext ? ext[0].toLowerCase() : '.jpg';
-
-          return (
-            'https://1.truyentranhmanga.com/images/' +
-            $vungDoc.data('manga') +
-            '/' +
-            $vungDoc.data('chapter') +
-            '/' +
-            i +
-            ext
-          );
-        });
-
-        checkImages(images);
       }
     });
   }
@@ -1129,60 +982,6 @@ jQuery(function ($) {
         checkImages($data);
       }
     });
-  }
-
-  function getTruyen1() {
-    $(configs.link).on('contextmenu', function (e) {
-      e.preventDefault();
-      hasDownloadError = false;
-      if (!oneProgress()) return;
-
-      var $this = $(this);
-
-      configs.href = $this.attr('href');
-      chapName = $('h1.title').text().trim() + ' ' + $this.text().trim();
-      notyWait();
-
-      var chapKey = configs.href.match(/\/(\d+)\/[^/]+$/);
-      if (!chapKey) {
-        notyError();
-        return;
-      }
-      chapKey = chapKey[1];
-
-      $.ajax({
-        url: '/MainHandler.ashx',
-        type: 'POST',
-        dataType: 'json',
-        data: JSON.stringify({
-          id: 2,
-          method: 'getChapter',
-          params: [chapKey],
-        }),
-        contentType: 'application/json',
-      })
-        .done(function (response) {
-          if (!response.result) {
-            notyError();
-            return;
-          }
-          if (response.result.hasErrors) {
-            notyImages();
-            return;
-          }
-          var data = response.result.data.listPages.match(/https?:\/\/[^"]+/g);
-          if (!data.length) {
-            notyImages();
-          } else {
-            checkImages(data);
-          }
-        })
-        .fail(function () {
-          notyError();
-        });
-    });
-
-    notyReady();
   }
 
   function getHentaiVN() {
@@ -1381,91 +1180,6 @@ jQuery(function ($) {
     });
   }
 
-  function getHoiTruyenTranh() {
-    var $link = $(configs.link);
-    if (!$link.length) return;
-
-    var csrfToken = $('#j-csrf').val();
-
-    function getAttachmentUrl(arr, output, done) {
-      if (!arr.length) return done();
-
-      $.getJSON(
-        '/get-attachment-url?csrfToken=' +
-          csrfToken +
-          '&url=' +
-          encodeURIComponent(arr.shift()) +
-          '&_' +
-          new Date().getTime(),
-      )
-        .done(function (response) {
-          if (response.status === 'success') {
-            output(response.data.url);
-            getAttachmentUrl(arr, output, done);
-          } else {
-            notyImages();
-          }
-        })
-        .fail(function () {
-          notyError();
-        });
-    }
-
-    $link.on('contextmenu', function (e) {
-      e.preventDefault();
-      hasDownloadError = false;
-      if (!oneProgress()) return;
-
-      var $this = $(this);
-      configs.href = $this.attr('href');
-      chapName = $(configs.name).text().trim() + ' ' + $this.text().trim();
-
-      notyWait();
-
-      var threadId = configs.href.match(/\/threads\/(\d+)\/?/)[1];
-      GM.xmlHttpRequest({
-        method: 'GET',
-        url: '/load-post-data?thread_id=' + threadId + '&is_backup=false',
-        onload: function (response) {
-          var $data = cleanSource(response),
-            $entry = $data.find('img');
-
-          if (!$entry.length) {
-            var $attachment = $(response.response).filter('.load-attachment');
-            if (!$attachment.length) {
-              notyImages();
-              return;
-            }
-
-            $attachment = $attachment
-              .map(function () {
-                return $(this).data('url');
-              })
-              .toArray();
-
-            var images = [];
-            getAttachmentUrl(
-              $attachment,
-              function (img) {
-                images.push(img);
-              },
-              function () {
-                checkImages(images);
-              },
-            );
-          } else {
-            getImages($entry);
-          }
-        },
-        onerror: function () {
-          notyError();
-        },
-      });
-    });
-
-    notyReady();
-  }
-
   function getTruyenVn() {
     getSource(function ($data) {
       var chapId = $data.find('[name="p"]:first').val();
@@ -1501,14 +1215,14 @@ jQuery(function ($) {
   }
 
   var configsDefault = {
-      reverse: true,
-      link: '',
-      name: '',
-      contents: '',
-      imgSrc: '',
-      filter: false,
-      init: getSource,
-    },
+    reverse: true,
+    link: '',
+    name: '',
+    contents: '',
+    imgSrc: '',
+    filter: false,
+    init: getSource,
+  },
     configs,
     chapName,
     $noty = [],
@@ -1557,11 +1271,16 @@ jQuery(function ($) {
         contents: '#reading-detail',
       };
       break;
-    case 'iutruyentranh.com':
+    case 'mangaxy.com':
       configs = {
-        link: '#chaplist a',
+        link: '#ChapList a',
+        name: function (_this) {
+          var title = $('h1.comics-title').text()
+          var chapTitle = $(_this).find('div.episode-title').text();
+          return `${title} ${chapTitle}`;
+        },
+        contents: '#reading-detail'
       };
-      getIuTruyenTranh();
       break;
     case 'truyentranh.net':
     case 'www.truyentranh.net':
@@ -1574,17 +1293,6 @@ jQuery(function ($) {
         contents: '.manga-reading-box',
       };
       break;
-    case 'comicvn.net':
-    case 'beeng.net':
-    case 'beeng.org':
-      configs = {
-        link: '#scrollbar a',
-        name: function (_this) {
-          return $('.detailComic h1').text().trim() + ' ' + $(_this).find('.titleComic').text().trim();
-        },
-        contents: '#lightgallery2',
-      };
-      break;
     case 'hamtruyen.com':
     case 'www.hamtruyen.com':
     case 'hamtruyenmoi.com':
@@ -1594,15 +1302,17 @@ jQuery(function ($) {
         contents: '.list-images',
       };
       break;
-    case 'ntruyen.info':
+    case 'm.hamtruyen.com':
       configs = {
-        link: '.cellChapter a',
-        name: 'h1',
-        init: getNtruyen,
+        link: '.list-chap a',
+        name: '.tentruyen',
+        contents: '#content_chap',
       };
       break;
     case 'a3manga.com':
     case 'www.a3manga.com':
+    case 'a3mnga.com':
+    case 'www.a3mnga.com':
       configs = {
         link: '.table-striped a',
         init: getA3Manga,
@@ -1614,16 +1324,6 @@ jQuery(function ($) {
         init: getTruyenTranhTuan,
       };
       break;
-    case 'mangak.net':
-    case 'mangak.com':
-    case 'mangak.info':
-    case 'truyendep.com':
-      configs = {
-        link: '.chapter-list a',
-        init: getMangaK,
-      };
-      break;
-    case 'truyentranhlh.com':
     case 'truyentranhlh.net':
       configs = {
         link: '.list-chapters a',
@@ -1631,14 +1331,6 @@ jQuery(function ($) {
         name: function (_this) {
           return $('.series-name').text().trim() + ' ' + $(_this).find('.chapter-name').text().trim();
         },
-      };
-      break;
-    case 'hocvientruyentranh.com':
-    case 'hocvientruyentranh.net':
-      configs = {
-        link: '.table-scroll a',
-        name: '.__name',
-        contents: '.manga-container',
       };
       break;
     case 'truyenhay24h.com':
@@ -1653,13 +1345,6 @@ jQuery(function ($) {
         reverse: false,
         link: '#listChapterBlock .ul_listchap a',
         init: getThichTruyenTranh,
-      };
-      break;
-    case 'truyen1.net':
-    case 'truyentranh1.info':
-      configs = {
-        link: '#MainContent_CenterContent_detailStoryControl_listChapter a',
-        init: getTruyen1,
       };
       break;
     case 'hentailxx.com':
@@ -1703,18 +1388,20 @@ jQuery(function ($) {
         init: getOtakuSan,
       };
       break;
-    case 'ngonphongcomics.com':
+    case 'ngonphong.com':
       configs = {
-        link: '.comic-intro .table-striped a',
+        link: '.chapter-table .table-striped a',
         name: '.info-title',
         init: getNgonPhongComics,
       };
       break;
     case 'www.nettruyen.com':
     case 'nhattruyen.com':
+    case 'nhattruyengo.com':
     case 'www.nettruyenapp.com':
     case 'www.nettruyenpro.com':
     case 'www.nettruyengo.com':
+    case 'www.nettruyenmoi.com':
       configs = {
         link: '#nt_listchapter .chapter a',
         name: '.title-detail',
@@ -1780,20 +1467,14 @@ jQuery(function ($) {
         init: getTruyenSieuHay,
       };
       break;
-    case 'truyenchon.com':
-      configs = {
-        link: '#nt_listchapter .chapter a',
-        name: 'h1',
-        contents: '.reading-detail',
-      };
-      break;
     case 'truyenqq.com':
     case 'truyenqq.net':
     case 'truyenqqtop.com':
+    case 'truyenqqpro.com':
       configs = {
         link: '.works-chapter-list a',
         name: 'h1',
-        contents: '.story-see-content',
+        contents: '.chapter_content',
       };
       break;
     case 'sachvui.com':
@@ -1838,16 +1519,15 @@ jQuery(function ($) {
         imgSrc: 'id-source',
       };
       break;
-    case 'hoihentai.com':
-    case 'hoitruyentranh.com':
+    case 'khotruyentranhz.com':
       configs = {
-        reverse: false,
-        link: '.chapterList a',
-        name: 'h1.title',
-        init: getHoiTruyenTranh,
+        link: '#chapters-list-content .chapter-list a',
+        name: 'h1',
+        contents: '.box-chapter-content',
       };
       break;
     case 'truyenvn.com':
+    case 'truyenvn.vip':
       configs = {
         link: '#chapterList a',
         name: function (_this) {
@@ -1862,10 +1542,11 @@ jQuery(function ($) {
     case 'www.saytruyen.com':
     case 'sayhentai.net':
     case 'www.sayhentai.net':
+    case 'sayhentai.tv':
       configs = {
-        link: '#list-chapter a',
-        name: 'h1.title',
-        contents: '#lst_content',
+        link: '.list-chapter a',
+        name: '.post-title h1',
+        contents: '#chapter_content',
       };
       break;
     case 'cocomic.net':
