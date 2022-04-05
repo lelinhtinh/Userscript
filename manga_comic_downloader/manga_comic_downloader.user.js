@@ -513,8 +513,7 @@ jQuery(function ($) {
     fflate.zip(
       zipObj,
       {
-        level: 6,
-        mtime: 0,
+        level: 0,
       },
       function (err, out) {
         if (err) {
@@ -524,24 +523,26 @@ jQuery(function ($) {
           document.title = '[x] ' + tit;
           endZip();
         } else {
-          var blob = new Blob([out]);
           var zipName = genFileName() + '.' + outputExt;
+          var zipFile = new File([out], zipName, {
+            type: outputExt === 'cbz' ? 'application/vnd.comicbook+zip' : 'application/zip',
+          });
 
           if (recentZip) URL.revokeObjectURL(recentZip);
-          recentZip = blob;
+          recentZip = zipFile;
 
           noty(
             '<a href="' +
-            URL.createObjectURL(recentZip) +
-            '" download="' +
-            zipName +
-            '"><strong>Click vào đây</strong></a> nếu trình duyệt không tự tải xuống',
+              URL.createObjectURL(zipFile) +
+              '" download="' +
+              zipName +
+              '"><strong>Click vào đây</strong></a> nếu trình duyệt không tự tải xuống',
             'success',
           );
           linkSuccess();
 
           window.removeEventListener('beforeunload', beforeleaving);
-          saveAs(blob, zipName);
+          saveAs(zipFile);
 
           document.title = '[⇓] ' + tit;
           endZip();
