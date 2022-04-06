@@ -49,7 +49,6 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 1. <https://blogtruyen.com/>, <https://blogtruyen.vn/>, <https://blogtruyen.top/>
 1. <https://truyensieuhay.com/>
 1. <http://truyenqq.com/>, <http://truyenqq.net/>, <http://truyenqqtop.com/>, <http://truyenqqpro.com/>
-1. <https://sachvui.com/the-loai/doc-truyen-tranh-online.html>
 1. <https://hentaicube.net/>, <https://hentaicb.top/>
 1. <http://tuthienbao.com/>
 1. <https://vietcomic.net/>
