@@ -55,7 +55,6 @@
 // @match           http://truyenqq.net/*
 // @match           http://truyenqqtop.com/*
 // @match           http://truyenqqpro.com/*
-// @match           https://sachvui.com/*
 // @match           https://hentaicube.net/*
 // @match           https://hentaicb.top/*
 // @match           http://*.tuthienbao.com/*
@@ -199,9 +198,9 @@ jQuery(function ($) {
 
   window.URL = window._URL;
 
-  function isEmpty(el) {
-    return !$.trim(el.html());
-  }
+  // function isEmpty(el) {
+  //   return !$.trim(el.html());
+  // }
 
   function getImageType(arrayBuffer) {
     if (!arrayBuffer.byteLength)
@@ -268,8 +267,8 @@ jQuery(function ($) {
 
     if (!$noty.length) {
       var $wrap = $('<div>', {
-        id: 'mcd_noty_wrap',
-      }),
+          id: 'mcd_noty_wrap',
+        }),
         $content = $('<div>', {
           id: 'mcd_noty_content',
           class: 'mcd_' + status,
@@ -1215,14 +1214,14 @@ jQuery(function ($) {
   }
 
   var configsDefault = {
-    reverse: true,
-    link: '',
-    name: '',
-    contents: '',
-    imgSrc: '',
-    filter: false,
-    init: getSource,
-  },
+      reverse: true,
+      link: '',
+      name: '',
+      contents: '',
+      imgSrc: '',
+      filter: false,
+      init: getSource,
+    },
     configs,
     chapName,
     $noty = [],
@@ -1275,11 +1274,11 @@ jQuery(function ($) {
       configs = {
         link: '#ChapList a',
         name: function (_this) {
-          var title = $('h1.comics-title').text()
+          var title = $('h1.comics-title').text();
           var chapTitle = $(_this).find('div.episode-title').text();
           return `${title} ${chapTitle}`;
         },
-        contents: '#reading-detail'
+        contents: '#reading-detail',
       };
       break;
     case 'truyentranh.net':
@@ -1475,14 +1474,6 @@ jQuery(function ($) {
         link: '.works-chapter-list a',
         name: 'h1',
         contents: '.chapter_content',
-      };
-      break;
-    case 'sachvui.com':
-      configs = {
-        reverse: false,
-        link: '#list-chapter a[href^="https://sachvui.com/doc-sach/"]',
-        name: 'h1.ebook_title',
-        contents: '.noi_dung_online',
       };
       break;
     case 'hentaicube.net':
