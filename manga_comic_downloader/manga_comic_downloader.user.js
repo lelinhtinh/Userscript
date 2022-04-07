@@ -84,6 +84,8 @@
 // @require         https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @require         https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js
+// @resource        success https://unpkg.com/facebook-sound-kit@2.0.0/Low_Volume_-20dB/Complete_and_Success/Success_2.m4a
+// @resource        error https://unpkg.com/facebook-sound-kit@2.0.0/Low_Volume_-20dB/Errors_and_Cancel/Error_2.m4a
 // @noframes
 // @connect         *
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
@@ -91,6 +93,8 @@
 // @grant           GM_addStyle
 // @grant           GM_xmlhttpRequest
 // @grant           GM.xmlHttpRequest
+// @grant           GM.getResourceUrl
+// @grant           GM_getResourceURL
 // @grant           GM_registerMenuCommand
 // ==/UserScript==
 
@@ -122,6 +126,12 @@ jQuery(function ($) {
    * @type {Number}
    */
   var tries = 5;
+
+  /**
+   * Enable audio cues.
+   * @type {Boolean}
+   */
+  var audioCues = false;
 
   /**
    * Image list will be ignored
@@ -208,6 +218,18 @@ jQuery(function ($) {
   /* === DO NOT CHANGE === */
 
   window.URL = window._URL;
+
+  var successSound, errorSound;
+  if (audioCues) {
+    GM.getResourceUrl('success').then(function (url) {
+      console.log('url', url);
+      successSound = new Audio(url);
+    });
+    GM.getResourceUrl('error').then(function (url) {
+      console.log('url', url);
+      errorSound = new Audio(url);
+    });
+  }
 
   function isEmpty(el) {
     return !$.trim(el.html());
@@ -351,6 +373,7 @@ jQuery(function ($) {
   function cancelProgress() {
     linkError();
     window.removeEventListener('beforeunload', beforeleaving);
+    errorSound && errorSound.play();
   }
 
   function notyError() {
@@ -380,6 +403,7 @@ jQuery(function ($) {
 
     noty('Bắt đầu tải <strong>' + chapName + '</strong>', 'warning');
     window.addEventListener('beforeunload', beforeleaving);
+    successSound && successSound.play();
   }
 
   function notyWait() {
