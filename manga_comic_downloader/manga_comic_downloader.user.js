@@ -285,8 +285,8 @@ jQuery(function ($) {
 
     if (!$noty.length) {
       var $wrap = $('<div>', {
-        id: 'mcd_noty_wrap',
-      }),
+          id: 'mcd_noty_wrap',
+        }),
         $content = $('<div>', {
           id: 'mcd_noty_content',
           class: 'mcd_' + status,
@@ -542,10 +542,10 @@ jQuery(function ($) {
 
           noty(
             '<a href="' +
-            URL.createObjectURL(zipFile) +
-            '" download="' +
-            zipName +
-            '"><strong>Click vào đây</strong></a> nếu trình duyệt không tự tải xuống',
+              URL.createObjectURL(zipFile) +
+              '" download="' +
+              zipName +
+              '"><strong>Click vào đây</strong></a> nếu trình duyệt không tự tải xuống',
             'success',
           );
           linkSuccess();
@@ -1234,14 +1234,14 @@ jQuery(function ($) {
   }
 
   var configsDefault = {
-    reverse: true,
-    link: '',
-    name: '',
-    contents: '',
-    imgSrc: '',
-    filter: false,
-    init: getSource,
-  },
+      reverse: true,
+      link: '',
+      name: '',
+      contents: '',
+      imgSrc: '',
+      filter: false,
+      init: getSource,
+    },
     configs,
     chapName,
     $noty = [],
