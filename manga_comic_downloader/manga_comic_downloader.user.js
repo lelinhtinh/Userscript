@@ -498,6 +498,7 @@ jQuery(function ($) {
 
   function genZip() {
     noty('Tạo file nén của <strong>' + chapName + '</strong>', 'warning');
+    alertSoundSuccess();
 
     fflate.zip(
       zipObj,
@@ -538,6 +539,12 @@ jQuery(function ($) {
         }
       },
     );
+  }
+
+  function alertSoundSuccess() {
+    var audio = new Audio();
+    audio.src = 'https://soundbible.com/mp3/Store_Door_Chime-Mike_Koenig-570742973.mp3';
+    audio.autoplay = true;
   }
 
   /* global CryptoJS, chapterHTML */
