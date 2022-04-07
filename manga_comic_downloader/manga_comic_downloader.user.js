@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.3.3
+// @version         3.3.4
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -203,6 +203,7 @@ jQuery(function ($) {
     'truyenvua.xyz': 'http://truyenqqpro.com/',
     'i02.hentaivn.net': 'https://hentaivn.net/',
     'i1.hentaivn.net': 'https://hentaivn.net/',
+    'i.imgur.com': 'https://imgur.com/',
   };
 
   /* === DO NOT CHANGE === */
@@ -991,7 +992,7 @@ jQuery(function ($) {
       chapterList.scrollIntoView();
     }, 0);
 
-    const observer = new MutationObserver(function (mutations_list) {
+    var observer = new MutationObserver(function (mutations_list) {
       mutations_list.forEach(function (mutation) {
         if (mutation.type !== 'childList') return;
         if (!mutation.target.querySelector(configs.link)) return;
