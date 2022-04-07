@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.3.1
+// @version         3.3.2
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -71,7 +71,7 @@
 // @require         https://greasyfork.org/scripts/442805-fflate-umd/code/fflateumd.js?version=1036436
 // @require         https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
-// @require         https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js
+// @resource        CryptoJS https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js
 // @resource        success https://unpkg.com/facebook-sound-kit@2.0.0/Low_Volume_-20dB/Complete_and_Success/Success_2.m4a
 // @resource        error https://unpkg.com/facebook-sound-kit@2.0.0/Low_Volume_-20dB/Errors_and_Cancel/Error_2.m4a
 // @noframes
@@ -560,25 +560,6 @@ jQuery(function ($) {
     );
   }
 
-  /* global CryptoJS, chapterHTML */
-  // Using for getA3Manga + getNgonPhongComics
-  // eslint-disable-next-line no-unused-vars
-  function CryptoJSAesDecrypt(passphrase, encrypted_json_string) {
-    var obj_json = JSON.parse(encrypted_json_string);
-    var encrypted = obj_json.ciphertext;
-    var salt = CryptoJS.enc.Hex.parse(obj_json.salt);
-    var iv = CryptoJS.enc.Hex.parse(obj_json.iv);
-    var key = CryptoJS.PBKDF2(passphrase, salt, {
-      hasher: CryptoJS.algo.SHA512,
-      keySize: 64 / 8,
-      iterations: 999,
-    });
-    var decrypted = CryptoJS.AES.decrypt(encrypted, key, {
-      iv: iv,
-    });
-    return decrypted.toString(CryptoJS.enc.Utf8);
-  }
-
   function dlImgError(current, success, error, err, filename) {
     if (dlImages[current].attempt <= 0) {
       dlFinal++;
@@ -886,33 +867,35 @@ jQuery(function ($) {
 
   function getA3Manga() {
     getSource(function ($data) {
-      var $entry = $data.find('#chapter-content script');
-      if (!$entry.length) {
+      var chapterCode = $data.find('script:contains("htmlContent")');
+      var chapterDecrypt = $data.filter('script:contains("htmlContent")');
+      if (!chapterCode.length || !chapterDecrypt.length) {
         notyImages();
       } else {
-        $entry = $entry.text().replace('document.write(chapterHTML);', '').trim();
-        if (!$entry) {
-          notyImages();
-          return;
-        }
+        chapterDecrypt = chapterDecrypt.text().match(/(CryptoJSAesDecrypt\(.+?(?:(;}|htmlContent\);)))/g);
 
-        String.prototype.replaceAll = function (search, replacement) {
-          var target = this;
-          return target.split(search).join(replacement);
-        };
+        GM.getResourceUrl('CryptoJS')
+          .then((url) => fetch(url))
+          .then((resp) => resp.text())
+          .then((CryptoJS) => {
+            var chapterHTML = new Function(
+              CryptoJS + chapterCode.text() + 'function ' + chapterDecrypt[0] + 'return ' + chapterDecrypt[1],
+            )();
 
-        eval($entry);
-        $entry = $(chapterHTML);
+            var images = chapterHTML.match(/(?<=(data-(lqz53ud|3dn5rc9)="))(.+?)(?=")/g);
+            if (!images) {
+              notyImages();
+              return;
+            }
 
-        var images = [];
-        $entry.each(function (i, v) {
-          var imgLink = $(v).data('9rqz');
-          imgLink = imgLink.replaceAll('@9rQz^', '.');
-          imgLink = imgLink.replaceAll('~4ZLsA*', ':');
-          imgLink = imgLink.replaceAll('^u$UZ!QyI<yt_Z2}', '/');
-          images.push(imgLink);
-        });
-        checkImages(images);
+            images = images.map((imgLink) => {
+              imgLink = imgLink.replace(/LqZ53ud|3Dn5rc9/g, '.');
+              imgLink = imgLink.replace(/pPdp7FG|gNa8fuX/g, ':');
+              imgLink = imgLink.replace(/9pyrBcb|hT3k3S6/g, '/');
+              return imgLink;
+            });
+            checkImages(images);
+          });
       }
     });
   }
@@ -1077,42 +1060,6 @@ jQuery(function ($) {
     });
 
     notyReady();
-  }
-
-  function getNgonPhongComics() {
-    getSource(function ($data) {
-      var $entry = $data.filter('#chapter-content').find('script');
-      if (!$entry.length) {
-        notyImages();
-      } else {
-        $entry = $entry
-          .text()
-          .trim()
-          .match(/^(.+?)document\.write\(chapterHTML\);/);
-        if (!$entry) {
-          notyImages();
-          return;
-        }
-
-        String.prototype.replaceAll = function (search, replacement) {
-          var target = this;
-          return target.split(search).join(replacement);
-        };
-
-        eval($entry[1]);
-        $entry = $(chapterHTML);
-
-        var images = [];
-        $entry.each(function (i, v) {
-          var imgLink = $(v).data('9rpq');
-          imgLink = imgLink.replaceAll('@9rpQ^', '.');
-          imgLink = imgLink.replaceAll('~4ZLls*', ':');
-          imgLink = imgLink.replaceAll('^u$UZ!Qy<yut_Z2}', '/');
-          images.push(imgLink);
-        });
-        checkImages(images);
-      }
-    });
   }
 
   function getTtManga() {
@@ -1332,8 +1279,9 @@ jQuery(function ($) {
     case 'www.a3manga.com':
     case 'a3mnga.com':
     case 'www.a3mnga.com':
+    case 'www.ngonphong.com':
       configs = {
-        link: '.table-striped a',
+        link: '.chapter-table a.text-capitalize',
         init: getA3Manga,
       };
       break;
@@ -1405,13 +1353,6 @@ jQuery(function ($) {
         link: '.read-chapter a',
         name: 'h1.header',
         init: getOtakuSan,
-      };
-      break;
-    case 'ngonphong.com':
-      configs = {
-        link: '.chapter-table .table-striped a',
-        name: '.info-title',
-        init: getNgonPhongComics,
       };
       break;
     case 'www.nettruyen.com':
