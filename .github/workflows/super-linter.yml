@@ -8,9 +8,9 @@ name: Lint Code Base
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 jobs:
   run-lint:
     runs-on: ubuntu-latest
@@ -26,6 +26,7 @@ jobs:
         env:
           VALIDATE_ALL_CODEBASE: false
           LINTER_RULES_PATH: /
+          VALIDATE_MARKDOWN: true
           VALIDATE_JAVASCRIPT_ES: true
           JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.json
           DEFAULT_BRANCH: master
