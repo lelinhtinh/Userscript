@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.3.2
+// @version         3.3.3
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -71,7 +71,7 @@
 // @require         https://greasyfork.org/scripts/442805-fflate-umd/code/fflateumd.js?version=1036436
 // @require         https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
-// @resource        CryptoJS https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js
+// @require         https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js
 // @resource        success https://unpkg.com/facebook-sound-kit@2.0.0/Low_Volume_-20dB/Complete_and_Success/Success_2.m4a
 // @resource        error https://unpkg.com/facebook-sound-kit@2.0.0/Low_Volume_-20dB/Errors_and_Cancel/Error_2.m4a
 // @noframes
@@ -86,7 +86,7 @@
 // @grant           GM_registerMenuCommand
 // ==/UserScript==
 
-/* global fflate */
+/* global fflate, CryptoJS */
 window._URL = window.URL || window.webkitURL;
 
 jQuery(function ($) {
@@ -163,6 +163,7 @@ jQuery(function ($) {
     'truyentop1.com',
     'anhnhanh.org',
     'truyenvua.xyz',
+    'hamtruyen.vn',
   ];
 
   /**
@@ -211,11 +212,9 @@ jQuery(function ($) {
   var successSound, errorSound;
   if (audioCues) {
     GM.getResourceUrl('success').then(function (url) {
-      console.log('url', url);
       successSound = new Audio(url);
     });
     GM.getResourceUrl('error').then(function (url) {
-      console.log('url', url);
       errorSound = new Audio(url);
     });
   }
@@ -778,9 +777,8 @@ jQuery(function ($) {
     var images = [];
     $contents.each(function (i, v) {
       var $img = $(v);
-      images[i] = !configs.imgSrc
-        ? $img.data('src') || $img.data('original')
-        : $img.attr(configs.imgSrc) || $img.attr('src');
+      images[i] =
+        (!configs.imgSrc ? $img.data('src') || $img.data('original') : $img.attr(configs.imgSrc)) || $img.attr('src');
     });
 
     checkImages(images);
@@ -868,34 +866,32 @@ jQuery(function ($) {
   function getA3Manga() {
     getSource(function ($data) {
       var chapterCode = $data.find('script:contains("htmlContent")');
-      var chapterDecrypt = $data.filter('script:contains("htmlContent")');
-      if (!chapterCode.length || !chapterDecrypt.length) {
+      var chapterCrypto = $data.filter('script:contains("htmlContent")');
+      if (!chapterCode.length || !chapterCrypto.length) {
         notyImages();
       } else {
-        chapterDecrypt = chapterDecrypt.text().match(/(CryptoJSAesDecrypt\(.+?(?:(;}|htmlContent\);)))/g);
+        chapterCrypto = chapterCrypto.text().match(/(CryptoJSAesDecrypt\(.+?(?:(;}|htmlContent\);)))/g);
 
-        GM.getResourceUrl('CryptoJS')
-          .then((url) => fetch(url))
-          .then((resp) => resp.text())
-          .then((CryptoJS) => {
-            var chapterHTML = new Function(
-              CryptoJS + chapterCode.text() + 'function ' + chapterDecrypt[0] + 'return ' + chapterDecrypt[1],
-            )();
+        var chapterDecrypt = new Function(
+          chapterCode.text() + 'function ' + chapterCrypto[0] + 'return ' + chapterCrypto[1],
+        );
+        this.CryptoJS = CryptoJS;
+        chapterDecrypt.apply(this);
 
-            var images = chapterHTML.match(/(?<=(data-(lqz53ud|3dn5rc9)="))(.+?)(?=")/g);
-            if (!images) {
-              notyImages();
-              return;
-            }
+        var chapterHTML = chapterDecrypt();
+        var images = chapterHTML.match(/(?<=(data-(lqz53ud|3dn5rc9)="))(.+?)(?=")/g);
+        if (!images) {
+          notyImages();
+          return;
+        }
 
-            images = images.map((imgLink) => {
-              imgLink = imgLink.replace(/LqZ53ud|3Dn5rc9/g, '.');
-              imgLink = imgLink.replace(/pPdp7FG|gNa8fuX/g, ':');
-              imgLink = imgLink.replace(/9pyrBcb|hT3k3S6/g, '/');
-              return imgLink;
-            });
-            checkImages(images);
-          });
+        images = images.map((imgLink) => {
+          imgLink = imgLink.replace(/LqZ53ud|3Dn5rc9/g, '.');
+          imgLink = imgLink.replace(/pPdp7FG|gNa8fuX/g, ':');
+          imgLink = imgLink.replace(/9pyrBcb|hT3k3S6/g, '/');
+          return imgLink;
+        });
+        checkImages(images);
       }
     });
   }
@@ -1082,6 +1078,18 @@ jQuery(function ($) {
   }
 
   function getTruyenSieuHay() {
+    function decrypt(des, id) {
+      id = id.substring(2, id.length - 3);
+      var passphrase = CryptoJS.enc.Utf8.parse(id.toLowerCase());
+      var iv = CryptoJS.enc.Utf8.parse('gqLOHUioQ0QjhuvI');
+      var decrypted = CryptoJS.AES.decrypt(des, passphrase, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+      });
+      var result = decrypted.toString(CryptoJS.enc.Utf8);
+      return result;
+    }
+
     getSource(function ($data) {
       if ($data.find('#wrap_alertvip').length) {
         notyImages();
@@ -1089,17 +1097,16 @@ jQuery(function ($) {
       }
 
       var sID = $data.find('.content-chap-image').find('script:not([type]):first').text();
-      sID = /\bgetContentchap\('(\w+)'\)\B/.exec(sID);
+      sID = /\bgetContentchap\('(.+?)','(.+?)'\)/.exec(sID);
       if (!sID) {
         notyImages();
         return;
       }
-      sID = sID[1];
 
       $.ajax({
         type: 'POST',
         url: '/Service.asmx/getContentChap',
-        data: '{ sID: "' + sID + '",chuc:"k" }',
+        data: '{ sID: "' + sID[1] + '",chuc:"' + sID[2] + '" }',
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
         success: function (data) {
@@ -1108,16 +1115,10 @@ jQuery(function ($) {
             return;
           }
 
-          var regex = /\s+src='(http[^']+)'/gi,
-            matches,
-            output = [];
-
-          data = data.d;
-          // eslint-disable-next-line no-cond-assign
-          while ((matches = regex.exec(data))) {
-            output.push(decodeURIComponent(matches[1]));
-          }
-          checkImages(output);
+          data = JSON.parse(data.d);
+          var $contents = decrypt(data.des, data.id);
+          $contents = $($contents).filter('img');
+          getImages($contents);
         },
         error: function () {
           notyImages();
