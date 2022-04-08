@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.3.4
+// @version         3.3.5
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -119,7 +119,7 @@ jQuery(function ($) {
    * Enable audio cues.
    * @type {Boolean}
    */
-  var audioCues = false;
+  var audioCues = true;
 
   /**
    * Image list will be ignored
@@ -357,19 +357,21 @@ jQuery(function ($) {
 
   function cancelProgress() {
     linkError();
+    inProgress = false;
     window.removeEventListener('beforeunload', beforeleaving);
-    errorSound && errorSound.play();
+    setTimeout(() => {
+      if (dlAll.length || inProgress || !errorSound) return;
+      errorSound.play();
+    }, 0);
   }
 
   function notyError() {
     noty('Lỗi! Không tải được <strong>' + chapName + '</strong>', 'error');
-    inProgress = false;
     cancelProgress();
   }
 
   function notyImages() {
     noty('Lỗi! <strong>' + chapName + '</strong> không có dữ liệu', 'error');
-    inProgress = false;
     cancelProgress();
   }
 
@@ -388,7 +390,6 @@ jQuery(function ($) {
 
     noty('Bắt đầu tải <strong>' + chapName + '</strong>', 'warning');
     window.addEventListener('beforeunload', beforeleaving);
-    successSound && successSound.play();
   }
 
   function notyWait() {
@@ -514,6 +515,11 @@ jQuery(function ($) {
         inCustom = false;
       }
     }
+
+    setTimeout(() => {
+      if (dlAll.length || inProgress || !successSound) return;
+      successSound.play();
+    }, 0);
   }
 
   function genZip() {
