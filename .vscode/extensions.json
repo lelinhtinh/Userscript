@@ -3,9 +3,10 @@
     "editorconfig.editorconfig",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
-    "DavidAnson.vscode-markdownlint",
+    "davidanson.vscode-markdownlint",
     "streetsidesoftware.code-spell-checker",
-    "streetsidesoftware.code-spell-checker-vietnamese"
+    "streetsidesoftware.code-spell-checker-vietnamese",
+    "yandeu.five-server"
   ],
   "unwantedRecommendations": ["hookyqr.beautify"]
 }

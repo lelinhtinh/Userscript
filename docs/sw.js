@@ -1,3 +1,6 @@
+/* eslint-disable no-redeclare */
+/* global self ReadableStream Response */
+
 self.addEventListener('install', () => {
   self.skipWaiting();
 });
@@ -11,7 +14,7 @@ const map = new Map();
 // This should be called once per download
 // Each event has a dataChannel that the data will be piped through
 self.onmessage = (event) => {
-  // We send a heartbeat every x secound to keep the
+  // We send a heartbeat every x second to keep the
   // service worker alive if a transferable stream is not sent
   if (event.data === 'ping') {
     return;
@@ -28,7 +31,7 @@ self.onmessage = (event) => {
 
   // Note to self:
   // old streamsaver v1.2.0 might still use `readableStream`...
-  // but v2.0.0 will always transfer the stream throught MessageChannel #94
+  // but v2.0.0 will always transfer the stream through MessageChannel #94
   if (event.data.readableStream) {
     metadata[0] = event.data.readableStream;
   } else if (event.data.transferringReadable) {
@@ -62,8 +65,9 @@ function createStream(port) {
         controller.enqueue(data);
       };
     },
-    cancel() {
-      console.log('user aborted');
+    cancel(reason) {
+      console.log('user aborted', reason);
+      port.postMessage({ abort: true });
     },
   });
 }
@@ -109,13 +113,13 @@ self.onfetch = (event) => {
 
   // data, data.filename and size should not be used anymore
   if (data.size) {
-    console.warn('Depricated');
+    console.warn('Deprecated');
     responseHeaders.set('Content-Length', data.size);
   }
 
   let fileName = typeof data === 'string' ? data : data.filename;
   if (fileName) {
-    console.warn('Depricated');
+    console.warn('Deprecated');
     // Make filename RFC5987 compatible
     fileName = encodeURIComponent(fileName).replace(/['()]/g, escape).replace(/\*/g, '%2A');
     responseHeaders.set('Content-Disposition', "attachment; filename*=UTF-8''" + fileName);
