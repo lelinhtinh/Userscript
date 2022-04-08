@@ -8,17 +8,17 @@
 // @description:vi     Tải truyện tranh tại NhệnTái.
 // @description:zh-CN  在nHentai上下载漫画。
 // @description:zh-TW  在nHentai上下载漫画。
-// @version            3.1.4
+// @version            3.2.0
 // @icon               http://i.imgur.com/FAsQ4vZ.png
 // @author             Zzbaivong
 // @oujs:author        baivong
 // @license            MIT; https://baivong.mit-license.org/license.txt
 // @match              http://nhentai.net/g/*
 // @match              https://nhentai.net/g/*
-// @require            https://code.jquery.com/jquery-3.5.1.min.js
-// @require            https://cdn.jsdelivr.net/npm/web-streams-polyfill@3.0.1/dist/ponyfill.min.js
-// @require            https://cdn.jsdelivr.net/npm/streamsaver@2.0.5/StreamSaver.min.js
-// @require            https://cdn.jsdelivr.net/npm/streamsaver@2.0.5/examples/zip-stream.js
+// @require            https://code.jquery.com/jquery-3.6.0.min.js
+// @require            https://cdn.jsdelivr.net/npm/web-streams-polyfill@3.2.1/dist/ponyfill.min.js
+// @require            https://cdn.jsdelivr.net/npm/streamsaver@2.0.6/StreamSaver.min.js
+// @require            https://cdn.jsdelivr.net/npm/streamsaver@2.0.6/examples/zip-stream.js
 // @require            https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js?version=184529
 // @require            https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
@@ -74,6 +74,11 @@
         type: 'checkbox',
         default: false,
       },
+      useProxy: {
+        label: 'Use DuckDuckGo proxy',
+        type: 'checkbox',
+        default: false,
+      },
     },
     frame: configFrame,
     events: {
@@ -82,6 +87,7 @@
         outputName = GM_config.get('outputName');
         threading = GM_config.get('threading');
         hideTorrentBtn = GM_config.get('hideTorrentBtn');
+        useProxy = GM_config.get('useProxy');
 
         $download.find('span').text(` as ${outputExt.toUpperCase()}`);
         $_download.toggle(!hideTorrentBtn);
@@ -94,8 +100,7 @@
         }, 1500);
       },
     },
-    css:
-      '#nHentaiDlConfig{width:100%!important;position:initial!important;padding:10px!important;background:#0d0d0d;border:1px solid #313131!important;border-radius:5px;text-align:left}#nHentaiDlConfig *{font-family:"Noto Sans",sans-serif}#nHentaiDlConfig .config_header{text-align:left;font-size:17px;font-weight:700;margin-bottom:20px;color:#999}#nHentaiDlConfig .reset_holder{float:left;height:30px;line-height:30px}#nHentaiDlConfig .reset{color:#4d4d4d;text-align:left}#nHentaiDlConfig .saveclose_buttons{margin:0;padding:4px;min-width:100px;height:30px;line-height:14px;border-radius:2px;border:1px solid;cursor:pointer}#nHentaiDlConfig .saveclose_buttons.saved{background:#ffeb3b;border:1px solid #ffc107}#nHentaiDlConfig #nHentaiDlConfig_closeBtn{display:none}#nHentaiDlConfig_buttons_holder{margin-top:20px;border-top:1px dashed #4d4d4d;padding-top:11px}#nHentaiDlConfig .config_var::after{clear:both;content:"";display:block}#nHentaiDlConfig .config_var{position:relative}#nHentaiDlConfig .field_label{font-size:14px;height:26px;line-height:26px;margin:0;padding:0 10px 0 0;width:60%;display:block;float:left}#nHentaiDlConfig .config_var>[type=text],#nHentaiDlConfig .config_var>div,#nHentaiDlConfig .config_var>select,#nHentaiDlConfig .config_var>textarea{width:40%;border-radius:0;display:block;height:26px;line-height:26px;padding:0 10px;float:left}#nHentaiDlConfig .config_var>textarea{height:auto;line-height:14px;padding:10px;min-height:5em}#nHentaiDlConfig .config_var>select{background:#4d4d4d;color:#d9d9d9;padding:0}#nHentaiDlConfig .config_var>select:hover{background:#666}#nHentaiDlConfig .config_var>select:focus{outline:0 none}#nHentaiDlConfig .config_var>div>label{display:inline-block;vertical-align:top;margin-right:5px}#nHentaiDlConfig .config_var>#nHentaiDlConfig_field_outputName{width:150px;text-transform:capitalize}#nHentaiDlConfig .config_var>#nHentaiDlConfig_field_threading{width:70px}#nHentaiDlConfig .config_var>div{padding:0}#nHentaiDlConfig_field_outputExt{text-transform:uppercase}#nHentaiDlConfig_field_outputExt [value=cbz]{margin-right:20px!important}',
+    css: '#nHentaiDlConfig{width:100%!important;position:initial!important;padding:10px!important;background:#0d0d0d;border:1px solid #313131!important;border-radius:5px;text-align:left}#nHentaiDlConfig *{font-family:"Noto Sans",sans-serif}#nHentaiDlConfig .config_header{text-align:left;font-size:17px;font-weight:700;margin-bottom:20px;color:#999}#nHentaiDlConfig .reset_holder{float:left;height:30px;line-height:30px}#nHentaiDlConfig .reset{color:#4d4d4d;text-align:left}#nHentaiDlConfig .saveclose_buttons{margin:0;padding:4px;min-width:100px;height:30px;line-height:14px;border-radius:2px;border:1px solid;cursor:pointer}#nHentaiDlConfig .saveclose_buttons.saved{background:#ffeb3b;border:1px solid #ffc107}#nHentaiDlConfig #nHentaiDlConfig_closeBtn{display:none}#nHentaiDlConfig_buttons_holder{margin-top:20px;border-top:1px dashed #4d4d4d;padding-top:11px}#nHentaiDlConfig .config_var::after{clear:both;content:"";display:block}#nHentaiDlConfig .config_var{position:relative}#nHentaiDlConfig .field_label{font-size:14px;height:26px;line-height:26px;margin:0;padding:0 10px 0 0;width:60%;display:block;float:left}#nHentaiDlConfig .config_var>[type=text],#nHentaiDlConfig .config_var>div,#nHentaiDlConfig .config_var>select,#nHentaiDlConfig .config_var>textarea{width:40%;border-radius:0;display:block;height:26px;line-height:26px;padding:0 10px;float:left}#nHentaiDlConfig .config_var>textarea{height:auto;line-height:14px;padding:10px;min-height:5em}#nHentaiDlConfig .config_var>select{background:#4d4d4d;color:#d9d9d9;padding:0}#nHentaiDlConfig .config_var>select:hover{background:#666}#nHentaiDlConfig .config_var>select:focus{outline:0 none}#nHentaiDlConfig .config_var>div>label{display:inline-block;vertical-align:top;margin-right:5px}#nHentaiDlConfig .config_var>#nHentaiDlConfig_field_outputName{width:150px;text-transform:capitalize}#nHentaiDlConfig .config_var>#nHentaiDlConfig_field_threading{width:70px}#nHentaiDlConfig .config_var>div{padding:0}#nHentaiDlConfig_field_outputExt{text-transform:uppercase}#nHentaiDlConfig_field_outputExt [value=cbz]{margin-right:20px!important}',
   });
 
   /**
@@ -127,6 +132,12 @@
    * @type {Boolean}
    */
   let hideTorrentBtn = GM_config.get('hideTorrentBtn') || false;
+
+  /**
+   * Use proxy from DuckDuckGo
+   * @type {Boolean}
+   */
+  let useProxy = false;
 
   /**
    * Logging
@@ -245,6 +256,8 @@
   function dlImg(current, success, error) {
     let url = images[current].url,
       filename = url.replace(/.*\//g, '');
+
+    if (useProxy) url = `https://proxy.duckduckgo.com/iu/?u=${url}&f=1`;
 
     filename = `000${filename}`.slice(-8);
     log(filename, 'progress');
