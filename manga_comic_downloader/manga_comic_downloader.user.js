@@ -2,15 +2,20 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.3.5
+// @version         3.3.6
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
-// @match           http*://*.truyentranhtam.com/*
-// @match           http*://*.truyentranh8.org/*
-// @match           http*://*.truyentranh8.com/*
-// @match           http*://*.truyentranh869.com/*
-// @match           http*://*.truyentranh86.com/*
+// @match           http://*.truyentranh8.com/*
+// @match           https://*.truyentranh8.com/*
+// @match           http://*.truyentranh8.net/*
+// @match           https://*.truyentranh8.net/*
+// @match           http://*.truyentranh8.org/*
+// @match           https://*.truyentranh8.org/*
+// @match           http://*.truyentranh86.com/*
+// @match           https://*.truyentranh86.com/*
+// @match           http://*.truyentranh869.com/*
+// @match           https://*.truyentranh869.com/*
 // @match           https://mangaxy.com/*
 // @match           https://*.truyentranh.net/*
 // @match           https://*.hamtruyen.com/*
@@ -1233,7 +1238,8 @@ jQuery(function ($) {
   );
 
   switch (domainName) {
-    case 'truyentranhtam.com':
+    case 'truyentranh8.com':
+    case 'truyentranh8.net':
     case 'truyentranh8.org':
     case 'truyentranh869.com':
     case 'truyentranh86.com':

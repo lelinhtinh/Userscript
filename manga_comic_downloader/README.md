@@ -29,7 +29,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 
 ### Desktop
 
-1. <http://truyentranh8.com/>, <http://truyentranh8.net/>, <http://truyentranh8.org/>, <http://truyentranhtam.com/>, <http://truyentranh869.com/>, <http://truyentranh86.com/>
+1. <http://truyentranh8.com/>, <http://truyentranh8.net/>, <http://truyentranh8.org/>, <http://truyentranh869.com/>, <http://truyentranh86.com/>
 1. <https://mangaxy.com/>
 1. <https://truyentranh.net/>
 1. <https://hamtruyen.com/>
@@ -53,10 +53,10 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 1. <http://tuthienbao.com/>
 1. <https://vietcomic.net/>
 1. <https://hamtruyentranh.com/>
-2. <https://khotruyentranhz.com/>
-3. <https://truyenvn.com/>
-4. <https://saytruyen.net/>, <https://saytruyen.com/>, <https://sayhentai.net/>, <https://sayhentai.tv/>
-5. <https://cocomic.net/>
+1. <https://khotruyentranhz.com/>
+1. <https://truyenvn.com/>
+1. <https://saytruyen.net/>, <https://saytruyen.com/>, <https://sayhentai.net/>, <https://sayhentai.tv/>
+1. <https://cocomic.net/>
 
 ### Mobile
 
