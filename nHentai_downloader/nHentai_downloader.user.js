@@ -8,7 +8,7 @@
 // @description:vi     Tải truyện tranh tại NhệnTái.
 // @description:zh-CN  在nHentai上下载漫画。
 // @description:zh-TW  在nHentai上下载漫画。
-// @version            3.2.0
+// @version            3.2.1
 // @icon               http://i.imgur.com/FAsQ4vZ.png
 // @author             Zzbaivong
 // @oujs:author        baivong
@@ -137,7 +137,7 @@
    * Use proxy from DuckDuckGo
    * @type {Boolean}
    */
-  let useProxy = false;
+  let useProxy = GM_config.get('useProxy') || false;
 
   /**
    * Logging
