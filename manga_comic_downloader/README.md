@@ -23,11 +23,8 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 
 - Chỉ có thể tải một chương truyện mỗi lần, bạn cần phải đợi tiến trình hiện tại hoàn thành. Sau đó mới có thể tải chương truyện khác.
 - Vì script yêu cầu quyền truy cập nội dung trên mọi trang web *(`@connect *`)* nên **Tampermonkey** sẽ có hiện cảnh báo. Chọn **Always allow all domains** để bỏ qua.
-- Trên **Firefox Mobile** chỉ có thể sử dụng **Greasemonkey**, có thể không hoạt động trên một số Host có phiên bản mobile riêng. Hold vào một vùng trống để hiện Scripts commands.
 
-## Danh sách host hỗ trợ
-
-### Desktop
+### Danh sách host hỗ trợ
 
 1. <http://truyentranh8.com/>, <http://truyentranh8.net/>, <http://truyentranh8.org/>, <http://truyentranh869.com/>, <http://truyentranh86.com/>
 1. <https://mangaxy.com/>
@@ -38,7 +35,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 1. <https://truyentranhlh.net/>
 1. <https://truyenhay24h.com/>
 1. <https://thichtruyentranh.com/>
-1. <https://hentailxx.com/>, <https://lxhentai.com>
+1. <http://hentailxx.com/>, <http://lxhentai.com>
 1. <https://hentaivn.moe/>
 1. <https://otakusan.net/Manga>
 1. <https://ngonphong.com/>
@@ -58,17 +55,16 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 1. <https://saytruyen.net/>, <https://saytruyen.com/>, <https://sayhentai.net/>, <https://sayhentai.tv/>
 1. <https://cocomic.net/>
 
-### Mobile
+#### Mobile
 
-1. <http://m.hentailxx.com/>
-1. <https://hentaivn.moe/>
+1. <http://m.hentailxx.com/>, <http://m.lxhentai.com>
 1. <https://m.blogtruyen.com/>, <https://m.blogtruyen.vn/>, <https://m.blogtruyen.top/>
 
 ## Video từng bước cài đặt
 
 Nhấp vào ảnh để xem video hướng dẫn
 
-## PC
+### PC
 
 [![Hướng dẫn tải truyện tranh bằng PC](https://img.youtube.com/vi/Aw9c5pqRYGk/0.jpg)](https://www.youtube.com/watch?v=Aw9c5pqRYGk)
 
@@ -76,6 +72,20 @@ Nhấp vào ảnh để xem video hướng dẫn
 
 [![Hướng dẫn tải truyện tranh bằng điện thoại](https://img.youtube.com/vi/3bdvW3FCpak/0.jpg)](https://www.youtube.com/watch?v=3bdvW3FCpak)
 
-- Kể từ bản [cập nhật 27/08/2020](https://blog.mozilla.org/blog/2020/08/25/introducing-a-new-firefox-for-android-experience/), Firefox Mobile đã thay đổi engine khiến các addon không còn sử dụng được, bao gồm userscript manager như Greasemonkey.
-- Kích hoạt [chế độ thử nghiệm trong Firefox Nightly](https://blog.mozilla.org/addons/2020/09/29/expanded-extension-support-in-firefox-for-android-nightly/) có thể làm cho addon hoạt động.
-- Có một phiên bản rẽ nhánh của Firefox Mobile cũ, gọi là [Iceraven](https://github.com/fork-maintainers/iceraven-browser), có thể cài đặt script này thông qua addon Violentmonkey.
+Kể từ bản [cập nhật 27/08/2020](https://blog.mozilla.org/blog/2020/08/25/introducing-a-new-firefox-for-android-experience/), Firefox Mobile đã thay đổi engine khiến hầu hết add-on không còn sử dụng bình thường được nữa.
+
+- Thay vì cài Firefox Mobile như cũ, chọn 1 trong 2 trình duyệt dưới đây:
+
+   1. **Iceraven** - bản fork sử dụng engine cũ của Firefox Mobile:
+      - Tìm bản phát hành mới nhất [tại đây](https://github.com/fork-maintainers/iceraven-browser/releases/latest).
+      - Tải file APK có chứa tên mã **arm64** và cài đặt.
+   1. **Firefox Nightly** - bản thử nghiệm của Firefox Mobile:
+      - Cài đặt [Firefox Nightly](https://play.google.com/store/apps/details?id=org.mozilla.fenix) từ Google Play.
+      - Vào mục **Về Firefox Nightly**.
+      - Nhấn 5 lần vào logo, đến khi xuất hiện **Menu gỡ lỗi đã được kích hoạt** là được.
+      - Vào mục **Bộ sưu tập tiện ích tùy chỉnh** vừa xuất hiện, chọn và điền các thông tin sau:
+        - Chủ sở hữu bộ sưu tập: `16669371`
+        - Tên bộ sưu tập: `lelinhtinh`
+
+- Vào mục **Tiện ích**, tìm và cài `Violentmonkey` hoặc `Tampermonkey` *(chỉ cài 1 trong 2)*.
+- Cài script tại [OpenUserJS](https://openuserjs.org/scripts/baivong/manga_comic_downloader), hoặc [SleazyFork](https://sleazyfork.org/scripts/369802-manga-comic-downloader).
