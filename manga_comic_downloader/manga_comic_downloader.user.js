@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.3.6
+// @version         3.3.7
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -27,9 +27,7 @@
 // @match           https://truyenhay24h.com/*
 // @match           https://thichtruyentranh.com/*
 // @match           http://*.hentailxx.com/*
-// @match           https://*.hentailxx.com/*
-// @match           http://lxhentai.com/*
-// @match           https://lxhentai.com/*
+// @match           http://*.lxhentai.com/*
 // @match           https://hentaivn.net/*
 // @match           https://hentaivn.moe/*
 // @match           https://otakusan.net/*
@@ -52,9 +50,9 @@
 // @match           http://*.hamtruyentranh.net/*
 // @match           https://ttmanga.com/*
 // @match           http://truyen.vnsharing.site/*
-// @match           https://blogtruyen.com/*
-// @match           https://blogtruyen.vn/*
-// @match           https://blogtruyen.top/*
+// @match           https://*.blogtruyen.com/*
+// @match           https://*.blogtruyen.vn/*
+// @match           https://*.blogtruyen.top/*
 // @match           https://truyensieuhay.com/*
 // @match           http://truyenqq.com/*
 // @match           http://truyenqq.net/*
@@ -272,8 +270,10 @@ jQuery(function ($) {
     };
   }
 
+  var notyTimeout;
   function noty(txt, status) {
     function destroy() {
+      var $noty = $doc.find('#mcd_noty_wrap');
       if (!$noty.length) return;
       $noty.fadeOut(300, function () {
         $noty.remove();
@@ -288,6 +288,7 @@ jQuery(function ($) {
       }, 2000);
     }
 
+    var $noty = $doc.find('#mcd_noty_wrap');
     if (!$noty.length) {
       var $wrap = $('<div>', {
           id: 'mcd_noty_wrap',
@@ -303,29 +304,26 @@ jQuery(function ($) {
         });
 
       $noty = $wrap.append($content).append($close);
-      $noty.appendTo('body').fadeIn(300);
-    } else {
-      $noty
-        .find('#mcd_noty_content')
-        .attr('class', 'mcd_' + status)
-        .html(txt);
-
-      $noty.show();
-      clearTimeout(notyTimeout);
+      $noty.appendTo('body');
     }
 
     $noty
-      .click(function () {
+      .find('#mcd_noty_content')
+      .attr('class', 'mcd_' + status)
+      .html(txt);
+
+    $noty.fadeIn(300);
+    clearTimeout(notyTimeout);
+
+    $doc
+      .on('click', '#mcd_noty_wrap', function () {
         destroy();
       })
-      .hover(
-        function () {
-          clearTimeout(notyTimeout);
-        },
-        function () {
-          autoHide();
-        },
-      );
+      .on('mouseenter', '#mcd_noty_wrap', function () {
+        clearTimeout(notyTimeout);
+      })
+      .on('mouseleave', '#mcd_noty_wrap', autoHide);
+
     if (status !== 'warning' && status !== 'success') autoHide();
   }
 
@@ -864,7 +862,7 @@ jQuery(function ($) {
     var $link = $(configs.link);
     if (!$link.length) return;
 
-    $link.on('contextmenu', function (e) {
+    $doc.on('contextmenu', configs.link, function (e) {
       e.preventDefault();
       hasDownloadError = false;
       if (!oneProgress()) return;
@@ -1204,8 +1202,6 @@ jQuery(function ($) {
     },
     configs,
     chapName,
-    $noty = [],
-    notyTimeout,
     domainName = location.host,
     tit = document.title,
     $doc = $(document),
@@ -1234,7 +1230,7 @@ jQuery(function ($) {
   });
 
   GM_addStyle(
-    '#mcd_noty_wrap{display:none;background:#fff;position:fixed;z-index:2147483647;right:20px;top:20px;min-width:150px;max-width:100%;padding:15px 25px;border:1px solid #ddd;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 10px rgba(0,0,0,.35);cursor:pointer}#mcd_noty_content{color:#444}#mcd_noty_content strong{font-weight:700}#mcd_noty_content.mcd_info strong{color:#2196f3}#mcd_noty_content.mcd_success strong{color:#4caf50}#mcd_noty_content.mcd_warning strong{color:#ffc107}#mcd_noty_content.mcd_error strong{color:#f44336}#mcd_noty_content strong.centered{display:block;text-align:center}#mcd_noty_close{position:absolute;right:0;top:0;font-size:18px;color:#ddd;height:20px;width:20px;line-height:20px;text-align:center}#mcd_noty_wrap:hover #mcd_noty_close{color:#333}',
+    '#mcd_noty_wrap{background:#fff;position:fixed;z-index:2147483647;right:20px;top:20px;min-width:150px;max-width:100%;padding:15px 25px;border:1px solid #ddd;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 10px rgba(0,0,0,.35);cursor:pointer}#mcd_noty_content{color:#444}#mcd_noty_content strong{font-weight:700}#mcd_noty_content.mcd_info strong{color:#2196f3}#mcd_noty_content.mcd_success strong{color:#4caf50}#mcd_noty_content.mcd_warning strong{color:#ffc107}#mcd_noty_content.mcd_error strong{color:#f44336}#mcd_noty_content strong.centered{display:block;text-align:center}#mcd_noty_close{position:absolute;right:0;top:0;font-size:18px;color:#ddd;height:20px;width:20px;line-height:20px;text-align:center}#mcd_noty_wrap:hover #mcd_noty_close{color:#333}',
   );
 
   switch (domainName) {
@@ -1330,13 +1326,19 @@ jQuery(function ($) {
       break;
     case 'hentailxx.com':
     case 'www.hentailxx.com':
-    case 'm.hentailxx.com':
     case 'lxhentai.com':
     case 'www.lxhentai.com':
-    case 'm.lxhentai.com':
       configs = {
         link: '#listChuong .col-5 a',
         name: 'h1.title-detail',
+        contents: '#content_chap',
+      };
+      break;
+    case 'm.hentailxx.com':
+    case 'm.lxhentai.com':
+      configs = {
+        link: '#pills-tabContent a.text-black',
+        name: 'a[href="#"]:not(.nav-link)',
         contents: '#content_chap',
       };
       break;
@@ -1430,7 +1432,8 @@ jQuery(function ($) {
     case 'm.blogtruyen.vn':
     case 'm.blogtruyen.top':
       configs = {
-        link: '#listChapter a',
+        link: '.list-chapter a',
+        name: 'h1.title',
         contents: '.content',
       };
       break;
