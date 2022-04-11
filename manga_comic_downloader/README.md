@@ -70,7 +70,9 @@ Nhấp vào ảnh để xem video hướng dẫn
 
 ### Điện thoại Android
 
-[![Hướng dẫn tải truyện tranh bằng điện thoại](https://img.youtube.com/vi/3bdvW3FCpak/0.jpg)](https://www.youtube.com/watch?v=3bdvW3FCpak)
+|Iceraven|Firefox Nightly|
+|-|-|
+|[![Hướng dẫn tải truyện tranh bằng Iceraven](https://img.youtube.com/vi/NO5NYuL64XQ/0.jpg)](https://www.youtube.com/watch?v=NO5NYuL64XQ)|[![Hướng dẫn tải truyện tranh bằng Firefox Nightly](https://img.youtube.com/vi/28VeTjzQOgA/0.jpg)](https://www.youtube.com/watch?v=28VeTjzQOgA)|
 
 Kể từ bản [cập nhật 27/08/2020](https://blog.mozilla.org/blog/2020/08/25/introducing-a-new-firefox-for-android-experience/), Firefox Mobile đã thay đổi engine khiến hầu hết add-on không còn sử dụng bình thường được nữa.
 
