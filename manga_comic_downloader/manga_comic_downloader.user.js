@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.3.10
+// @version         3.3.11
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -1515,7 +1515,7 @@ jQuery(function ($) {
     case 'www.sayhentai.net':
     case 'sayhentai.tv':
       configs = {
-        link: '.list-chapter a',
+        link: '.main-col .wp-manga-chapter a',
         name: '.post-title h1',
         contents: '#chapter_content',
       };
