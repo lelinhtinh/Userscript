@@ -478,7 +478,7 @@ jQuery(function ($) {
     if (!inCustom && !dlAll.length) dlAllGen();
     if (!dlAll.length) return;
     inAuto = true;
-    $(targetLink('[href*="' + dlAll[0] + '"]')).trigger('contextmenu');
+    $(targetLink('[href$="' + dlAll[0] + '"]')).trigger('contextmenu');
   }
 
   function downloadAllOne() {
@@ -512,7 +512,7 @@ jQuery(function ($) {
 
     if (inAuto) {
       if (dlAll.length) {
-        $(targetLink('[href*="' + dlAll[0] + '"]')).trigger('contextmenu');
+        $(targetLink('[href$="' + dlAll[0] + '"]')).trigger('contextmenu');
       } else {
         inAuto = false;
         inCustom = false;
