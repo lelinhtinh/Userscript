@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Block all ads in Facebook News Feed.
 // @description:vi  Chặn quảng cáo được tài trợ trên trang chủ Facebook.
-// @version         1.4.0
+// @version         1.4.1
 // @icon            https://i.imgur.com/F8ai0jB.png
 // @author          lelinhtinh
 // @oujs:author     baivong
@@ -19,7 +19,6 @@
 
 /**
  * Facebook sponsor labels
- *
  * @type {string[]}
  */
 const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
@@ -42,6 +41,11 @@ const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
   /** @type IntersectionObserver */
   let observerScroll;
 
+  /**
+   * @param {string} label
+   * @param {boolean} removeSpaces
+   * @returns {boolean}
+   */
   const isSponsorLabel = (label, removeSpaces = false) => {
     if (!removeSpaces) return sponsorLabelConfigs.includes(label);
     return sponsorLabelConfigs.map((label) => label.replace(/\s/g, '')).includes(label);
@@ -49,6 +53,9 @@ const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
 
   const articleSelector = () => (location.pathname.startsWith('/watch') ? '._6x84' : '[role="article"]');
 
+  /**
+   * @param {Element} sponsorLabel
+   */
   const removeSponsor = (sponsorLabel) => {
     const sponsorWrapper = sponsorLabel.closest(articleSelector());
     // sponsorWrapper.style.opacity = 0.1;
@@ -56,6 +63,9 @@ const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
     console.count('UserScript Facebook Adblocker');
   };
 
+  /**
+   * @param {Element} wrapper
+   */
   const detectSponsor = (wrapper) => {
     let sponsorLabelSelector = ['a[href^="/ads/"]'];
     sponsorLabelSelector.push(...sponsorLabelConfigs.map((label) => `a[aria-label="${label}"]`));
@@ -84,13 +94,9 @@ const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
     }
   };
 
-  observerScroll = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (!entry.intersectionRatio) return;
-      detectSponsor(entry.target);
-    });
-  });
-
+  /**
+   * @param {Element} wrapper
+   */
   const findSponsor = (wrapper = document) => {
     if (labelStore instanceof Array) {
       if (!labelStore.length) return;
@@ -106,6 +112,9 @@ const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
     detectSponsor(wrapper);
   };
 
+  /**
+   * @param {Element} labelHidden
+   */
   const watchLabel = (labelHidden) => {
     if (observerLabel) return;
     observerLabel = new MutationObserver((mutationsList) => {
@@ -133,6 +142,12 @@ const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
 
     // Find while scrolling
     if (observerScroll) observerScroll.disconnect();
+    observerScroll = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.intersectionRatio) return;
+        detectSponsor(entry.target);
+      });
+    });
     newsFeed.querySelectorAll(articleSelector()).forEach((article) => {
       observerScroll.observe(article);
     });
@@ -166,7 +181,7 @@ const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
       } else {
         labelStore = [];
         labelHidden.querySelectorAll('span').forEach((target) => {
-          if (/(Được\s+tài\s+trợ|Sponsored)/i.test(target.textContent.trim())) {
+          if (isSponsorLabel(target.textContent.trim())) {
             labelStore.push(target.id);
             findSponsor();
           }
