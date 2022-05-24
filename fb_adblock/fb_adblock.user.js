@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Block all ads in Facebook News Feed.
 // @description:vi  Chặn quảng cáo được tài trợ trên trang chủ Facebook.
-// @version         1.4.4
+// @version         1.4.5
 // @icon            https://i.imgur.com/F8ai0jB.png
 // @author          lelinhtinh
 // @oujs:author     baivong
@@ -23,6 +23,11 @@
  * @type {string[]}
  */
 const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
+
+/**
+ * @type {'remove'|'fade'}
+ */
+const sponsorHideMode = 'remove';
 
 /* === DO NOT CHANGE ANYTHING BELOW THIS LINE === */
 
@@ -60,9 +65,21 @@ const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
    */
   const removeSponsor = (sponsorLabel) => {
     const sponsorWrapper = sponsorLabel.closest(articleSelector());
-    sponsorWrapper.style.opacity = 0.1;
-    // sponsorWrapper.remove();
+    if (sponsorWrapper === null) return;
     console.count('UserScript Facebook Adblocker');
+
+    if (sponsorHideMode === 'fade') {
+      sponsorWrapper.style.opacity = 0.1;
+      sponsorWrapper.style.transition = 'opacity 400ms ease-in-out 0s';
+      sponsorWrapper.addEventListener('mouseenter', () => {
+        sponsorWrapper.style.opacity = 1;
+      });
+      sponsorWrapper.addEventListener('mouseleave', () => {
+        sponsorWrapper.style.opacity = 0.1;
+      });
+    } else {
+      sponsorWrapper.remove();
+    }
   };
 
   /**
