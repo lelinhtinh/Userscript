@@ -4,13 +4,14 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Block all ads in Facebook News Feed.
 // @description:vi  Chặn quảng cáo được tài trợ trên trang chủ Facebook.
-// @version         1.4.2
+// @version         1.4.3
 // @icon            https://i.imgur.com/F8ai0jB.png
 // @author          lelinhtinh
 // @oujs:author     baivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
 // @match           https://facebook.com/*
 // @match           https://*.facebook.com/*
+// @require         https://www.unpkg.com/throttle-debounce@5.0.0/umd/index.js
 // @noframes
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
 // @run-at          document-idle
@@ -48,9 +49,10 @@ const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
    */
   const isSponsorLabel = (label, removeSpaces = false) => {
     if (!removeSpaces) return sponsorLabelConfigs.includes(label);
-    return sponsorLabelConfigs.map((label) => label.replace(/\s*/g, '')).includes(label);
+    return sponsorLabelConfigs.map((label) => label.replace(/\s/g, '')).includes(label);
   };
 
+  const feedSelector = () => (location.pathname.startsWith('/watch') ? '#watch_feed' : '[role="feed"]');
   const articleSelector = () => (location.pathname.startsWith('/watch') ? '._6x84' : '[role="article"]');
 
   /**
@@ -58,8 +60,8 @@ const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
    */
   const removeSponsor = (sponsorLabel) => {
     const sponsorWrapper = sponsorLabel.closest(articleSelector());
-    //  sponsorWrapper.style.opacity = 0.1;
-    sponsorWrapper.remove();
+    sponsorWrapper.style.opacity = 0.1;
+    // sponsorWrapper.remove();
     console.count('UserScript Facebook Adblocker');
   };
 
@@ -70,7 +72,7 @@ const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
     let sponsorLabelSelector = ['a[href^="/ads/"]'];
     sponsorLabelSelector.push(...sponsorLabelConfigs.map((label) => `a[aria-label="${label}"]`));
 
-    const sponsorLabels = wrapper.querySelectorAll(sponsorLabelSelector);
+    const sponsorLabels = wrapper.querySelectorAll(sponsorLabelSelector.join(','));
     if (sponsorLabels.length) sponsorLabels.forEach(removeSponsor);
 
     const obfuscatedLabels = wrapper.querySelectorAll('span[style="display: flex; order: 0;"]');
@@ -88,7 +90,7 @@ const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
           temp[order] = span.textContent.trim();
         });
 
-        const label = temp.join('').replace(/\s*/g, '');
+        const label = temp.join('').replace(/\s/g, '');
         if (isSponsorLabel(label, true)) removeSponsor(obfuscatedLabel);
       });
     }
@@ -136,18 +138,18 @@ const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
     });
   };
 
-  const init = () => {
-    const newsFeed = document.querySelector('[role="feed"], #watch_feed');
+  // Find while scrolling
+  observerScroll = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.intersectionRatio) return;
+      detectSponsor(entry.target);
+    });
+  });
+
+  const init = throttleDebounce.debounce(300, () => {
+    const newsFeed = document.querySelector(feedSelector());
     if (newsFeed === null) return;
 
-    // Find while scrolling
-    if (observerScroll) observerScroll.disconnect();
-    observerScroll = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.intersectionRatio) return;
-        detectSponsor(entry.target);
-      });
-    });
     newsFeed.querySelectorAll(articleSelector()).forEach((article) => {
       observerScroll.observe(article);
     });
@@ -189,7 +191,7 @@ const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
         watchLabel(labelHidden);
       }
     }
-  };
+  });
   init();
 
   if (observerHead) observerHead.disconnect();

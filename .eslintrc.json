@@ -12,6 +12,7 @@
     "saveAs": false,
     "JSZip": false,
     "jEpub": false,
+    "throttleDebounce": false,
     "GM_config": false
   },
   "extends": "eslint:recommended",
