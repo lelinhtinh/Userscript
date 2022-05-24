@@ -4,14 +4,14 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Block all ads in Facebook News Feed.
 // @description:vi  Chặn quảng cáo được tài trợ trên trang chủ Facebook.
-// @version         1.4.3
+// @version         1.4.4
 // @icon            https://i.imgur.com/F8ai0jB.png
 // @author          lelinhtinh
 // @oujs:author     baivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
 // @match           https://facebook.com/*
 // @match           https://*.facebook.com/*
-// @require         https://www.unpkg.com/throttle-debounce@5.0.0/umd/index.js
+// @require         https://unpkg.com/throttle-debounce@5.0.0/umd/index.js
 // @noframes
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
 // @run-at          document-idle
