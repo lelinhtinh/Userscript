@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.3.11
+// @version         3.3.12
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -26,8 +26,7 @@
 // @match           https://truyentranhlh.net/*
 // @match           https://truyenhay24h.com/*
 // @match           https://thichtruyentranh.com/*
-// @match           http://*.hentailxx.com/*
-// @match           http://*.lxhentai.com/*
+// @match           https://lxhentai.com/*
 // @match           https://hentaivn.net/*
 // @match           https://hentaivn.moe/*
 // @match           https://otakusan.net/*
@@ -1324,22 +1323,17 @@ jQuery(function ($) {
         init: getThichTruyenTranh,
       };
       break;
-    case 'hentailxx.com':
-    case 'www.hentailxx.com':
     case 'lxhentai.com':
-    case 'www.lxhentai.com':
       configs = {
-        link: '#listChuong .col-5 a',
-        name: 'h1.title-detail',
-        contents: '#content_chap',
-      };
-      break;
-    case 'm.hentailxx.com':
-    case 'm.lxhentai.com':
-      configs = {
-        link: '#pills-tabContent a.text-black',
-        name: 'a[href="#"]:not(.nav-link)',
-        contents: '#content_chap',
+        link: '[style="max-height: 500px"] a',
+        contents: '[class="text-center"]',
+        name: function (_this) {
+          return (
+            $('.grow.text-lg.ml-1.text-ellipsis.font-semibold:first').text().trim() +
+            ' ' +
+            $(_this).find('span.text-ellipsis').text().trim()
+          );
+        },
       };
       break;
     case 'hentaivn.net':
