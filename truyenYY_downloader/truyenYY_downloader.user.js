@@ -4,13 +4,11 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenYY định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenYY định dạng EPUB.
-// @version         4.10.3
+// @version         4.10.4
 // @icon            https://i.imgur.com/1HkQv2b.png
 // @author          Zzbaivong
 // @oujs:author     baivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
-// @match           https://truyenyy.com/truyen/*/
-// @match           https://truyenyy.vn/truyen/*/
 // @match           https://truyenyy.vip/truyen/*/
 // @require         https://code.jquery.com/jquery-3.6.0.min.js
 // @require         https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
@@ -357,13 +355,13 @@
     })
     .uuid(referrer);
 
-  $download.insertAfter('#react-root_novel-base-buttons, #root_novel_stars');
+  $download.insertAfter('.info .btn-primary, #root_novel_stars');
   $download.before('\r\n');
   $download.one('click contextmenu', function (e) {
     e.preventDefault();
     document.title = '[...] Vui lòng chờ trong giây lát';
 
-    var firstChap = $('.info .btn:contains("Đọc Từ Đầu"), #root_novel_buttons .weui-btn:contains("Đọc Từ Đầu"), .weui-btn:contains("Đọc Tiếp")');
+    var firstChap = $('.info .btn:contains("Đọc Từ Đầu"), #root_novel_buttons .weui-btn:contains("Đọc Từ Đầu")');
     firstChap = downloadId(firstChap.attr('href'));
     var startFrom = firstChap;
 
