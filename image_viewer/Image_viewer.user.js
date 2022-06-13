@@ -15,6 +15,7 @@
 // @match           *://*/*.webp
 // @match           *://*/*.jxl
 // @match           *://*/*.avif
+// @match           *://*/*.svg
 // @noframes
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
 // @run-at          document-idle
