@@ -9,13 +9,14 @@
 // @author          Zzbaivong
 // @oujs:author     baivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
-// @match           *://*/*.gif
-// @match           *://*/*.png
 // @match           *://*/*.apng
-// @match           *://*/*.webp
-// @match           *://*/*.jxl
 // @match           *://*/*.avif
+// @match           *://*/*.gif
+// @match           *://*/*.ico
+// @match           *://*/*.jxl
+// @match           *://*/*.png
 // @match           *://*/*.svg
+// @match           *://*/*.webp
 // @noframes
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
 // @run-at          document-idle
