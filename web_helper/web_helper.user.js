@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Add some useful features to some websites.
 // @description:vi  Bổ sung một số tính năng hữu ích cho một vài trang web.
-// @version         1.0.0
+// @version         1.0.1
 // @icon            https://i.imgur.com/FHgT0E4.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -32,13 +32,14 @@ document.querySelector('.chap-list-update .font-size').addEventListener('change'
 });
 
 k('left', () => {
-  chapter.querySelector('.chap-header .btn-next .fa-angle-double-left').parentNode.click();
+  document.querySelector('.chap-header .btn-next .fa-angle-double-left').parentNode.click();
 });
 k('right', () => {
-  chapter.querySelector('.chap-header .btn-next .fa-angle-double-right').parentNode.click();
+  document.querySelector('.chap-header .btn-next .fa-angle-double-right').parentNode.click();
 });
 
 k('up', () => {
+  console.log(window.innerHeight);
   document.documentElement.scrollTop -= window.innerHeight - lineHeight;
 });
 k('down', () => {
