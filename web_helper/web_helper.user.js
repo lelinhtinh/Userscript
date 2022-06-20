@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Add some useful features to some websites.
 // @description:vi  Bổ sung một số tính năng hữu ích cho một vài trang web.
-// @version         1.0.1
+// @version         1.1.0
 // @icon            https://i.imgur.com/FHgT0E4.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -24,12 +24,26 @@ const k = hotkeys.noConflict();
 const chapter = document.querySelector('.chapter-c');
 chapter.scrollIntoView();
 
+document.querySelector('.chap-content').style.userSelect = 'auto';
+chapter.querySelectorAll('[style]').forEach((e) => {
+  e.remove();
+});
+document.addEventListener(
+  'contextmenu',
+  function (event) {
+    event.stopPropagation();
+  },
+  true,
+);
+
 let lineHeight = parseFloat(getComputedStyle(chapter).lineHeight);
 document.querySelector('.chap-list-update .font-size').addEventListener('change', () => {
   setTimeout(() => {
     lineHeight = parseFloat(getComputedStyle(chapter).lineHeight);
   }, 100);
 });
+
+let endChapter = false;
 
 k('left', () => {
   document.querySelector('.chap-header .btn-next .fa-angle-double-left').parentNode.click();
@@ -39,9 +53,21 @@ k('right', () => {
 });
 
 k('up', () => {
-  console.log(window.innerHeight);
-  document.documentElement.scrollTop -= window.innerHeight - lineHeight;
+  document.documentElement.scrollTop -= window.innerHeight - lineHeight * 2;
 });
 k('down', () => {
-  document.documentElement.scrollTop += window.innerHeight - lineHeight;
+  if (endChapter) {
+    k.trigger('right');
+    return;
+  }
+
+  document.documentElement.scrollTop += window.innerHeight - lineHeight * 2;
+
+  const chapterRect = chapter.getBoundingClientRect();
+  if (
+    chapterRect.top + chapterRect.height < 0 ||
+    document.documentElement.scrollTop + window.innerHeight === document.documentElement.scrollHeight
+  ) {
+    endChapter = true;
+  }
 });
