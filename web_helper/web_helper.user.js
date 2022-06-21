@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Add some useful features to some websites.
 // @description:vi  Bổ sung một số tính năng hữu ích cho một vài trang web.
-// @version         1.1.0
+// @version         1.1.1
 // @icon            https://i.imgur.com/FHgT0E4.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -65,7 +65,7 @@ k('down', () => {
 
   const chapterRect = chapter.getBoundingClientRect();
   if (
-    chapterRect.top + chapterRect.height < 0 ||
+    chapterRect.top + chapterRect.height - window.innerHeight + lineHeight * 2 < 0 ||
     document.documentElement.scrollTop + window.innerHeight === document.documentElement.scrollHeight
   ) {
     endChapter = true;
