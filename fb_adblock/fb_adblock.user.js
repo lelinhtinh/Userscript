@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Block all ads in Facebook News Feed.
 // @description:vi  Chặn quảng cáo được tài trợ trên trang chủ Facebook.
-// @version         1.4.5
+// @version         1.4.6
 // @icon            https://i.imgur.com/F8ai0jB.png
 // @author          lelinhtinh
 // @oujs:author     baivong
@@ -20,9 +20,11 @@
 
 /**
  * Facebook sponsor labels
- * @type {string[]}
  */
-const sponsorLabelConfigs = ['Được tài trợ', 'Sponsored'];
+const sponsorLabelConfigs = {
+  en: ['Sponsored'],
+  vi: ['Được tài trợ'],
+};
 
 /**
  * @type {'remove'|'fade'}
@@ -47,14 +49,16 @@ const sponsorHideMode = 'remove';
   /** @type IntersectionObserver */
   let observerScroll;
 
+  let sponsorLangConfigs =
+    sponsorLabelConfigs[navigator.language.split('-')[0] || document.documentElement.lang || sponsorLabelConfigs.en];
   /**
    * @param {string} label
    * @param {boolean} removeSpaces
    * @returns {boolean}
    */
   const isSponsorLabel = (label, removeSpaces = false) => {
-    if (!removeSpaces) return sponsorLabelConfigs.includes(label);
-    return sponsorLabelConfigs.map((label) => label.replace(/\s/g, '')).includes(label);
+    if (!removeSpaces) return sponsorLangConfigs.includes(label);
+    return sponsorLangConfigs.map((label) => label.replace(/\s/g, '')).includes(label);
   };
 
   const feedSelector = () => (location.pathname.startsWith('/watch') ? '#watch_feed' : '[role="feed"]');
@@ -87,23 +91,23 @@ const sponsorHideMode = 'remove';
    */
   const detectSponsor = (wrapper) => {
     let sponsorLabelSelector = ['a[href^="/ads/"]'];
-    sponsorLabelSelector.push(...sponsorLabelConfigs.map((label) => `a[aria-label="${label}"]`));
+    sponsorLabelSelector.push(...sponsorLangConfigs.map((label) => `a[aria-label="${label}"]`));
 
     const sponsorLabels = wrapper.querySelectorAll(sponsorLabelSelector.join(','));
     if (sponsorLabels.length) sponsorLabels.forEach(removeSponsor);
 
-    const obfuscatedLabels = wrapper.querySelectorAll('span[style="display: flex; order: 0;"]');
+    const obfuscatedLabels = wrapper.querySelectorAll('[style="display: flex;"]');
     if (obfuscatedLabels.length) {
       obfuscatedLabels.forEach((obfuscatedLabel) => {
         const temp = [];
-        obfuscatedLabel.querySelectorAll('span[style^="order: "]').forEach((span) => {
+        obfuscatedLabel.querySelectorAll('div').forEach((span) => {
           if (
             getComputedStyle(span).getPropertyValue('display') === 'none' ||
             getComputedStyle(span).getPropertyValue('position') === 'absolute'
           )
             return;
 
-          const order = parseInt(span.style.order, 10);
+          const order = parseInt(getComputedStyle(span).getPropertyValue('order'), 10);
           temp[order] = span.textContent.trim();
         });
 
