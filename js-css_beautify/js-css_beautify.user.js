@@ -9,22 +9,21 @@
 // @author          Zzbaivong
 // @oujs:author     baivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
-// @match           http://*/*
-// @match           https://*/*
-// @require         https://unpkg.com/prettier@2.0.5/standalone.js
-// @require         https://unpkg.com/prettier@2.0.5/parser-postcss.js
-// @require         https://unpkg.com/prettier@2.0.5/parser-html.js
-// @require         https://unpkg.com/prettier@2.0.5/parser-babel.js
-// @require         https://unpkg.com/prettier@2.0.5/parser-graphql.js
-// @require         https://unpkg.com/prettier@2.0.5/parser-markdown.js
-// @require         https://unpkg.com/prettier@2.0.5/parser-typescript.js
-// @require         https://unpkg.com/prettier@2.0.5/parser-yaml.js
-// @require         https://unpkg.com/prettier@2.0.5/parser-angular.js
-// @require         https://unpkg.com/@prettier/plugin-php@0.14.3/standalone.js
-// @require         https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js
-// @resource        dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/atom-one-dark.min.css
-// @resource        light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/atom-one-light.min.css
-// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
+// @match           *://*/*
+// @require         https://unpkg.com/prettier@2.7.1/standalone.js
+// @require         https://unpkg.com/prettier@2.7.1/parser-postcss.js
+// @require         https://unpkg.com/prettier@2.7.1/parser-html.js
+// @require         https://unpkg.com/prettier@2.7.1/parser-babel.js
+// @require         https://unpkg.com/prettier@2.7.1/parser-graphql.js
+// @require         https://unpkg.com/prettier@2.7.1/parser-markdown.js
+// @require         https://unpkg.com/prettier@2.7.1/parser-typescript.js
+// @require         https://unpkg.com/prettier@2.7.1/parser-yaml.js
+// @require         https://unpkg.com/prettier@2.7.1/parser-angular.js
+// @require         https://unpkg.com/@prettier/plugin-php@0.18.9/standalone.js
+// @require         https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js
+// @resource        dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark.min.css
+// @resource        light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/atom-one-light.min.css
+// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @noframes
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
 // @run-at          document-idle
