@@ -4,7 +4,7 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenYY định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenYY định dạng EPUB.
-// @version         4.10.4
+// @version         4.10.5
 // @icon            https://i.imgur.com/1HkQv2b.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -223,14 +223,16 @@
 
         if (endDownload) return;
 
-        chapTitle = $data.find('h1.chapter-title').text().trim();
-        if (chapTitle === '') chapTitle = 'Chương ' + chapId.match(/\d+/)[0];
+        chapTitle = $data.find('h1.chap-title span').text().trim() + ': ' + $data.find('h2.heading-font').text().trim();
+        if (chapTitle.trim() === ':') chapTitle = 'Chương ' + chapId.match(/\d+/)[0];
 
         if (!$chapter.length) {
-          if ($data.find('.chapter a[href="/page/tu-linh-thach/"]').length) {
+          if ($data.find('#btn_buy').length) {
             chapContent = downloadError('Chương VIP');
           } else if ($data.find('.chapter a[href="/register/"]').length) {
             chapContent = downloadError('Chương yêu cầu đăng nhập');
+          } else if ($data.find('.chapter img[src="https://yystatic.codeprime.net/img/app-qrcode.png"]').length) {
+            chapContent = downloadError('Chỉ đọc trên app');
           } else {
             chapContent = downloadError('Không có nội dung');
           }
@@ -238,10 +240,10 @@
           if ($chapter.find('#vip-content-placeholder').length) {
             downloadVip($chapter)
               .then(function (chapContent) {
-                handle(cleanHtml(chapContent), $next);
+                addChap(cleanHtml(chapContent), $next);
               })
               .catch(function (err) {
-                handle(downloadError(err));
+                addChap(downloadError(err));
               });
             return;
           } else {
@@ -263,7 +265,7 @@
           }
         }
 
-        handle(chapContent, $next);
+        addChap(chapContent, $next);
       })
       .fail(function (err) {
         chapTitle = null;
@@ -271,7 +273,7 @@
         saveEbook();
       });
 
-    function handle(chapContent, $next) {
+    function addChap(chapContent, $next) {
       jepub.add(chapTitle, chapContent);
 
       if (count === 0) begin = chapTitle;
