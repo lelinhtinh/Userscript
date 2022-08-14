@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Copy comment from Facebook to clipboard. If there is a "See more" button here, click it.
 // @description:vi  Sao chép bình luận từ Facebook vào bộ nhớ đệm. Nếu có nút "Xem thêm" ở đây, nhấn vào nó.
-// @version         1.0.0
+// @version         1.0.1
 // @icon            https://i.imgur.com/F8ai0jB.png
 // @author          lelinhtinh
 // @oujs:author     baivong
@@ -25,6 +25,7 @@ function writeComment2Clipboard() {
 
   navigator.clipboard.writeText(commendText).then(
     () => {
+      document.title = commendText;
       console.log('clipboard successfully set');
     },
     () => {
