@@ -4,18 +4,20 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Add navigation features to some web novels.
 // @description:vi  Bổ sung tính năng điều hướng cho một vài trang web truyện.
-// @version         1.2.0
+// @version         1.3.0
 // @icon            https://i.imgur.com/FHgT0E4.png
 // @author          Zzbaivong
 // @oujs:author     baivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
 // @match           https://tienhieptruyen.net/*
 // @match           https://truyendich.com/*
+// @match           https://bachngocsach.com/reader/*
 // @require         https://unpkg.com/hotkeys-js/dist/hotkeys.min.js
+// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @supportURL      https://github.com/lelinhtinh/Userscript/issues
 // @run-at          document-idle
-// @grant           none
+// @grant           GM_addStyle
 // @inject-into     content
 // ==/UserScript==
 
@@ -41,6 +43,15 @@ switch (location.host) {
     chapSelector = '#read-content';
     preSelector = '.btn-chapter-pre:not(.disable)';
     nextSelector = '.btn-chapter-next:not(.disable)';
+    break;
+  case 'bachngocsach.com':
+    chapSelector = '#noi-dung';
+    preSelector = '.page-prev:not(.invisible)';
+    nextSelector = '.page-next:not(.invisible)';
+    GM.addStyle(`
+      .page-menu{position:relative!important}
+      #backtotop,.qc-chuong-top,#thongbao,#chuong-footer,#liked-list,#like-note,.qc-chuong,#thaoluan,#noi-dung~.chuong-nav{display:none!important}
+    `);
     break;
   default:
     console.log('NovelHelper: Unknown host');
