@@ -87,7 +87,8 @@
         vipContent = '';
 
       var getVipContent = function (token) {
-        $.get(vipUrl + '0' + '&grc=' + token).done(function (data) {
+        // TruyenYY has changed their API from grc to ggc
+        $.get(vipUrl + '0' + '&ggc=' + token).done(function (data) {
           if (data.ok) {
             vipContent += data.content;
             $.get(vipUrl + '1').done(function (data) {
@@ -362,8 +363,9 @@
   $download.one('click contextmenu', function (e) {
     e.preventDefault();
     document.title = '[...] Vui lòng chờ trong giây lát';
-
-    var firstChap = $('.info .btn:contains("Đọc Từ Đầu"), #root_novel_buttons .weui-btn:contains("Đọc Từ Đầu")');
+    // add text Đọc Tiếp because the button is not always Đọc Từ Đầu
+    // For example, I'm at chapter 514 and want to download from 514 to the latest chapter, without this fix, the script will throw error
+    var firstChap = $('.info .btn:contains("Đọc Từ Đầu"), #root_novel_buttons .weui-btn:contains("Đọc Từ Đầu"), .weui-btn:contains("Đọc Tiếp")');
     firstChap = downloadId(firstChap.attr('href'));
     var startFrom = firstChap;
 
