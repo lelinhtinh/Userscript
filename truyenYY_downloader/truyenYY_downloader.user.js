@@ -4,7 +4,7 @@
 // @namespace       http://devs.forumvi.com/
 // @description     Tải truyện từ TruyenYY định dạng EPUB.
 // @description:vi  Tải truyện từ TruyenYY định dạng EPUB.
-// @version         4.10.6
+// @version         4.10.7
 // @icon            https://i.imgur.com/1HkQv2b.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -87,7 +87,6 @@
         vipContent = '';
 
       var getVipContent = function (token) {
-        // TruyenYY has changed their API from grc to ggc
         $.get(vipUrl + '0' + '&ggc=' + token).done(function (data) {
           if (data.ok) {
             vipContent += data.content;
@@ -224,9 +223,6 @@
 
         if (endDownload) return;
 
-        // chapTitle = $data.find('h1.chap-title span').text().trim() + ': ' + $data.find('h2.heading-font').text().trim();
-        // if (chapTitle.trim() === ':') chapTitle = 'Chương ' + chapId.match(/\d+/)[0];
-        // Update chap title query
         chapTitle =  'Chương ' + chapId.match(/\d+/)[0] + ' - ' + $data.find('.chapter .heading-font.mt-2').text().trim();
         if (chapTitle === '') chapTitle = 'Chương ' + chapId.match(/\d+/)[0];
 
@@ -366,8 +362,7 @@
   $download.one('click contextmenu', function (e) {
     e.preventDefault();
     document.title = '[...] Vui lòng chờ trong giây lát';
-    // add text Đọc Tiếp because the button is not always Đọc Từ Đầu
-    // For example, I'm at chapter 514 and want to download from 514 to the latest chapter, without this fix, the script will throw error
+
     var firstChap = $('.info .btn:contains("Đọc Từ Đầu"), #root_novel_buttons .weui-btn:contains("Đọc Từ Đầu"), .weui-btn:contains("Đọc Tiếp")');
     firstChap = downloadId(firstChap.attr('href'));
     var startFrom = firstChap;
