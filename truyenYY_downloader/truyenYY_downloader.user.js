@@ -224,8 +224,11 @@
 
         if (endDownload) return;
 
-        chapTitle = $data.find('h1.chap-title span').text().trim() + ': ' + $data.find('h2.heading-font').text().trim();
-        if (chapTitle.trim() === ':') chapTitle = 'Chương ' + chapId.match(/\d+/)[0];
+        // chapTitle = $data.find('h1.chap-title span').text().trim() + ': ' + $data.find('h2.heading-font').text().trim();
+        // if (chapTitle.trim() === ':') chapTitle = 'Chương ' + chapId.match(/\d+/)[0];
+        // Update chap title query
+        chapTitle =  'Chương ' + chapId.match(/\d+/)[0] + ' - ' + $data.find('.chapter .heading-font.mt-2').text().trim();
+        if (chapTitle === '') chapTitle = 'Chương ' + chapId.match(/\d+/)[0];
 
         if (!$chapter.length) {
           if ($data.find('#btn_buy').length) {
