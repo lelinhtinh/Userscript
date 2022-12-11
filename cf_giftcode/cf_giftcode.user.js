@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Auto enter Crossfire Gift Code.
 // @description:vi  Tự động nhập Gift Code Đột Kích.
-// @version         1.1.0
+// @version         1.2.0
 // @icon            https://i.imgur.com/ga9bS6c.png
 // @author          lelinhtinh
 // @oujs:author     baivong
@@ -70,7 +70,18 @@ function validateClipboard(clipText) {
     .split('\n')
     .map((gc) => gc.trim())
     .filter((gc) => gc && gcPattern.test(gc))
-    .map((gc) => gc.match(gcPattern)[0]);
+    .map((gc) => {
+      gc = gc.match(gcPattern)[0];
+      const mathPattern = /\s?\(([0-9+\-*/x:]{2,}[0-9]+)=\?\)\s?/;
+      if (mathPattern.test(gc)) {
+        return gc.replace(mathPattern, (m) => {
+          let expression = m.match(mathPattern)[1];
+          expression = expression.replaceAll('x', '*').replaceAll(':', '/');
+          return eval(expression);
+        });
+      }
+      return gc;
+    });
 
   if (!gcClipboard.length) {
     $helpText.removeClass('text-muted').addClass('text-danger').text('Clipboard không có Gift Code');
