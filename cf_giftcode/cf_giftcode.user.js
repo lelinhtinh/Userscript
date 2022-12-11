@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Auto enter Crossfire Gift Code.
 // @description:vi  Tự động nhập Gift Code Đột Kích.
-// @version         1.0.0
+// @version         1.1.0
 // @icon            https://i.imgur.com/ga9bS6c.png
 // @author          lelinhtinh
 // @oujs:author     baivong
@@ -19,8 +19,23 @@
 function autoGiftcode() {
   if (!gcClipboard.length) return;
   const gc = gcClipboard.pop();
-  console.log(gc);
+  console.log('Giftcode', gc);
 
+  $gcInput.val(gc);
+  $gcInput.trigger('focus');
+
+  if (/\(.+?\)/.test(gc)) {
+    const beginRange = gc.search(/\s?\(/);
+    let endRange = gc.search(/\)\s/);
+    endRange = endRange === -1 ? gc.search(/\)/) + 1 : endRange + 2;
+    $gcInput.get(0).setSelectionRange(beginRange, endRange);
+    return;
+  }
+
+  sendGiftcode(gc);
+}
+
+function sendGiftcode(gc) {
   $.ajax({
     url: '/api/ajaxapi/GiftCode/CheckCode',
     type: 'POST',
@@ -41,13 +56,21 @@ function autoGiftcode() {
     .always(autoGiftcode);
 }
 
+function onSubmit(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  sendGiftcode($gcInput.val());
+}
+
 function validateClipboard(clipText) {
   if (!clipText) return;
+  const gcPattern = /\bCFS?[A-Z0-9]{2,}(\s?\(.+?\)\s?)?([A-Z0-9]+)?(\b|\B)/;
 
   gcClipboard = clipText
     .split('\n')
     .map((gc) => gc.trim())
-    .filter((gc) => gc && /^CF[0-9A-Z]+$/.test(gc));
+    .filter((gc) => gc && gcPattern.test(gc))
+    .map((gc) => gc.match(gcPattern)[0]);
 
   if (!gcClipboard.length) {
     $helpText.removeClass('text-muted').addClass('text-danger').text('Clipboard không có Gift Code');
@@ -60,6 +83,7 @@ function validateClipboard(clipText) {
 let gcClipboard = [];
 
 const $gcAutoBtn = $('<button />', {
+  type: 'button',
   id: 'btn_giftcode_auto',
   class: 'btn btn-lg btn-primary btn-block mb-4',
   text: 'Tự động nhập từ bộ nhớ đệm',
@@ -72,6 +96,7 @@ const $helpText = $('<pre />', {
 
 const $gcInput = $('#input_giftcode');
 const $gcForm = $('.bx-giftcode');
+const $gcSubmit = $('.btn-accept');
 
 const userInfo = $('#navbarCollapse').find('[href="https://goplay.vn/"]').text().split(/:|-/);
 const userName = userInfo[1].trim();
@@ -81,9 +106,16 @@ console.log(userName, userId);
 $gcForm.append($helpText);
 $gcAutoBtn.insertBefore($gcInput);
 
-$gcAutoBtn.click((e) => {
+$gcAutoBtn.on('click', (e) => {
   e.preventDefault();
 
   $helpText.removeClass('text-danger').addClass('text-muted').empty();
   navigator.clipboard.readText().then((clipText) => validateClipboard(clipText));
 });
+
+$gcInput.on('keydown', (e) => {
+  if (e.which !== 13) return;
+  onSubmit(e);
+});
+$gcSubmit.on('click', onSubmit);
+$gcForm.on('submit', onSubmit);

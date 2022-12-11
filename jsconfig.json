@@ -1,8 +1,8 @@
 {
+  "compilerOptions": {
+    "target": "es6"
+  },
   "typeAcquisition": {
-    "include": [
-      "jquery",
-      "greasemonkey"
-    ]
+    "include": ["jquery", "greasemonkey"]
   }
 }
