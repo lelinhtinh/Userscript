@@ -115,6 +115,7 @@
     "Toki",
     "trangshop",
     "truyen",
+    "truyenbns",
     "truyenchon",
     "truyencv",
     "truyendep",
@@ -146,7 +147,7 @@
     "vnvl",
     "vungdoc",
     "weui"
-  ],
+],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   }
