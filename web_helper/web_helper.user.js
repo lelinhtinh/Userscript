@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Add navigation features to some web novels.
 // @description:vi  Bổ sung tính năng điều hướng cho một vài trang web truyện.
-// @version         1.3.1
+// @version         1.3.2
 // @icon            https://i.imgur.com/FHgT0E4.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -13,6 +13,7 @@
 // @match           https://truyendich.com/*
 // @match           https://bachngocsach.com/reader/*
 // @match           https://truyenbns.com/reader/*
+// @match           https://bachngocsach.com.vn/reader/*
 // @require         https://unpkg.com/hotkeys-js/dist/hotkeys.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
@@ -47,6 +48,7 @@ switch (location.host) {
     break;
   case 'bachngocsach.com':
   case 'truyenbns.com':
+  case 'bachngocsach.com.vn':
     chapSelector = '#noi-dung';
     preSelector = '.page-prev:not(.invisible)';
     nextSelector = '.page-next:not(.invisible)';
