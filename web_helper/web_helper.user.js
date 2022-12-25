@@ -14,6 +14,7 @@
 // @match           https://bachngocsach.com/reader/*
 // @match           https://truyenbns.com/reader/*
 // @match           https://bachngocsach.com.vn/reader/*
+// @match           https://vlognovel.com/*
 // @require         https://unpkg.com/hotkeys-js/dist/hotkeys.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
@@ -56,6 +57,11 @@ switch (location.host) {
       .page-menu{position:relative!important}
       #backtotop,.qc-chuong-top,#thongbao,#chuong-footer,#liked-list,#like-note,.qc-chuong,#thaoluan,#noi-dung~.chuong-nav{display:none!important}
     `);
+    break;
+  case 'vlognovel.com':
+    chapSelector = '#showContent';
+    preSelector = '.prevchap';
+    nextSelector = '.nextchap';
     break;
   default:
     console.log('NovelHelper: Unknown host');
