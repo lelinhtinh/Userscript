@@ -4,7 +4,7 @@
 // @namespace       https://lelinhtinh.github.io/
 // @description     Tải EPUB truyện từ truyenfull.com.
 // @description:vi  Tải EPUB truyện từ truyenfull.com.
-// @version         1.1.0
+// @version         1.1.1
 // @icon            https://i.imgur.com/pn1dLFw.png
 // @author          Zzbaivong
 // @oujs:author     baivong
@@ -280,7 +280,7 @@
         description: ebookDesc,
         tags: ebookType,
       })
-      .uuid(referrer);
+      .uuid(referrer + (partListSize ? '#p' + (partCount + 1) : ''));
 
     window.addEventListener('beforeunload', beforeleaving);
 
