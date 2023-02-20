@@ -40,6 +40,17 @@
    */
   var downloadDelay = 0;
 
+  /* === Cẩn thận khi sửa code bên dưới dòng này === */
+
+  function chunkArray(arr, per) {
+    return arr.reduce(function (resultArray, item, index) {
+      var chunkIndex = Math.floor(index / per);
+      if (!resultArray[chunkIndex]) resultArray[chunkIndex] = [];
+      resultArray[chunkIndex].push(item);
+      return resultArray;
+    }, []);
+  }
+
   function cleanHtml(str) {
     str = str.replace(/\s*Chương\s*\d+\s?:[^<\n]/, '');
     str = str.replace(/[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]+/gm, ''); // eslint-disable-line
@@ -76,6 +87,22 @@
     e.returnValue = '';
   }
 
+  function checkPart() {
+    if (partCount >= partListSize) return;
+    partCount++;
+    chapList = partList[partCount];
+    chapListSize = chapList.length;
+
+    chapId = '';
+    chapTitle = '';
+    count = 0;
+    begin = '';
+    end = '';
+    endDownload = false;
+
+    init();
+  }
+
   function genEbook() {
     jepub
       .generate('blob', function (metadata) {
@@ -84,6 +111,7 @@
       .then(function (epubZipContent) {
         document.title = '[⇓] ' + ebookTitle;
         window.removeEventListener('beforeunload', beforeleaving);
+        var ebookFilename = novelAlias + (partListSize ? '-p' + (partCount + 1) : '') + '.epub';
 
         $download
           .attr({
@@ -95,6 +123,7 @@
         if (status !== 'danger') downloadStatus('success');
 
         saveAs(epubZipContent, ebookFilename);
+        setTimeout(checkPart, 2000);
       })
       .catch(function (err) {
         downloadStatus('danger');
@@ -179,7 +208,9 @@
         if (count === 0) begin = chapTitle;
         end = chapTitle;
 
-        $download.html('Đang tải <strong>' + count + '/' + chapListSize + '</strong>');
+        $download.html(
+          'Đang tải <strong>' + count + '/' + chapListSize + (partListSize ? '/' + (partCount + 1) : '') + '</strong>',
+        );
 
         count++;
         document.title = '[' + count + '] ' + pageName;
@@ -197,6 +228,53 @@
       });
   }
 
+  function customDownload() {
+    if (confirm('Chọn "OK" nếu muốn chia nhỏ ebook')) {
+      var chapInPart = 0;
+      if (confirm('Chọn "OK" nếu muốn chia theo số lượng chương')) {
+        chapInPart = prompt('Nhập số lượng chương mỗi phần:', 2000);
+      } else {
+        var partInBook = prompt('Nhập số phần muốn chia nhỏ:', 3);
+        chapInPart = Math.floor(chapListSize / parseInt(partInBook, 10));
+      }
+      partList = chunkArray(chapList, parseInt(chapInPart, 10));
+      partListSize = partList.length;
+
+      chapList = partList[partCount];
+      chapListSize = chapList.length;
+    } else {
+      var startFrom = prompt('Nhập ID chương truyện bắt đầu tải:', chapList[0]);
+      startFrom = chapList.indexOf(startFrom);
+      if (startFrom !== -1) {
+        chapList = chapList.slice(startFrom);
+        chapListSize = chapList.length;
+      }
+    }
+  }
+
+  function init() {
+    if (!chapListSize) return;
+    jepub = new jEpub();
+    jepub
+      .init({
+        title: ebookTitle,
+        author: ebookAuthor,
+        publisher: host,
+        description: ebookDesc,
+        tags: ebookType,
+      })
+      .uuid(referrer);
+
+    window.addEventListener('beforeunload', beforeleaving);
+
+    $download.one('click', function (e) {
+      e.preventDefault();
+      saveEbook();
+    });
+
+    getContent();
+  }
+
   var pageName = document.title,
     $download = $('<a>', {
       class: 'btn btn-primary',
@@ -209,6 +287,9 @@
       $download.removeClass('btn-primary btn-success btn-info btn-warning btn-danger').addClass('btn-' + status);
     },
     $novelId = $('#truyen-id'),
+    partList = [],
+    partListSize = 0,
+    partCount = 0,
     chapList = [],
     chapListSize = 0,
     chapId = '',
@@ -227,11 +308,11 @@
     host = location.host,
     pathname = location.pathname,
     referrer = location.protocol + '//' + host + pathname,
-    ebookFilename = pathname.slice(1, -1) + '.epub',
+    novelAlias = pathname.slice(1, -1),
     credits =
       '<p>Truyện được tải từ <a href="' +
       referrer +
-      '">TruyenFull</a></p><p>Userscript được viết bởi: <a href="https://lelinhtinh.github.io/jEpub/">Zzbaivong</a></p>',
+      '">TruyenFull</a></p><p>Userscript được viết bởi: <a href="https://lelinhtinh.github.io/jEpub/">lelinhtinh</a></p>',
     jepub;
 
   if (!$novelId.length) return;
@@ -241,17 +322,6 @@
     $ebookType.each(function () {
       ebookType.push($(this).text().trim());
     });
-
-  jepub = new jEpub();
-  jepub
-    .init({
-      title: ebookTitle,
-      author: ebookAuthor,
-      publisher: host,
-      description: ebookDesc,
-      tags: ebookType,
-    })
-    .uuid(referrer);
 
   $download.insertAfter('.info');
   $download.wrap('<div class="panel-group books"></div>');
@@ -276,27 +346,16 @@
             chapList = data.match(/(?:value=")[^"]+(?=")/g).map(function (val) {
               return val.slice(7);
             });
+            chapListSize = chapList.length;
 
             if (e.type === 'contextmenu') {
               $download.off('click');
-              var startFrom = prompt('Nhập ID chương truyện bắt đầu tải:', chapList[0]);
-              startFrom = chapList.indexOf(startFrom);
-              if (startFrom !== -1) chapList = chapList.slice(startFrom);
+              customDownload();
             } else {
               $download.off('contextmenu');
             }
 
-            chapListSize = chapList.length;
-            if (chapListSize > 0) {
-              window.removeEventListener('beforeunload', beforeleaving);
-
-              $download.one('click', function (e) {
-                e.preventDefault();
-                saveEbook();
-              });
-
-              getContent();
-            }
+            init();
           })
           .fail(function (jqXHR, textStatus) {
             downloadError(textStatus);
