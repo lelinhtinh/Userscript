@@ -4,22 +4,22 @@
 // @namespace       http://devs.forumvi.com
 // @description     Beautify and syntax highlighting for source code JavaScript, JSON, CSS. From v4.1+, a few more formats are also supported.
 // @description:vi  Định dạng và làm đẹp mã nguồn JavaScript, JSON, CSS. Từ bản v4.1+, một vài định dạng khác cũng được hỗ trợ .
-// @version         4.1.0
+// @version         4.1.2
 // @icon            http://i.imgur.com/kz8nqz1.png
 // @author          Zzbaivong
 // @oujs:author     baivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
 // @match           *://*/*
-// @require         https://unpkg.com/prettier@2.7.1/standalone.js
-// @require         https://unpkg.com/prettier@2.7.1/parser-postcss.js
-// @require         https://unpkg.com/prettier@2.7.1/parser-html.js
-// @require         https://unpkg.com/prettier@2.7.1/parser-babel.js
-// @require         https://unpkg.com/prettier@2.7.1/parser-graphql.js
-// @require         https://unpkg.com/prettier@2.7.1/parser-markdown.js
-// @require         https://unpkg.com/prettier@2.7.1/parser-typescript.js
-// @require         https://unpkg.com/prettier@2.7.1/parser-yaml.js
-// @require         https://unpkg.com/prettier@2.7.1/parser-angular.js
-// @require         https://unpkg.com/@prettier/plugin-php@0.18.9/standalone.js
+// @require         https://unpkg.com/prettier@2.8.4/standalone.js
+// @require         https://unpkg.com/prettier@2.8.4/parser-postcss.js
+// @require         https://unpkg.com/prettier@2.8.4/parser-html.js
+// @require         https://unpkg.com/prettier@2.8.4/parser-babel.js
+// @require         https://unpkg.com/prettier@2.8.4/parser-graphql.js
+// @require         https://unpkg.com/prettier@2.8.4/parser-markdown.js
+// @require         https://unpkg.com/prettier@2.8.4/parser-typescript.js
+// @require         https://unpkg.com/prettier@2.8.4/parser-yaml.js
+// @require         https://unpkg.com/prettier@2.8.4/parser-angular.js
+// @require         https://unpkg.com/@prettier/plugin-php@0.19.3/standalone.js
 // @require         https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js
 // @resource        dark https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark.min.css
 // @resource        light https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/atom-one-light.min.css
