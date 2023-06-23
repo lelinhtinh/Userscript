@@ -20,6 +20,7 @@ Data should be free. [MIT license](https://baivong.mit-license.org/) for all.
 <table>
   <tbody>
     <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/hhoangg"><img src="https://avatars.githubusercontent.com/u/19337273?v=4?s=100" width="100px;" alt="hhoangg"/><br /><sub><b>hhoangg</b></sub></a><br /><a href="https://github.com/lelinhtinh/Userscript/commits?author=hhoangg" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/mrsilver256"><img src="https://avatars.githubusercontent.com/u/11459722?v=4?s=100" width="100px;" alt="Chu Hữu Thành"/><br /><sub><b>Chu Hữu Thành</b></sub></a><br /><a href="https://github.com/lelinhtinh/Userscript/commits?author=mrsilver256" title="Code">💻</a></td>
     </tr>
   </tbody>
