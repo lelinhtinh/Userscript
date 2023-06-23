@@ -6,7 +6,8 @@
   "commit": false,
   "commitType": "docs",
   "commitConvention": "angular",
-  "contributors": [
+  "badgeTemplate": "[![All Contributors](https://img.shields.io/github/all-contributors/<%= projectOwner %>/<%= projectName %>?color=ee8449&type=shield)](#contributors)",    
+  "contributors": [style=flat-square
     {
       "login": "quyentruong",
       "name": "Quyen Truong",
