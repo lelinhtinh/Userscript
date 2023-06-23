@@ -8,6 +8,15 @@
   "commitConvention": "angular",
   "contributors": [
     {
+      "login": "quyentruong",
+      "name": "Quyen Truong",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22864140?v=4",
+      "profile": "https://github.com/quyentruong",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "hhoangg",
       "name": "hhoangg",
       "avatar_url": "https://avatars.githubusercontent.com/u/19337273?v=4",
