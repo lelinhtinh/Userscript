@@ -43,7 +43,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 1. <http://www.hamtruyentranh.net/>
 1. <https://ttmanga.com/>
 1. <http://truyen.vnsharing.site/>
-1. <https://blogtruyen.com/>, <https://blogtruyen.vn/>, <https://blogtruyen.top/>
+1. <https://blogtruyen.com/>, <https://blogtruyen.vn/>, <https://blogtruyen.top/>, <https://blogtruyenmoi.com/>
 1. <https://truyensieuhay.com/>
 1. <http://truyenqq.com/>, <http://truyenqq.net/>, <http://truyenqqtop.com/>, <http://truyenqqpro.com/>
 1. <https://hentaicube.net/>, <https://hentaicb.top/>
@@ -58,7 +58,7 @@ Tải truyện tranh từ các trang chia sẻ ở Việt Nam.
 #### Mobile
 
 1. <http://m.hentailxx.com/>, <http://m.lxhentai.com>
-1. <https://m.blogtruyen.com/>, <https://m.blogtruyen.vn/>, <https://m.blogtruyen.top/>
+1. <https://m.blogtruyen.com/>, <https://m.blogtruyen.vn/>, <https://m.blogtruyen.top/>, <https://m.blogtruyenmoi.com/>
 
 ## Video từng bước cài đặt
 

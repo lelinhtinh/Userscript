@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.3.14
+// @version         3.4.0
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -51,6 +51,7 @@
 // @match           http://truyen.vnsharing.site/*
 // @match           http://*.blogtruyen.com/*
 // @match           https://*.blogtruyen.com/*
+// @match           https://*.blogtruyenmoi.com/*
 // @match           http://*.blogtruyen.vn/*
 // @match           https://*.blogtruyen.vn/*
 // @match           http://*.blogtruyen.top/*
@@ -74,8 +75,10 @@
 // @match           https://*.sayhentai.net/*
 // @match           https://cocomic.net/truyen-tranh/*
 // @require         https://code.jquery.com/jquery-3.6.0.min.js
-// @require         https://greasyfork.org/scripts/442805-fflate-umd/code/fflateumd.js?version=1036436
+// @require         https://unpkg.com/@zip.js/zip.js@2.7.17/dist/zip.min.js
 // @require         https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js
+// @require         https://cdn.jsdelivr.net/npm/web-streams-polyfill@2.0.2/dist/ponyfill.min.js
+// @require         https://cdn.jsdelivr.net/npm/streamsaver@2.0.3/StreamSaver.min.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @require         https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js
 // @resource        success https://unpkg.com/facebook-sound-kit@2.0.0/Low_Volume_-20dB/Complete_and_Success/Success_2.m4a
@@ -92,7 +95,7 @@
 // @grant           GM_registerMenuCommand
 // ==/UserScript==
 
-/* global fflate, CryptoJS */
+/* global zip, streamSaver, CryptoJS */
 window._URL = window.URL || window.webkitURL;
 
 jQuery(function ($) {
@@ -170,6 +173,7 @@ jQuery(function ($) {
     'anhnhanh.org',
     'truyenvua.xyz',
     'hamtruyen.vn',
+    '.xem-truyen.com',
   ];
 
   /**
@@ -177,6 +181,7 @@ jQuery(function ($) {
    * @param {Object} hostname
    */
   var referer = {
+    'i8.xem-truyen.com': 'https://blogtruyenmoi.com',
     'i.blogtruyen.com': 'https://blogtruyen.com',
     'truyen.cloud': 'http://www.nettruyen.com',
     'proxy.truyen.cloud': 'http://www.nettruyen.com',
@@ -489,20 +494,48 @@ jQuery(function ($) {
     downloadAll();
   }
 
+  async function saveFile(blob, zipName) {
+    noty('Tải hoàn tất <strong>' + zipName + '</strong>', 'info');
+
+    try {
+      const fileStream = streamSaver.createWriteStream(zipName, {
+        size: blob.size,
+      });
+      const readableStream = blob.stream();
+
+      if (window.WritableStream && readableStream.pipeTo) {
+        return readableStream.pipeTo(fileStream);
+      }
+      window.writer = fileStream.getWriter();
+
+      const reader = readableStream.getReader();
+      const pump = () =>
+        reader.read().then((res) => (res.done ? window.writer.close() : window.writer.write(res.value).then(pump)));
+      pump();
+
+      return;
+    } catch (_err) {
+      console.warn(_err);
+    }
+
+    // Fallback if the StreamSaver is not working
+    saveAs(blob, zipName);
+  }
+
   function genFileName() {
-    chapName = chapName
+    return chapName
       .replace(/\s+/g, '_')
       .replace(/・/g, '·')
       .replace(/(^_+|_+$)/, '');
-    if (hasDownloadError) chapName = '__ERROR__' + chapName;
-    return chapName;
   }
 
   function endZip() {
     if (!inMerge) {
-      zipObj = {};
-      if (recentZip) URL.revokeObjectURL(recentZip);
-      recentZip = null;
+      blobWriter = new zip.BlobWriter(zipMime);
+      zipWriter = new zip.ZipWriter(blobWriter);
+      downloadController = new AbortController();
+      downloadSignal = downloadController.signal;
+      zipData = [];
     }
 
     dlCurrent = 0;
@@ -531,45 +564,38 @@ jQuery(function ($) {
   function genZip() {
     noty('Tạo file nén của <strong>' + chapName + '</strong>', 'warning');
 
-    fflate.zip(
-      zipObj,
-      {
-        level: 0,
-      },
-      function (err, out) {
-        if (err) {
-          noty('Lỗi tạo file nén của <strong>' + chapName + '</strong>', 'error');
-          cancelProgress();
+    Promise.all(zipData)
+      .then(() => {
+        zipWriter
+          .close()
+          .then((blob) => {
+            saveFile(blob, genFileName() + '.' + outputExt);
+            linkSuccess();
+            window.removeEventListener('beforeunload', beforeleaving);
 
-          document.title = '[x] ' + tit;
-          endZip();
-        } else {
-          var zipName = genFileName() + '.' + outputExt;
-          var zipFile = new File([out], zipName, {
-            type: outputExt === 'cbz' ? 'application/vnd.comicbook+zip' : 'application/zip',
+            document.title = '[⇓] ' + tit;
+            endZip();
+          })
+          .catch((err) => {
+            console.error(err);
+            noty('Lỗi tạo file nén của <strong>' + chapName + '</strong>', 'error');
+            cancelProgress();
+
+            document.title = '[x] ' + tit;
+            endZip();
           });
-
-          if (recentZip) URL.revokeObjectURL(recentZip);
-          recentZip = zipFile;
-
-          noty(
-            '<a href="' +
-              URL.createObjectURL(zipFile) +
-              '" download="' +
-              zipName +
-              '"><strong>Click vào đây</strong></a> nếu trình duyệt không tự tải xuống',
-            'success',
-          );
-          linkSuccess();
-
-          window.removeEventListener('beforeunload', beforeleaving);
-          saveAs(zipFile, zipName);
-
-          document.title = '[⇓] ' + tit;
-          endZip();
+      })
+      .catch((err) => {
+        console.error(err);
+        if (downloadSignal.reason == err || (downloadSignal.reason && downloadSignal.reason.code == err.code)) {
+          zip.terminateWorkers();
         }
-      },
-    );
+        noty('Lỗi nén dữ liệu của <strong>' + chapName + '</strong>', 'error');
+        cancelProgress();
+
+        document.title = '[!] ' + tit;
+        endZip();
+      });
   }
 
   function dlImgError(current, success, error, err, filename) {
@@ -611,12 +637,7 @@ jQuery(function ($) {
       headers: headers,
       onload: function (response) {
         var imgExt = getImageType(response.response).ext;
-
-        if (imgExt === 'gif') {
-          dlFinal++;
-          next();
-          return;
-        }
+        if (imgExt === 'gif') return next();
 
         if (
           !imgExt ||
@@ -626,8 +647,7 @@ jQuery(function ($) {
           dlImgError(current, success, error, response, filename);
         } else {
           filename = filename + '.' + imgExt;
-          dlFinal++;
-          success(response, filename);
+          success(response.response, filename);
         }
       },
       onerror: function (err) {
@@ -637,7 +657,7 @@ jQuery(function ($) {
   }
 
   function next() {
-    noty('Đang tải xuống <strong>' + dlFinal + '/' + dlTotal + '</strong>', 'warning');
+    noty('Đang tải xuống <strong>' + dlFinal++ + '/' + dlTotal + '</strong>', 'warning');
     if (dlFinal < dlCurrent) return;
 
     if (dlFinal < dlTotal) {
@@ -667,28 +687,22 @@ jQuery(function ($) {
     for (dlCurrent; dlCurrent < max; dlCurrent++) {
       dlImg(
         dlCurrent,
-        function (response, filename) {
-          zipObj[path + filename] = [
-            new Uint8Array(response.response),
-            {
-              level: 0,
-            },
-          ];
-
-          next();
+        function (buff, filename) {
+          var fileData = zipWriter.add(path + filename, new zip.Uint8ArrayReader(new Uint8Array(buff)), {
+            signal: downloadSignal,
+            onend: next,
+          });
+          zipData.push(fileData);
         },
         function (err, filename) {
-          zipObj[path + filename + '_error.txt'] = [
-            fflate.strToU8(err.statusText + '\r\n' + err.finalUrl),
-            {
-              level: 6,
-            },
-          ];
-
+          zipData.push(
+            zipWriter.add(path + filename + '_error.txt', new zip.TextReader(err.statusText + '\r\n' + err.finalUrl), {
+              signal: downloadSignal,
+              onend: next,
+            }),
+          );
           noty(err.statusText, 'error');
           linkError();
-
-          next();
         },
       );
     }
@@ -1174,8 +1188,12 @@ jQuery(function ($) {
     domainName = location.host,
     tit = document.title,
     $doc = $(document),
-    zipObj = {},
-    recentZip = null,
+    zipMime = outputExt === 'cbz' ? 'application/vnd.comicbook+zip' : 'application/zip',
+    blobWriter = new zip.BlobWriter(zipMime),
+    zipWriter = new zip.ZipWriter(blobWriter),
+    downloadController = new AbortController(),
+    downloadSignal = downloadController.signal,
+    zipData = [],
     dlCurrent = 0,
     dlFinal = 0,
     dlTotal = 0,
@@ -1186,6 +1204,12 @@ jQuery(function ($) {
     inAuto = false,
     inCustom = false,
     inMerge = false;
+
+  zip.configure({
+    chunkSize: 128,
+    useWebWorkers: true,
+  });
+  streamSaver.mitm = 'https://lelinhtinh.github.io/stream/mitm.html';
 
   GM_registerMenuCommand('Download All Chapters', downloadAll);
   GM_registerMenuCommand('Download All To One File', downloadAllOne);
@@ -1384,6 +1408,7 @@ jQuery(function ($) {
     case 'blogtruyen.com':
     case 'blogtruyen.vn':
     case 'blogtruyen.top':
+    case 'blogtruyenmoi.com':
     case 'www.blogtruyen.com':
     case 'www.blogtruyen.vn':
     case 'www.blogtruyen.top':
@@ -1395,6 +1420,7 @@ jQuery(function ($) {
     case 'm.blogtruyen.com':
     case 'm.blogtruyen.vn':
     case 'm.blogtruyen.top':
+    case 'm.blogtruyenmoi.com':
       configs = {
         link: '.list-chapter a',
         name: function (_this) {

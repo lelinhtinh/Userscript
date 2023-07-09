@@ -12,6 +12,7 @@
     "bato",
     "beeng",
     "blogtruyen",
+    "blogtruyenmoi",
     "bnum",
     "btnregist",
     "cdnimg",
@@ -150,7 +151,7 @@
     "vnvl",
     "vungdoc",
     "weui"
-],
+  ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   }
