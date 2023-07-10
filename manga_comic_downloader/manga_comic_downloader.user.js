@@ -96,7 +96,7 @@
 // @grant           GM_registerMenuCommand
 // ==/UserScript==
 
-/* global zip, streamSaver, CryptoJS, TransformStream, detectIncognito */
+/* global zip, streamSaver, CryptoJS, detectIncognito */
 window._URL = window.URL || window.webkitURL;
 
 jQuery(function ($) {
