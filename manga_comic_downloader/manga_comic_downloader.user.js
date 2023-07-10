@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.4.0
+// @version         3.4.1
 // @icon            https://i.imgur.com/ICearPQ.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -95,7 +95,7 @@
 // @grant           GM_registerMenuCommand
 // ==/UserScript==
 
-/* global zip, streamSaver, CryptoJS */
+/* global zip, streamSaver, CryptoJS, TransformStream */
 window._URL = window.URL || window.webkitURL;
 
 jQuery(function ($) {
@@ -531,8 +531,9 @@ jQuery(function ($) {
 
   function endZip() {
     if (!inMerge) {
-      blobWriter = new zip.BlobWriter(zipMime);
-      zipWriter = new zip.ZipWriter(blobWriter);
+      zipFileStream = new TransformStream();
+      zipFileBlobPromise = new Response(zipFileStream.readable).blob();
+      zipWriter = new zip.ZipWriter(zipFileStream.writable, { zip64: true });
       downloadController = new AbortController();
       downloadSignal = downloadController.signal;
       zipData = [];
@@ -561,41 +562,31 @@ jQuery(function ($) {
     }, 0);
   }
 
-  function genZip() {
+  async function genZip() {
     noty('Tạo file nén của <strong>' + chapName + '</strong>', 'warning');
 
-    Promise.all(zipData)
-      .then(() => {
-        zipWriter
-          .close()
-          .then((blob) => {
-            saveFile(blob, genFileName() + '.' + outputExt);
-            linkSuccess();
-            window.removeEventListener('beforeunload', beforeleaving);
+    try {
+      await Promise.all(zipData);
+      await zipWriter.close();
+      const zipFileBlob = await zipFileBlobPromise;
 
-            document.title = '[⇓] ' + tit;
-            endZip();
-          })
-          .catch((err) => {
-            console.error(err);
-            noty('Lỗi tạo file nén của <strong>' + chapName + '</strong>', 'error');
-            cancelProgress();
+      saveFile(zipFileBlob, genFileName() + '.' + outputExt);
+      linkSuccess();
+      window.removeEventListener('beforeunload', beforeleaving);
 
-            document.title = '[x] ' + tit;
-            endZip();
-          });
-      })
-      .catch((err) => {
-        console.error(err);
-        if (downloadSignal.reason == err || (downloadSignal.reason && downloadSignal.reason.code == err.code)) {
-          zip.terminateWorkers();
-        }
-        noty('Lỗi nén dữ liệu của <strong>' + chapName + '</strong>', 'error');
-        cancelProgress();
+      document.title = '[⇓] ' + tit;
+      endZip();
+    } catch (err) {
+      console.error(err);
+      if (downloadSignal.reason == err || (downloadSignal.reason && downloadSignal.reason.code == err.code)) {
+        zip.terminateWorkers();
+      }
+      noty('Lỗi nén dữ liệu của <strong>' + chapName + '</strong>', 'error');
+      cancelProgress();
 
-        document.title = '[!] ' + tit;
-        endZip();
-      });
+      document.title = '[x] ' + tit;
+      endZip();
+    }
   }
 
   function dlImgError(current, success, error, err, filename) {
@@ -688,7 +679,7 @@ jQuery(function ($) {
       dlImg(
         dlCurrent,
         function (buff, filename) {
-          var fileData = zipWriter.add(path + filename, new zip.Uint8ArrayReader(new Uint8Array(buff)), {
+          var fileData = zipWriter.add(path + filename, new Response(buff).body, {
             signal: downloadSignal,
             onend: next,
           });
@@ -696,7 +687,7 @@ jQuery(function ($) {
         },
         function (err, filename) {
           zipData.push(
-            zipWriter.add(path + filename + '_error.txt', new zip.TextReader(err.statusText + '\r\n' + err.finalUrl), {
+            zipWriter.add(path + filename + '_error.txt', new Blob([err.statusText + '\r\n' + err.finalUrl]).stream(), {
               signal: downloadSignal,
               onend: next,
             }),
@@ -1188,9 +1179,10 @@ jQuery(function ($) {
     domainName = location.host,
     tit = document.title,
     $doc = $(document),
-    zipMime = outputExt === 'cbz' ? 'application/vnd.comicbook+zip' : 'application/zip',
-    blobWriter = new zip.BlobWriter(zipMime),
-    zipWriter = new zip.ZipWriter(blobWriter),
+    // zipMime = outputExt === 'cbz' ? 'application/vnd.comicbook+zip' : 'application/zip',
+    zipFileStream = new TransformStream(),
+    zipFileBlobPromise = new Response(zipFileStream.readable).blob(),
+    zipWriter = new zip.ZipWriter(zipFileStream.writable, { zip64: true }),
     downloadController = new AbortController(),
     downloadSignal = downloadController.signal,
     zipData = [],
@@ -1205,10 +1197,6 @@ jQuery(function ($) {
     inCustom = false,
     inMerge = false;
 
-  zip.configure({
-    chunkSize: 128,
-    useWebWorkers: true,
-  });
   streamSaver.mitm = 'https://lelinhtinh.github.io/stream/mitm.html';
 
   GM_registerMenuCommand('Download All Chapters', downloadAll);
