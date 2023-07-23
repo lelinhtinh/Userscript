@@ -87,7 +87,8 @@
         vipContent = '';
 
       var getVipContent = function (token) {
-        $.get(vipUrl + '0' + '&ggc=' + token).done(function (data) {
+        // gcg could be updated by TruyenYY frequently, this key might need multiple updates in the future if Google ReCaptcha failed, haizz
+        $.get(vipUrl + '0' + '&gcg=' + token).done(function (data) {
           if (data.ok) {
             vipContent += data.content;
             $.get(vipUrl + '1').done(function (data) {
