@@ -4,8 +4,8 @@
 // @namespace       https://lelinhtinh.github.io
 // @description     Auto enter Crossfire Gift Code.
 // @description:vi  Tự động nhập Gift Code Đột Kích.
-// @version         1.2.0
-// @icon            https://i.imgur.com/ga9bS6c.png
+// @version         1.3.0
+// @icon            https://raw.githubusercontent.com/lelinhtinh/Userscript/master/cf_giftcode/icon.png
 // @author          lelinhtinh
 // @oujs:author     baivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -106,12 +106,12 @@ const $helpText = $('<pre />', {
 });
 
 const $gcInput = $('#input_giftcode');
-const $gcForm = $('.bx-giftcode');
-const $gcSubmit = $('.btn-accept');
+const $gcForm = $gcInput.closest('form');
+const $gcSubmit = $gcForm.find('a');
 
-const userInfo = $('#navbarCollapse').find('[href="https://goplay.vn/"]').text().split(/:|-/);
-const userName = userInfo[1].trim();
-const userId = userInfo[3].trim();
+const userInfo = $('[class="text-[#47bac1]"]').text().split(/:|-/);
+const userName = userInfo[4].trim();
+const userId = userInfo[6].trim();
 console.log(userName, userId);
 
 $gcForm.append($helpText);
@@ -130,3 +130,10 @@ $gcInput.on('keydown', (e) => {
 });
 $gcSubmit.on('click', onSubmit);
 $gcForm.on('submit', onSubmit);
+
+$('head').append(`<style>
+#myModal,
+#myModal + .modal-backdrop {
+  display: none !important;
+}
+</style>`);
