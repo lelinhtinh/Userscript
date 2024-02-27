@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.4.4
+// @version         3.4.5
 // @icon            https://raw.githubusercontent.com/lelinhtinh/Userscript/master/manga_comic_downloader/icon.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -45,6 +45,7 @@
 // @match           https://*.nettruyengo.com/*
 // @match           https://*.nettruyenmax.com/*
 // @match           http://*.nettruyenmoi.com/*
+// @match           https://*.nettruyenbb.com/*
 // @match           http://nhattruyen.com/*
 // @match           http://nhattruyengo.com/*
 // @match           http://*.hamtruyentranh.net/*
@@ -1367,6 +1368,7 @@ jQuery(function ($) {
       break;
     case 'www.nettruyentop.com':
     case 'www.nettruyenonline.com':
+    case 'www.nettruyenbb.com':
       configs = {
         link: '#nt_listchapter .chapter a',
         name: '.title-detail',
