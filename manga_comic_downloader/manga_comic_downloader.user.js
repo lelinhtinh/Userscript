@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.4.5
+// @version         3.4.6
 // @icon            https://raw.githubusercontent.com/lelinhtinh/Userscript/master/manga_comic_downloader/icon.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
@@ -46,6 +46,7 @@
 // @match           https://*.nettruyenmax.com/*
 // @match           http://*.nettruyenmoi.com/*
 // @match           https://*.nettruyenbb.com/*
+// @match           https://*.kingtruyen.com/*
 // @match           http://nhattruyen.com/*
 // @match           http://nhattruyengo.com/*
 // @match           http://*.hamtruyentranh.net/*
@@ -77,7 +78,7 @@
 // @match           https://*.sayhentai.net/*
 // @match           https://cocomic.net/truyen-tranh/*
 // @require         https://code.jquery.com/jquery-3.6.0.min.js
-// @require         https://unpkg.com/@zip.js/zip.js@2.7.17/dist/zip.min.js
+// @require         https://unpkg.com/@zip.js/zip.js@2.7.41/dist/zip.min.js
 // @require         https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js
 // @require         https://cdn.jsdelivr.net/npm/web-streams-polyfill@2.0.2/dist/ponyfill.min.js
 // @require         https://cdn.jsdelivr.net/npm/streamsaver@2.0.3/StreamSaver.min.js
@@ -1369,6 +1370,7 @@ jQuery(function ($) {
     case 'www.nettruyentop.com':
     case 'www.nettruyenonline.com':
     case 'www.nettruyenbb.com':
+    case 'kingtruyen.com':
       configs = {
         link: '#nt_listchapter .chapter a',
         name: '.title-detail',
