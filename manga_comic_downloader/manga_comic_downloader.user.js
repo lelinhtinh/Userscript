@@ -61,7 +61,7 @@
 // @match           https://*.blogtruyen.top/*
 // @match           https://truyensieuhay.com/*
 // @match           http://truyenqqvn.com/*
-// @match           http://truyenqq.net/*
+// @match           http://truyenqqvn.net/*
 // @match           http://truyenqqtop.com/*
 // @match           http://truyenqqpro.com/*
 // @match           https://hentaicube.net/*
@@ -159,7 +159,7 @@ jQuery(function ($) {
     '.fbcdn.net',
     'mangaqq.net',
     'mangaqq.com',
-    'truyenqq.net',
+    'truyenqqvn.net',
     'truyenqqvn.com',
     'truyenqqtop.com',
     'truyenqqpro.com',
