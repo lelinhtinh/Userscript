@@ -60,7 +60,7 @@
 // @match           http://*.blogtruyen.top/*
 // @match           https://*.blogtruyen.top/*
 // @match           https://truyensieuhay.com/*
-// @match           http://truyenqq.com/*
+// @match           http://truyenqqvn.com/*
 // @match           http://truyenqq.net/*
 // @match           http://truyenqqtop.com/*
 // @match           http://truyenqqpro.com/*
@@ -160,7 +160,7 @@ jQuery(function ($) {
     'mangaqq.net',
     'mangaqq.com',
     'truyenqq.net',
-    'truyenqq.com',
+    'truyenqqvn.com',
     'truyenqqtop.com',
     'truyenqqpro.com',
     '.upanhmoi.net',
