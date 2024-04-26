@@ -2,7 +2,7 @@
 // @name            manga comic downloader
 // @namespace       https://baivong.github.io
 // @description     Tải truyện tranh từ các trang chia sẻ ở Việt Nam. Nhấn Alt+Y để tải toàn bộ.
-// @version         3.4.6
+// @version         3.4.7
 // @icon            https://raw.githubusercontent.com/lelinhtinh/Userscript/master/manga_comic_downloader/icon.png
 // @author          Zzbaivong
 // @license         MIT; https://baivong.mit-license.org/license.txt
