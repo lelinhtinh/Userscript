@@ -60,8 +60,8 @@
 // @match           http://*.blogtruyen.top/*
 // @match           https://*.blogtruyen.top/*
 // @match           https://truyensieuhay.com/*
-// @match           http://truyenqq.com/*
-// @match           http://truyenqq.net/*
+// @match           http://truyenqqvn.com/*
+// @match           http://truyenqqvn.net/*
 // @match           http://truyenqqtop.com/*
 // @match           http://truyenqqpro.com/*
 // @match           https://hentaicube.net/*
@@ -159,8 +159,8 @@ jQuery(function ($) {
     '.fbcdn.net',
     'mangaqq.net',
     'mangaqq.com',
-    'truyenqq.net',
-    'truyenqq.com',
+    'truyenqqvn.net',
+    'truyenqqvn.com',
     'truyenqqtop.com',
     'truyenqqpro.com',
     '.upanhmoi.net',
