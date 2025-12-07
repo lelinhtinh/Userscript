@@ -62,7 +62,7 @@
 // @match           https://truyensieuhay.com/*
 // @match           http://truyenqqvn.com/*
 // @match           http://truyenqqvn.net/*
-// @match           http://truyenqqtop.com/*
+// @match           http://truyenqqno.com/*
 // @match           http://truyenqqpro.com/*
 // @match           https://hentaicube.net/*
 // @match           https://hentaicb.top/*
